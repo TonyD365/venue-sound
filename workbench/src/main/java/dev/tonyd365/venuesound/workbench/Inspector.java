@@ -142,7 +142,7 @@ public final class Inspector extends JPanel {
                 double u = (x - FX) / FS, h = 5 - (y - FY) / FS;
                 int b = PanelLayout.Receiver.buttonAt(u, h);
                 if (b != 0) {
-                    device.channel = Math.floorMod(device.channel - 1 + b, 8) + 1;
+                    device.channel = Math.floorMod(device.channel - 1 + b, 16) + 1;
                 }
             }
             case PA_SPEAKER, LINE_ARRAY, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER, FLOWN_ARRAY, IEM_TRANSMITTER -> {
