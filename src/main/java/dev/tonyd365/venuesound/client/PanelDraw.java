@@ -29,8 +29,8 @@ public final class PanelDraw {
 
     private PanelDraw(PoseStack pose, MultiBufferSource buffers) {
         this.pose = pose;
-        // no back-face culling: these small boxes are seen from every side
-        this.vc = buffers.getBuffer(RenderType.entityCutoutNoCull(WHITE));
+        // plain coloured quads, the same way the cables are drawn (textured entity quads did not show up)
+        this.vc = buffers.getBuffer(RenderType.debugQuads());
     }
 
     /** Pushes a pose turned to the device's facing; call {@link #end()} when done. */
@@ -81,8 +81,10 @@ public final class PanelDraw {
 
     private void v(Matrix4f m, Matrix3f n, int light, int r, int g, int b, float nx, float ny, float nz,
                    float x, float y, float z, float u, float vv) {
-        vc.vertex(m, x, y, z).color(r, g, b, 255).uv(u, vv).overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(light).normal(n, nx, ny, nz).endVertex();
+        // no lighting in this render type: darken by the block light level so parts are not glowing at night
+        float k = light == FULL_BRIGHT ? 1F : 0.35F + 0.65F * (LightTexture.block(light) / 15F > LightTexture.sky(light) / 15F
+                ? LightTexture.block(light) / 15F : LightTexture.sky(light) / 15F);
+        vc.vertex(m, x, y, z).color((int) (r * k), (int) (g * k), (int) (b * k), 255).endVertex();
     }
 
     /**
