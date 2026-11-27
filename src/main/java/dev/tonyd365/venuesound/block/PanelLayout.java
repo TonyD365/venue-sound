@@ -62,15 +62,21 @@ public final class PanelLayout {
         private Receiver() {
         }
 
-        /** -1 for the down button, +1 for up, 0 for neither. */
+        /** The channel display; clicking it steps to the next channel. */
+        public static final double DISPLAY_U0 = 2.5, DISPLAY_U1 = 8.5, DISPLAY_H0 = 1.3, DISPLAY_H1 = 4.0;
+
+        /** -1 for the down button, +1 for up (or the display), 0 for neither. */
         public static int buttonAt(double u, double h) {
-            if (h < BUTTON_H0 || h > BUTTON_H1) {
+            if (u >= DISPLAY_U0 - 0.3 && u <= DISPLAY_U1 + 0.3 && h >= DISPLAY_H0 - 0.3 && h <= DISPLAY_H1 + 0.3) {
+                return 1;
+            }
+            if (h < BUTTON_H0 - 0.4 || h > BUTTON_H1 + 0.4) {
                 return 0;
             }
-            if (u >= DOWN_U0 && u <= DOWN_U0 + BUTTON_W) {
+            if (u >= DOWN_U0 - 0.3 && u <= DOWN_U0 + BUTTON_W + 0.15) {
                 return -1;
             }
-            return u >= UP_U0 && u <= UP_U0 + BUTTON_W ? 1 : 0;
+            return u > DOWN_U0 + BUTTON_W + 0.15 && u <= UP_U0 + BUTTON_W + 0.3 ? 1 : 0;
         }
     }
 }

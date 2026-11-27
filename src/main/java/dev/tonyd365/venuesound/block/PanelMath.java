@@ -73,7 +73,7 @@ public final class PanelMath {
             return toBlock(facing, 8, 4, 8);
         }
         if (port.face() == PortLayout.Face.ANY) {
-            return toBlock(facing, 8, 0.6, 8);
+            return toBlock(facing, 8, 2.0, 8); // the stand mic's socket, on the pole just above its base
         }
         double d = port.face() == PortLayout.Face.FRONT ? port.depth() - 0.5 : port.depth() + 0.5;
         return toBlock(facing, port.u(), port.h(), d);

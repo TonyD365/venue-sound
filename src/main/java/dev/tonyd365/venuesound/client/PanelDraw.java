@@ -29,7 +29,8 @@ public final class PanelDraw {
 
     private PanelDraw(PoseStack pose, MultiBufferSource buffers) {
         this.pose = pose;
-        this.vc = buffers.getBuffer(RenderType.entitySolid(WHITE));
+        // no back-face culling: these small boxes are seen from every side
+        this.vc = buffers.getBuffer(RenderType.entityCutoutNoCull(WHITE));
     }
 
     /** Pushes a pose turned to the device's facing; call {@link #end()} when done. */

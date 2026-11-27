@@ -120,7 +120,7 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_too_far", MAX_LENGTH).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        if (!CableRoute.clear(level, end, here, java.util.Set.of())) {
+        if (!CableRoute.clear(level, end, here)) {
             say(player, Component.translatable("message.venuesound.cable_blocked").withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
@@ -205,7 +205,7 @@ public class AudioCableItem extends Item {
         }
         net.minecraft.world.phys.Vec3 end = heldEnd(level, tag);
         net.minecraft.world.phys.Vec3 into = socketWorld(level, clicked, target.deviceKey(), PortLayout.Dir.IN, port.index());
-        if (end != null && end.distanceTo(into) <= MAX_LENGTH && !CableRoute.clear(level, end, into, java.util.Set.of())) {
+        if (end != null && end.distanceTo(into) <= MAX_LENGTH && !CableRoute.clear(level, end, into)) {
             say(player, Component.translatable("message.venuesound.cable_blocked").withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }

@@ -1,17 +1,6 @@
 {
-  "parent": "venuesound:block/concert_c1_l2_d0",
-  "display": {
-    "gui": {
-      "rotation": [
-        30,
-        225,
-        0
-      ],
-      "scale": [
-        0.6,
-        0.6,
-        0.6
-      ]
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "venuesound:item/concert_speaker"
   }
 }

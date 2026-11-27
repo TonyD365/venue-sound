@@ -389,3 +389,38 @@ for x in range(16):
             cs_side.putpixel((x, y), hexc("1d1f23"))
 cs_side.save(BLOCK / "concert_side.png")
 print("v0.4 concert textures written")
+
+# ================================================================== inventory icons for multi-block devices
+def icon_from(img, size=32):
+    w, h = img.size
+    k = min(size / w, size / h)
+    small = img.resize((max(1, int(w * k)), max(1, int(h * k))), Image.LANCZOS)
+    out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    out.paste(small, ((size - small.width) // 2, (size - small.height) // 2))
+    return out
+
+# console: the top panel seen from above, with fader caps and knob colours drawn in
+con = panel.copy().transpose(Image.FLIP_TOP_BOTTOM)
+cd = con.load()
+for i in range(10):
+    cu = int((2.2 + 3.5 * i) * R)
+    for row, col in ((30.3, "c0392b"), (28.0, "2e86c1"), (25.8, "16a085"), (21.4, "f1c40f"), (17.0, "ecf0f1")):
+        y = int((D_U - row) * R)
+        for dx in range(-3, 4):
+            for dy in range(-3, 4):
+                if dx * dx + dy * dy <= 9 and 0 <= cu + dx < W_U * R and 0 <= y + dy < D_U * R:
+                    cd[cu + dx, y + dy] = hexc(col)
+    for dx in range(-2, 3):
+        for dy in range(-2, 3):
+            cd[cu + dx, int((D_U - 6) * R) + dy] = hexc("d9dcE0")
+for cu in (45.1, 47.0):
+    for dx in range(-2, 3):
+        for dy in range(-2, 3):
+            cd[int(cu * R) + dx, int((D_U - 6) * R) + dy] = hexc("d0312b")
+icon_from(con).save(ITEM / "mixer.png")
+icon_from(front).save(ITEM / "concert_speaker.png")
+pa = Image.new("RGBA", (16, 32))
+pa.paste(Image.open(BLOCK / "pa_front_upper.png"), (0, 0))
+pa.paste(Image.open(BLOCK / "pa_front_lower.png"), (0, 16))
+icon_from(pa.resize((32, 64), Image.NEAREST)).save(ITEM / "pa_speaker.png")
+print("icons written")

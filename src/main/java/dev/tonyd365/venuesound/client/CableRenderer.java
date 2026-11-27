@@ -50,12 +50,7 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
             }
             String targetKey = level.getBlockEntity(link.target()) instanceof AudioNodeBlockEntity t ? t.deviceKey() : "";
             points.add(socket(level, link.target(), targetKey, PortLayout.Dir.IN, link.toPort()));
-            for (int i = 0; i + 1 < points.size(); i++) {
-                Vec3 a = points.get(i), b = points.get(i + 1);
-                double wanted = Math.min(2.5D, 0.12D * a.distanceTo(b) + 0.15D);
-                double sag = dev.tonyd365.venuesound.block.CableRoute.sag(level, a, b, wanted, java.util.Set.of());
-                drawCable(vc, m, a.subtract(base), b.subtract(base), sag);
-            }
+            drawRun(level, vc, m, points, base);
         }
     }
 
@@ -69,25 +64,34 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
         return new Vec3(pos.getX() + a.x(), pos.getY() + a.y(), pos.getZ() + a.z());
     }
 
-    private static void drawCable(VertexConsumer vc, Matrix4f m, Vec3 a, Vec3 b, double sag) {
-        Vec3 d = b.subtract(a);
-        double horizontal = Math.sqrt(d.x * d.x + d.z * d.z);
-        // Two crossed ribbons so the cable looks round from every angle.
-        Vec3 side = horizontal < 1.0E-4 ? new Vec3(1, 0, 0) : new Vec3(-d.z / horizontal, 0, d.x / horizontal);
-        Vec3[] offsets = {side.scale(HALF_WIDTH), new Vec3(0, HALF_WIDTH, 0)};
-        for (Vec3 off : offsets) {
-            Vec3 prev = point(a, d, sag, 0);
-            for (int i = 1; i <= SEGMENTS; i++) {
-                Vec3 next = point(a, d, sag, i / (float) SEGMENTS);
-                int shade = (i % 2 == 0) ? 22 : 30;
-                quad(vc, m, prev, next, off, shade);
-                prev = next;
+    /** Extra live parts drawn on the device, in panel coordinates. */
+    protected void renderPanel(T be, PanelDraw d, MultiBufferSource buffers, int light) {
+    }
+
+    /** Draws a cable through {@code points} (sockets and clips), hanging and draped over obstacles. */
+    public static void drawRun(Level level, VertexConsumer vc, Matrix4f m, java.util.List<Vec3> points, Vec3 base) {
+        for (int i = 0; i + 1 < points.size(); i++) {
+            Vec3 a = points.get(i), b = points.get(i + 1);
+            double sag = Math.min(2.5D, 0.12D * a.distanceTo(b) + 0.15D);
+            java.util.List<Vec3> path = dev.tonyd365.venuesound.block.CableRoute.path(level, a, b, sag);
+            if (path == null) {
+                path = java.util.List.of(a, b);
             }
+            drawPath(vc, m, path, base);
         }
     }
 
-    /** Extra live parts drawn on the device, in panel coordinates. */
-    protected void renderPanel(T be, PanelDraw d, MultiBufferSource buffers, int light) {
+    private static void drawPath(VertexConsumer vc, Matrix4f m, java.util.List<Vec3> path, Vec3 base) {
+        for (int i = 0; i + 1 < path.size(); i++) {
+            Vec3 p0 = path.get(i).subtract(base), p1 = path.get(i + 1).subtract(base);
+            Vec3 d = p1.subtract(p0);
+            double horizontal = Math.sqrt(d.x * d.x + d.z * d.z);
+            // two crossed ribbons so the cable looks round from every angle
+            Vec3 side = horizontal < 1.0E-4 ? new Vec3(1, 0, 0) : new Vec3(-d.z / horizontal, 0, d.x / horizontal);
+            int shade = (i % 2 == 0) ? 22 : 30;
+            quad(vc, m, p0, p1, side.scale(HALF_WIDTH), shade);
+            quad(vc, m, p0, p1, new Vec3(0, HALF_WIDTH, 0), shade);
+        }
     }
 
     private static Vec3 point(Vec3 a, Vec3 d, double sag, float t) {
