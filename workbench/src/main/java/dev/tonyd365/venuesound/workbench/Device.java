@@ -46,6 +46,11 @@ public final class Device {
         PA_SPEAKER("PA Speaker", NodeKind.SPEAKER, "pa_speaker_lower", "pa_speaker"),
         LINE_ARRAY("Line Array Module", NodeKind.SPEAKER, "speaker", "speaker"),
         CONCERT_SPEAKER("Concert Speaker Stack 4x6", NodeKind.SPEAKER, "concert_c0_l0_d0", "concert_speaker"),
+        GRAPHIC_EQ("Graphic Equalizer", NodeKind.PROCESSOR, "graphic_eq", "graphic_eq"),
+        COMPRESSOR("Compressor / Limiter", NodeKind.PROCESSOR, "compressor", "compressor"),
+        DI_BOX("DI Box", NodeKind.PROCESSOR, "di_box", "di_box"),
+        FLOOR_WEDGE("Floor Wedge Monitor", NodeKind.SPEAKER, "floor_wedge", "floor_wedge"),
+        SUBWOOFER("Subwoofer", NodeKind.SPEAKER, "subwoofer", "subwoofer"),
         CABLE_CLIP("Cable Clip", null, "cable_clip", "cable_clip");
 
         public final String label;

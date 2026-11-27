@@ -58,5 +58,10 @@
   "message.venuesound.clip_need_cable": "先把线插到 OUT 插孔，再依次点线卡让线沿着走。",
   "message.venuesound.clip_added": "线已经过 %s 个线卡。继续点线卡，或点 IN 插孔完成。",
   "message.venuesound.cable_blocked": "这根线会穿过墙。请加一个线卡绕过去。",
-  "block.venuesound.concert_speaker": "大型演唱会音箱（4×6）"
+  "block.venuesound.concert_speaker": "大型演唱会音箱（4×6）",
+  "block.venuesound.graphic_eq": "图示均衡器",
+  "block.venuesound.compressor": "压缩限幅器",
+  "block.venuesound.di_box": "DI 盒",
+  "block.venuesound.floor_wedge": "地板返听音箱",
+  "block.venuesound.subwoofer": "超低音音箱"
 }

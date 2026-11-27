@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "venuesound:block/di_box"
+    },
+    "facing=east": {
+      "model": "venuesound:block/di_box",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "venuesound:block/di_box",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "venuesound:block/di_box",
+      "y": 270
+    }
+  }
+}

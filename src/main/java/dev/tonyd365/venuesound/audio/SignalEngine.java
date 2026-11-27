@@ -90,6 +90,15 @@ public final class SignalEngine<N> {
             NodeKind kind = g.kind(next);
             if (kind == NodeKind.OUTLET && visited.add(g.id(next))) {
                 beforeConsole(g, next, stream, pcm, sink, visited, depth + 1);
+            } else if (kind == NodeKind.PROCESSOR && visited.add(g.id(next))) {
+                float k = g.ampLevel(next);
+                if (k > 0F) {
+                    short[] out = new short[pcm.length];
+                    for (int i = 0; i < pcm.length; i++) {
+                        out[i] = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, pcm[i] * k));
+                    }
+                    beforeConsole(g, next, stream, out, sink, visited, depth + 1);
+                }
             } else if (kind == NodeKind.MIXER && visited.add(g.id(next))) {
                 int slot = g.inputSlot(next, from);
                 if (slot >= 0) {
@@ -141,6 +150,15 @@ public final class SignalEngine<N> {
             case OUTLET -> {
                 for (Edge<N> out : g.outputs(next)) {
                     deliver(g, out, frame, sink, visited, depth + 1);
+                }
+            }
+            case PROCESSOR -> {
+                float level = g.ampLevel(next);
+                if (level > 0F) {
+                    float[] f = scale(frame, level);
+                    for (Edge<N> out : g.outputs(next)) {
+                        deliver(g, out, f, sink, new HashSet<>(visited), depth + 1);
+                    }
                 }
             }
             case AMPLIFIER -> {

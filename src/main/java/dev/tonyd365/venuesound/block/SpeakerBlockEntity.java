@@ -26,6 +26,9 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
 
     @Override
     public String deviceKey() {
+        if (getBlockState().getBlock() instanceof ProSpeakerBlock p) {
+            return p.key;
+        }
         if (getBlockState().getBlock() instanceof ConcertSpeakerBlock) {
             return "concert_speaker";
         }
@@ -78,7 +81,8 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
 
     @Override
     protected RouterState.Node snapshot(ServerLevel level, List<RouterState.Out> outs) {
-        double height = getBlockState().getBlock() instanceof ConcertSpeakerBlock ? 3.0D
+        double height = getBlockState().getBlock() instanceof ProSpeakerBlock p ? p.soundHeight
+                : getBlockState().getBlock() instanceof ConcertSpeakerBlock ? 3.0D
                 : getBlockState().getBlock() instanceof PaSpeakerBlock ? 1.0D : 0.5D;
         return new RouterState.Node(dimPos(), kind(), outs, 0, null, 0F, on ? range : 0, height);
     }

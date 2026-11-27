@@ -52,6 +52,13 @@ public final class Registration {
     public static final SpeakerBlock SPEAKER = new SpeakerBlock(deviceProps());
     public static final PaSpeakerBlock PA_SPEAKER = new PaSpeakerBlock(deviceProps());
     public static final dev.tonyd365.venuesound.block.ConcertSpeakerBlock CONCERT_SPEAKER = new dev.tonyd365.venuesound.block.ConcertSpeakerBlock(deviceProps());
+    public static final dev.tonyd365.venuesound.block.ProcessorBlock GRAPHIC_EQ = new dev.tonyd365.venuesound.block.ProcessorBlock("graphic_eq", deviceProps());
+    public static final dev.tonyd365.venuesound.block.ProcessorBlock COMPRESSOR = new dev.tonyd365.venuesound.block.ProcessorBlock("compressor", deviceProps());
+    public static final dev.tonyd365.venuesound.block.ProcessorBlock DI_BOX = new dev.tonyd365.venuesound.block.ProcessorBlock("di_box", deviceProps());
+    public static final dev.tonyd365.venuesound.block.ProSpeakerBlock FLOOR_WEDGE = new dev.tonyd365.venuesound.block.ProSpeakerBlock("floor_wedge", 0.4D,
+            Block.box(0, 0, 0, 16, 9, 16), deviceProps());
+    public static final dev.tonyd365.venuesound.block.ProSpeakerBlock SUBWOOFER = new dev.tonyd365.venuesound.block.ProSpeakerBlock("subwoofer", 0.5D,
+            Block.box(0, 0, 0, 16, 16, 16), deviceProps());
     public static final dev.tonyd365.venuesound.block.CableClipBlock CABLE_CLIP = new dev.tonyd365.venuesound.block.CableClipBlock(
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.3F).sound(SoundType.METAL).noOcclusion().noCollission());
 
@@ -76,6 +83,11 @@ public final class Registration {
         block("pa_speaker", PA_SPEAKER);
         block("concert_speaker", CONCERT_SPEAKER);
         block("cable_clip", CABLE_CLIP);
+        block("graphic_eq", GRAPHIC_EQ);
+        block("compressor", COMPRESSOR);
+        block("di_box", DI_BOX);
+        block("floor_wedge", FLOOR_WEDGE);
+        block("subwoofer", SUBWOOFER);
 
         Registry.register(BuiltInRegistries.ITEM, VenueSound.id("wireless_mic"), WIRELESS_MIC);
         Registry.register(BuiltInRegistries.ITEM, VenueSound.id("audio_cable"), AUDIO_CABLE);
@@ -84,8 +96,8 @@ public final class Registration {
         SIMPLE_NODE_BE = be("simple_node", FabricBlockEntityTypeBuilder.create(SimpleNodeBlockEntity::new, OUTLET, STAND_MIC).build());
         MEDIA_DECK_BE = be("media_deck", FabricBlockEntityTypeBuilder.create(MediaDeckBlockEntity::new, MEDIA_DECK).build());
         MIXER_BE = be("mixer", FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER).build());
-        AMPLIFIER_BE = be("amplifier", FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER).build());
-        SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER, CONCERT_SPEAKER).build());
+        AMPLIFIER_BE = be("amplifier", FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX).build());
+        SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER).build());
 
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VenueSound.id("main"),
                 FabricItemGroup.builder()
@@ -100,7 +112,12 @@ public final class Registration {
                             output.accept(CABLE_CLIP);
                             output.accept(OUTLET);
                             output.accept(MIXER);
+                            output.accept(DI_BOX);
+                            output.accept(GRAPHIC_EQ);
+                            output.accept(COMPRESSOR);
                             output.accept(AMPLIFIER);
+                            output.accept(FLOOR_WEDGE);
+                            output.accept(SUBWOOFER);
                             output.accept(CONCERT_SPEAKER);
                             output.accept(PA_SPEAKER);
                             output.accept(SPEAKER);

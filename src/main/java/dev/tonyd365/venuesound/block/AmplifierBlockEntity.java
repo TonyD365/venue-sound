@@ -26,12 +26,12 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
 
     @Override
     public String deviceKey() {
-        return "amplifier";
+        return getBlockState().getBlock() instanceof ProcessorBlock p ? p.key : "amplifier";
     }
 
     @Override
     public NodeKind kind() {
-        return NodeKind.AMPLIFIER;
+        return getBlockState().getBlock() instanceof ProcessorBlock ? NodeKind.PROCESSOR : NodeKind.AMPLIFIER;
     }
 
     public boolean isOn() {

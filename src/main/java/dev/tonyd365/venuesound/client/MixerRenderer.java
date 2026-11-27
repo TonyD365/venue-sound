@@ -20,6 +20,8 @@ public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
         for (int i = 0; i < MixerBlockEntity.INPUTS; i++) {
             active |= m.getInput(i) != null;
         }
+        // raised rear jack field
+        d.box(0.4, 35.6, 28.4, 31.9, top, top + 1.2, 0x1C1D20, light);
         for (MixerLayout.Control c : MixerLayout.controls()) {
             double u = c.u(), dd = c.depth();
             switch (c.kind()) {
@@ -69,6 +71,11 @@ public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
                     }
                     d.box(u - 0.22, u + 0.22, dd - 0.22, dd + 0.22, top, top + 0.12, on ? c.color() : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
                 }
+                case JACK -> {
+                    double r = c.w() / 2, h = top + 1.2;
+                    d.box(u - r, u + r, dd - r, dd + r, h, h + 0.15, 0x9AA0A6, light);
+                    d.box(u - r * 0.6, u + r * 0.6, dd - r * 0.6, dd + r * 0.6, h + 0.15, h + 0.18, 0x050506, light);
+                }
                 case DISPLAY -> {
                     double hw = c.w() / 2, hd = c.d() / 2;
                     d.box(u - hw - 0.3, u + hw + 0.3, dd - hd - 0.3, dd + hd + 0.3, top, top + 0.1, 0x111111, light);
@@ -84,9 +91,9 @@ public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
         }
         // strip numbers along the front edge
         for (int i = 0; i < MixerLayout.STRIPS; i++) {
-            d.topText(buffers, MixerLayout.stripName(i), MixerLayout.stripU(i) - 1.4, 31.9, MixerLayout.TOP, 0.55, 0xFFE8B84A);
+            d.topText(buffers, MixerLayout.stripName(i), MixerLayout.stripU(i) - 1.4, 28.9, MixerLayout.TOP + 1.2, 0.5, 0xFFE8B84A);
         }
-        d.topText(buffers, "VENUESOUND  VS-12", 37.6, 31.9, MixerLayout.TOP, 0.75, 0xFFE8B84A);
+        d.topText(buffers, "VENUESOUND  VS-12", 37.6, 31.2, MixerLayout.TOP, 0.75, 0xFFE8B84A);
     }
 
     @Override

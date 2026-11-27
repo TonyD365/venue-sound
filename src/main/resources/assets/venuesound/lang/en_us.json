@@ -58,5 +58,10 @@
   "message.venuesound.clip_need_cable": "Plug a cable into an OUT socket first, then click clips to run it along them.",
   "message.venuesound.clip_added": "Cable runs through %s clip(s). Click more clips, or an IN socket to finish.",
   "message.venuesound.cable_blocked": "The cable would go through a wall. Add a cable clip to route around it.",
-  "block.venuesound.concert_speaker": "Concert Speaker Stack (4×6)"
+  "block.venuesound.concert_speaker": "Concert Speaker Stack (4×6)",
+  "block.venuesound.graphic_eq": "Graphic Equalizer",
+  "block.venuesound.compressor": "Compressor / Limiter",
+  "block.venuesound.di_box": "DI Box",
+  "block.venuesound.floor_wedge": "Floor Wedge Monitor",
+  "block.venuesound.subwoofer": "Subwoofer"
 }

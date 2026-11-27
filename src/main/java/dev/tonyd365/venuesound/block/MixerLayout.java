@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Every control on the 3x2 mixing console, styled after a real 10-channel analogue console:
- * 8 mono strips, 2 stereo strips (ST1 is the built-in USB player) and a master section.
+ * 8 mono strips, 2 stereo strips (9/10 is the built-in USB player) and a master section.
  *
  * Coordinates are panel units (see {@link PanelMath}): u 0-48 across the three blocks from the
  * operator's left, depth 0-32 from the front edge, on the flat top at height {@link #TOP}.
@@ -31,7 +31,7 @@ public final class MixerLayout {
     public static final double FADER_MAX = 10.5;
     public static final double KNOB_R = 0.85;
 
-    public enum Kind { KNOB, FADER, BUTTON, LED, DISPLAY }
+    public enum Kind { KNOB, FADER, BUTTON, LED, DISPLAY, JACK }
 
     /**
      * @param param  the setting this control changes (a key into {@link #defaults()}), or an action id for buttons
@@ -58,7 +58,7 @@ public final class MixerLayout {
     }
 
     public static String stripName(int i) {
-        return i < MONO ? String.valueOf(i + 1) : i == USB_STRIP ? "ST1 USB" : "ST2";
+        return i < MONO ? String.valueOf(i + 1) : i == USB_STRIP ? "9/10 USB" : "11/12";
     }
 
     public static double faderDepth(double value01) {
@@ -90,36 +90,41 @@ public final class MixerLayout {
     }
 
     static {
+        // TH-014 style: raised rear jack field (XLR over 6.35), then GAIN, EQ, sends, PEAK, buttons, fader
         for (int i = 0; i < STRIPS; i++) {
             double u = stripU(i);
-            knob("gain." + i, "GAIN", u, 30.3, 0, 2, 0.1, 1, 0xC0392B);
-            CONTROLS.add(new Control("peak." + i, Kind.LED, "PEAK", u + 1.35, 31.3, 0.5, 0.5, 0, 1, 0, 0xFF3030));
-            knob("high." + i, "HIGH", u, 28.0, -12, 12, 2, 0, 0x2E86C1);
-            knob("mid." + i, "MID", u, 25.8, -12, 12, 2, 0, 0x16A085);
-            knob("low." + i, "LOW", u, 23.6, -12, 12, 2, 0, 0x1F618D);
-            knob("aux1." + i, "AUX1", u, 21.4, 0, 1, 0.1, 0, 0xF1C40F);
-            knob("aux2." + i, "AUX2", u, 19.2, 0, 1, 0.1, 0, 0xE67E22);
-            knob("efx." + i, "EFX", u, 17.0, 0, 1, 0.1, 0, 0xECF0F1);
-            knob("pan." + i, "PAN", u, 14.8, -1, 1, 0.2, 0, 0x95A5A6);
-            button("mute." + i, "MUTE", u, 12.8, 0xE74C3C, true);
+            if (i < MONO) {
+                CONTROLS.add(new Control("jack.xlr." + i, Kind.JACK, "XLR", u, 31.0, 1.6, 1.6, 0, 0, 0, 0x2B2D31));
+            }
+            CONTROLS.add(new Control("jack.trs." + i, Kind.JACK, "LINE", u, 29.4, 1.1, 1.1, 0, 0, 0, 0x2B2D31));
+            knob("gain." + i, "GAIN", u, 27.4, 0, 2, 0.1, 1, 0xD0312B);
+            knob("high." + i, "HI", u, 25.5, -12, 12, 2, 0, 0x2E86C1);
+            knob("mid." + i, "MID", u, 23.7, -12, 12, 2, 0, 0x27AE60);
+            knob("low." + i, "LOW", u, 21.9, -12, 12, 2, 0, 0x1F618D);
+            knob("aux1." + i, "AUX1", u, 20.1, 0, 1, 0.1, 0, 0xF1C40F);
+            knob("aux2." + i, "AUX2", u, 18.3, 0, 1, 0.1, 0, 0xE67E22);
+            knob("efx." + i, "EFX", u, 16.5, 0, 1, 0.1, 0, 0x8E44AD);
+            knob("pan." + i, "PAN", u, 14.7, -1, 1, 0.2, 0, 0xECF0F1);
+            CONTROLS.add(new Control("peak." + i, Kind.LED, "PEAK", u, 13.4, 0.5, 0.5, 0, 1, 0, 0xFF3030));
+            button("mute." + i, "MUTE", u, 12.5, 0xE74C3C, true);
             button("pfl." + i, "PFL", u, 11.4, 0xF39C12, true);
-            fader("fader." + i, stripName(i), u, 1, 0xD9DCE0);
+            fader("fader." + i, stripName(i), u, 1, 0xF2F2F2);
         }
-        // master section
-        CONTROLS.add(new Control("display", Kind.DISPLAY, "USB PLAYER", 42.5, 27.8, 10.0, 5.0, 0, 0, 0, 0x0B2A12));
-        button("usb.prev", "|<", 38.6, 23.6, 0x3A3D42, false);
-        button("usb.play", ">", 41.2, 23.6, 0x2ECC71, false);
-        button("usb.stop", "[]", 43.8, 23.6, 0x3A3D42, false);
-        button("usb.next", ">|", 46.4, 23.6, 0x3A3D42, false);
-        knob("efx.m", "EFX RTN", 39.0, 20.6, 0, 1, 0.1, 0.5, 0xECF0F1);
-        knob("efx.time", "DELAY", 41.6, 20.6, 0, 1, 0.1, 0.4, 0xECF0F1);
-        knob("phones", "PHONES", 46.4, 20.6, 0, 1, 0.1, 0.5, 0x95A5A6);
+        // master section: LCD (USB player) flanked by two knobs, button row, meter column, coloured faders
+        CONTROLS.add(new Control("display", Kind.DISPLAY, "USB PLAYER", 42.5, 27.6, 7.0, 4.4, 0, 0, 0, 0x0B2A12));
+        knob("efx.time", "DELAY", 37.6, 27.6, 0, 1, 0.1, 0.4, 0x8E44AD);
+        knob("phones", "PHONES", 47.4, 27.6, 0, 1, 0.1, 0.5, 0xECF0F1);
+        button("usb.prev", "|<", 38.6, 23.8, 0x3A3D42, false);
+        button("usb.play", ">", 41.2, 23.8, 0x2ECC71, false);
+        button("usb.stop", "[]", 43.8, 23.8, 0x3A3D42, false);
+        button("usb.next", ">|", 46.4, 23.8, 0x3A3D42, false);
         for (int s = 0; s < 8; s++) {
-            CONTROLS.add(new Control("meter.l." + s, Kind.LED, "", 42.75, 11.0 + s * 0.9, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
-            CONTROLS.add(new Control("meter.r." + s, Kind.LED, "", 43.45, 11.0 + s * 0.9, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
+            CONTROLS.add(new Control("meter.l." + s, Kind.LED, "", 42.75, 11.0 + s * 1.1, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
+            CONTROLS.add(new Control("meter.r." + s, Kind.LED, "", 43.45, 11.0 + s * 1.1, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
         }
-        fader("aux1.m", "AUX1", 38.4, 1, 0x2E86C1);
-        fader("aux2.m", "AUX2", 40.7, 1, 0x2E86C1);
+        fader("efx.m", "EFX", 37.4, 0.5, 0xF1C40F);
+        fader("aux1.m", "AUX1", 39.3, 1, 0x2E86C1);
+        fader("aux2.m", "AUX2", 41.2, 1, 0x2E86C1);
         fader("main.l", "L", 45.1, 1, 0xD0312B);
         fader("main.r", "R", 47.0, 1, 0xD0312B);
     }
