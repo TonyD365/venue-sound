@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Renders the real block models (the JSON files in assets/venuesound/models/block) to docs/models.png.
+"""Renders the real block models (the JSON files in assets/venuesound/models/block) to docs/images/models.png.
 
 A small software renderer: every element of a model is drawn face by face from its own geometry and UVs,
 seen from the front (north), a little from above and from the right, the way you see a device you face in game.
@@ -114,6 +114,6 @@ for i, (name, im) in enumerate(cells):
     im2 = im.resize((max(1, int(im.width * sc)), max(1, int(im.height * sc))), Image.NEAREST)
     sheet.alpha_composite(im2, (cx + (CW - im2.width) // 2, cy + 330 - im2.height))
     d.multiline_text((cx + CW // 2, cy + 345), name, fill=(240, 240, 240), font=font, anchor="ma", align="center")
-(ROOT / "docs").mkdir(exist_ok=True)
-sheet.save(ROOT / "docs/models.png")
-print("wrote docs/models.png")
+(ROOT / "docs/images").mkdir(exist_ok=True)
+sheet.save(ROOT / "docs/images/models.png")
+print("wrote docs/images/models.png")

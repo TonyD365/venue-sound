@@ -54,7 +54,8 @@ export const VERSION_ASK =
 /** Pull request labels by changed file. */
 export const FILE_LABELS: [string, RegExp][] = [
   ["ci", /^\.github\//],
-  ["documentation", /^[^/]+\.md$|^docs\//],
+  ["documentation", /^[^/]+\.md$|^docs\/|^site\/|^scripts\/sync_wiki\.py$/],
+  ["workbench", /^workbench\//],
   ["dependencies", /^(build\.gradle|gradle\.properties|settings\.gradle|gradle\/)/],
   ["assets", /^src\/main\/resources\/assets\/|^tools\//],
   ["bot", /^supabase\//],

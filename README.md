@@ -1,112 +1,155 @@
 <p align="center">
-  <img src="docs/banner.png" alt="VenueSound" width="100%">
+  <img src="docs/images/banner.png" alt="VenueSound: a real venue sound system for Minecraft" width="820">
 </p>
 
 <p align="center">
-  <a href="https://github.com/TonyD365/venue-sound/actions/workflows/ci.yml"><img src="https://github.com/TonyD365/venue-sound/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/TonyD365/venue-sound/actions/workflows/security.yml"><img src="https://github.com/TonyD365/venue-sound/actions/workflows/security.yml/badge.svg" alt="Security"></a>
-  <img src="https://img.shields.io/badge/Minecraft-1.20.1-62B47A" alt="Minecraft 1.20.1">
-  <img src="https://img.shields.io/badge/loader-Fabric-DBD0B4" alt="Fabric">
-  <img src="https://img.shields.io/badge/needs-Simple%20Voice%20Chat-4C8BF5" alt="Simple Voice Chat">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/TonyD365/venue-sound" alt="MIT license"></a>
+  <a href="https://github.com/TonyD365/venue-sound/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/TonyD365/venue-sound?color=e8b84a&include_prereleases"></a>
+  <a href="https://github.com/TonyD365/venue-sound/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/TonyD365/venue-sound/total?color=8a5cff"></a>
+  <a href="https://github.com/TonyD365/venue-sound/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/TonyD365/venue-sound/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Minecraft 1.20.1" src="https://img.shields.io/badge/Minecraft-1.20.1-62B47A">
+  <img alt="Fabric" src="https://img.shields.io/badge/loader-Fabric-DBD0B4">
+  <img alt="Needs Simple Voice Chat" src="https://img.shields.io/badge/needs-Simple%20Voice%20Chat-4C8BF5">
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/github/license/TonyD365/venue-sound?color=22d3ee"></a>
 </p>
 
-<p align="center"><b>A real venue sound system for Minecraft.</b><br>
-Wireless and wired microphones, a media player, wall outlets, a mixing console, power amplifiers and PA speakers,<br>
-all cabled together with wires you can see — built on Simple Voice Chat.</p>
+<p align="center">
+  <a href="https://github.com/TonyD365/venue-sound/releases/latest"><b>⬇️ Download</b></a> ·
+  <a href="https://tonyd365.github.io/venue-sound/">Website</a> ·
+  <a href="docs/guide/README.md">User guide</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#the-devices">Devices</a> ·
+  <a href="#faq">FAQ</a> ·
+  <a href="CHANGELOG.md">What's new</a> ·
+  <a href="README.zh-CN.md">中文</a> ·
+  <a href="https://github.com/TonyD365/venue-sound/issues/new/choose">Report a problem</a>
+</p>
 
-<p align="center"><a href="#中文说明">中文说明 ↓</a></p>
+**VenueSound puts a real concert sound system into Minecraft.** Sing into a wireless mic, and
+your voice goes through a receiver, along cables you can see, into a mixing console with gain,
+EQ, aux sends and effects, through a power amplifier and out of the PA speakers, heard by every
+player from where they stand. Every knob, fader, switch and socket is used right on the model,
+with a right-click or the mouse wheel. Built on [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat).
 
----
+<p align="center">
+  <img src="docs/images/console.jpg" alt="The VS-12 mixing console in game: ten channel strips with gain, EQ, aux, effects and pan knobs, mute buttons and faders, and the master section with the USB player display" width="860">
+  <br><sub>The VS-12 console in game. Every control works: hold right-click on a fader and move the crosshair, or scroll.</sub>
+</p>
+
+**Three steps:** 1. install Fabric API, Simple Voice Chat and VenueSound · 2. place a console, an
+amplifier and two speakers and cable them up · 3. hold a wireless mic on the receiver's channel
+and talk.
+
+## Why VenueSound
+
+Theatres, concerts and talent shows are some of the most popular things to build in Minecraft,
+but the sound has always been the weak part: voice chat fades out a few blocks from the stage,
+and nothing behaves like real audio equipment. VenueSound makes the sound system as real as the
+building around it, so a show in Minecraft is run the way a real one is: patch the inputs, set
+the gain, ride the faders, send monitors to the stage.
 
 ## The signal chain
 
-It works the way a theatre does: every sound starts at a source, runs through cables to the console, then to the amplifiers and out of the speakers.
-
 ```
-🎤 Wireless Mic ─radio─▶ 📡 Receiver ─┐
-🎙️ Stand Mic ─────────────────────────┤──cable──▶ 🔌 Outlets ──▶ 🎚️ Mixing Console ──▶ 🔌 ──▶ 🔊 Amplifier ──▶ 🔈 PA Speakers
-💿 Media Deck ────────────────────────┘
+🎤 Wireless / headset / lavalier mic ─radio─▶ 📡 Receiver ─┐
+🎙️ Stand, gooseneck and choir mics ───────────────────────┤        🎛️ EQ · compressor · effects · crossover
+💿 Media deck · 📺 Video capture ──────────────────────────┤             │
+🔌 Stage box ══ multicore snake ═══════════════════════════┴──▶ 🎚️ Console ──▶ 🔊 Amplifier ──▶ 🔈 Speakers
+                                                                      │ AUX ──▶ wedges · in-ear monitors
 ```
 
-<p align="center"><img src="docs/models.png" alt="The devices" width="100%"></p>
+Signal only flows along cables you plug in, socket to socket, and every device is used directly
+on its model. Full details: [signal chain guide](docs/guide/signal-chain.md).
 
-| Device | What it does | How to use it |
-|---|---|---|
-| 🎤 **Wireless Microphone** | Transmits your voice while you hold it | Right-click: channel 1–8 · Sneak + right-click: mute |
-| 📡 **Wireless Receiver** | Picks up wireless mics on its channel within 128 blocks | Right-click: channel |
-| 🎙️ **Stand Microphone** | Wired mic on a stand: picks up anyone talking within 3 blocks | Cable it to a console |
-| 💿 **Media Deck** | Plays `.mp3` / `.wav` files from the server's `venuesound_media` folder into the cables | Right-click: pick a track, play, stop, loop |
-| 🔌 **Wall Outlet** | A patch point on the wall or floor: chain outlets to run cables further, or split one signal into up to 8 | Place on a wall |
-| 🎚️ **Mixing Console** | 8 inputs, each with a fader (0–200 %), mute and a label showing what is plugged in, plus a master fader | Right-click: open the console |
-| 🔊 **Power Amplifier** | Sits between the console and the speakers | Right-click: output level · Sneak + right-click (empty hand): power |
-| 🔈 **PA Speaker** | Two-block-tall cabinet: two woofers and a horn | Right-click: coverage 16–128 blocks |
-| 🔈 **Line Array Module** | Compact speaker to stack or hang | Right-click: coverage |
-| 〰️ **Audio Cable** | Click where the signal comes **from**, then where it goes **to**. Each cable is drawn in the world and reaches 32 blocks | Sneak-click a device: unplug its cables |
+## The devices
 
-**What can be cabled to what**
+<p align="center"><img src="docs/images/models.png" alt="The VenueSound devices" width="100%"></p>
 
-| From | To |
+| Group | Devices |
 |---|---|
-| Receiver, Stand Mic, Media Deck | Outlet, Console |
-| Outlet | Outlet, Console, Amplifier, Speaker |
-| Console | Outlet, Amplifier, Speaker (powered speakers) |
-| Amplifier | Outlet, Speaker |
+| **Sources** | Wireless mic (16 channels), headset and lavalier mics you wear, stand, gooseneck podium and hanging choir mics, media deck (mp3/wav), video capture zone for WATERFrAMES screens |
+| **Mixing** | VS-12 console (8 mono + 2 stereo, 3×2 blocks), VS-24 console (16 mono + 4 stereo, 5×2 blocks): gain, peak LED, HI/MID/LOW EQ, AUX 1/2, EFX, pan, mute, PFL, faders, USB player, meters |
+| **Rack** | Power amplifier, graphic EQ, compressor/limiter, effects processor, crossover, power sequencer, rack cabinet |
+| **Speakers** | Line array module, flown line array with truss point, PA cabinet, 4×6 concert stack, floor wedge, subwoofer, in-ear monitor transmitter and earpiece |
+| **Cabling** | XLR mic cable, speaker cable, multicore snake, stage box (8/16 ch), wall outlet, DI box, cable clips, cable reel |
 
-Every player can also set the volume of all PA speakers under **VenueSound PA** in Simple Voice Chat's volume settings.
+Every device: [device guide](docs/guide/devices.md).
+
+<table>
+  <tr>
+    <td><img src="docs/images/vs24.jpg" alt="The VS-24 console"></td>
+    <td><img src="docs/images/amplifier-front.jpg" alt="The power amplifier's front panel"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>VS-24: twenty channel strips</sub></td>
+    <td align="center"><sub>Power amplifier: power switch and level knob</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/pro-gear-1.jpg" alt="Rack processors and microphones"></td>
+    <td><img src="docs/images/console-front.jpg" alt="The console's input sockets on its front side"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Rack gear and microphones</sub></td>
+    <td align="center"><sub>Input (blue) and output (red) sockets on the console's front</sub></td>
+  </tr>
+</table>
 
 ## Quick start
 
-1. Install **Fabric API** and **Simple Voice Chat**, then put the VenueSound jar in `mods`.
-2. Place a **Mixing Console**, a **Power Amplifier** and two **PA Speakers**, one on each side of the stage.
-3. With the **Audio Cable**: console → amplifier, then amplifier → each speaker.
-4. Place a **Wireless Receiver** and cable it receiver → console (it lands on the first free input).
-5. Hold a **Wireless Microphone** on the same channel as the receiver and talk. Open the console to mix.
+1. Install **Fabric Loader** for Minecraft 1.20.1, **Fabric API** and **Simple Voice Chat**, then
+   put the [VenueSound jar](https://github.com/TonyD365/venue-sound/releases/latest) in `mods/`.
+2. Place a **mixing console**, a **power amplifier** and two **PA speakers**.
+3. With an **audio cable**: right-click the console's **MAIN L** socket, then the amplifier's
+   **IN A**; **MAIN R** → **IN B**; amplifier **OUT 1** → left speaker's **INPUT**, **OUT 3** →
+   right speaker's **INPUT**.
+4. Place a **wireless receiver** and cable its **OUT** to the console's **IN 1**.
+5. Hold a **wireless microphone** on the receiver's channel and talk. Push fader 1 up.
 
-For music, put `.mp3` or `.wav` files in `venuesound_media/` (next to `mods/`; on a server, in the server folder), cable a **Media Deck** to the console and press Play.
+Step by step with pictures: [getting started](docs/guide/getting-started.md).
 
-## Good to know
+## The Workbench
 
-- **Screens from other mods** (for example WATERFrAMES) play their sound on each player's own computer, so it cannot be cabled into the console. Use the Media Deck for the soundtrack instead.
-- Tracks longer than 4 minutes are cut at 4 minutes.
-- Everything runs on the server; players only need the mod to see the blocks and cables.
+Not in Minecraft right now? **VenueSound Workbench** is a small desktop app with the same
+devices, controls and signal engine. Build a system, run cables, drag faders, and hear it: your
+computer's microphone and music files go through the console and out of the speakers in stereo,
+from where you stand.
+
+<p align="center"><img src="docs/images/workbench.png" alt="VenueSound Workbench" width="100%"></p>
+
+```bash
+java -jar venuesound-workbench.jar
+```
+
+Guide: [Workbench](docs/guide/workbench.md).
+
+## FAQ
+
+**Do other players need the mod?** Yes, on both client and server (they see the devices and
+cables), together with Simple Voice Chat.
+
+**Can screens from WATERFrAMES play through the speakers?** Their volume can: put them in a
+video capture zone and their sound follows the console's faders and mutes and is loud near the
+speakers. Their audio is played by each player's own computer outside Minecraft's sound engine,
+so it can't come from the speakers' direction.
+
+**A cable is refused with "would go through a wall".** Cables rest on low obstacles but can't
+pass through walls. Run the cable along **cable clips** around the wall.
+
+**I can't hear anything.** Check the chain in order: mic channel = receiver channel, receiver →
+console input, that strip's fader and the MAIN faders up, mute off, amplifier on, speakers on,
+you within the speakers' coverage. More: [troubleshooting](docs/guide/troubleshooting.md).
 
 ## Building
 
-You need Java 17.
+Java 17:
 
 ```bash
-./gradlew build
+./gradlew build            # the mod: build/libs/
+./gradlew :workbench:jar   # the Workbench: workbench/build/libs/
+./gradlew runClient -Pselftest=true   # places every device in a test world and saves screenshots
 ```
 
-The jar is written to `build/libs/`. Textures and the images in `docs/` are generated by the scripts in `tools/`.
-
-## Contributing
-
-Bug reports, ideas and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). A bot account helps on pull requests and issues (see the bot section there), and security problems go through [SECURITY.md](SECURITY.md).
-
----
-
-## 中文说明
-
-**VenueSound 场馆音响**：一套跟真实剧场一样的扩声系统。无线麦、立式有线麦、媒体播放机、墙面接口、调音台、功放机、PA 大音响，全部用**看得见的音频线**连起来。基于 Simple Voice Chat。
-
-| 设备 | 作用 | 用法 |
-|---|---|---|
-| 🎤 无线麦克风 | 拿在手上说话即可发射 | 右键：切换通道 1–8 · 潜行 + 右键：静音 |
-| 📡 无线接收器 | 接收 128 格内同通道的无线麦 | 右键：切换通道 |
-| 🎙️ 立式有线麦克风 | 3 格内有人说话就会拾音 | 用线接到调音台 |
-| 💿 媒体播放机 | 播放 `venuesound_media` 文件夹里的 mp3 / wav | 右键：选曲、播放、停止、循环 |
-| 🔌 墙面接口 | 中转、延长、一分多（最多 8 路） | 贴在墙上 |
-| 🎚️ 调音台 | 8 路推子（0–200%）、静音、每路显示接的是什么、总音量 | 右键打开 |
-| 🔊 功放机 | 调音台和音箱之间 | 右键：输出档位 · 空手潜行 + 右键：电源 |
-| 🔈 大型 PA 音箱 | 两格高，两个低音 + 一个号角 | 右键：覆盖范围 16–128 格 |
-| 🔈 线阵音箱模块 | 小型音箱，可叠放或吊挂 | 右键：覆盖范围 |
-| 〰️ 音频线 | 先点信号**来源**，再点信号**去向**；每根最长 32 格 | 潜行点击设备：拔线 |
-
-**快速开始**：调音台 → 功放 → 两个 PA 音箱接好；接收器 → 调音台；拿起无线麦（通道和接收器一致）说话即可。放音乐：把 mp3 放进 `venuesound_media` 文件夹，媒体播放机接到调音台，点播放。
-
-**注意**：WATERFrAMES 等屏幕模组的声音是在每个玩家自己电脑上播放的，接不进调音台，请用媒体播放机放配乐。
+Textures and the images in `docs/` are generated by the scripts in `tools/`. Contributions are
+welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Renders docs/banner.png: a stage with two PA cabinets, a console and the project name."""
+"""Renders docs/images/banner.png: a stage with two PA cabinets, a console and the project name."""
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
@@ -38,5 +38,5 @@ except OSError:
 d.text((W // 2, 120), "VenueSound", fill=(255, 255, 255), font=big, anchor="mm")
 d.text((W // 2, 205), "mics · receivers · mixing console · amplifiers · PA speakers", fill=(232, 184, 74), font=small, anchor="mm")
 d.text((W // 2, 245), "场馆扩声系统 · Minecraft 1.20.1 Fabric · Simple Voice Chat", fill=(200, 200, 200), font=small, anchor="mm")
-img.convert("RGB").save(ROOT / "docs/banner.png", optimize=True)
-print("wrote docs/banner.png")
+img.convert("RGB").save(ROOT / "docs/images/banner.png", optimize=True)
+print("wrote docs/images/banner.png")

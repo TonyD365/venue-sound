@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VenueSound — a real venue sound system for Minecraft</title>
+<meta name="description" content="Wireless mics, mixing consoles, amplifiers and PA speakers for Minecraft 1.20.1 (Fabric), built on Simple Voice Chat. Every knob, fader and socket works on the model.">
+<meta property="og:title" content="VenueSound">
+<meta property="og:description" content="A real venue sound system for Minecraft.">
+<meta property="og:image" content="https://tonyd365.github.io/venue-sound/images/banner.png">
+<link rel="icon" href="images/icon.png">
+<style>
+  :root { --bg:#111214; --panel:#1c1e22; --gold:#e8b84a; --text:#e9e9ea; --dim:#9aa0a6; --line:#2b2e33; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:17px/1.6 -apple-system, "Segoe UI", "PingFang SC", sans-serif; }
+  a { color:var(--gold); }
+  header { text-align:center; padding:28px 20px 10px; }
+  header img.banner { width:min(980px,100%); border-radius:12px; }
+  nav { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin:14px 0; }
+  .cta { display:inline-block; background:var(--gold); color:#111; font-weight:700; padding:14px 26px; border-radius:10px; text-decoration:none; margin:10px; }
+  .cta.alt { background:transparent; color:var(--gold); border:2px solid var(--gold); }
+  main { max-width:1060px; margin:0 auto; padding:0 20px 60px; }
+  h2 { color:var(--gold); margin-top:56px; }
+  .lead { font-size:20px; text-align:center; max-width:820px; margin:10px auto; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; }
+  figure { margin:0; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  figure img { width:100%; display:block; }
+  figcaption { padding:10px 14px; color:var(--dim); font-size:15px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px; }
+  .card b { color:var(--gold); }
+  pre { background:#0b0c0d; border:1px solid var(--line); border-radius:10px; padding:16px; overflow:auto; font-size:14px; }
+  ol li { margin:6px 0; }
+  footer { text-align:center; color:var(--dim); padding:30px; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+<header>
+  <img class="banner" src="images/banner.png" alt="VenueSound">
+  <nav>
+    <a href="https://github.com/TonyD365/venue-sound/releases/latest">Download</a>
+    <a href="#devices">Devices</a>
+    <a href="#start">Quick start</a>
+    <a href="#workbench">Workbench</a>
+    <a href="https://github.com/TonyD365/venue-sound/wiki">Guide</a>
+    <a href="https://github.com/TonyD365/venue-sound">GitHub</a>
+    <a href="https://github.com/TonyD365/venue-sound/blob/main/README.zh-CN.md">中文</a>
+  </nav>
+</header>
+<main>
+  <p class="lead"><b>A real concert sound system in Minecraft.</b> Wireless mics, mixing consoles with gain, EQ,
+    aux sends and effects, power amplifiers and PA speakers, cabled socket to socket — and every knob,
+    fader and switch works right on the model. Minecraft 1.20.1 · Fabric · Simple Voice Chat.</p>
+  <p style="text-align:center">
+    <a class="cta" href="https://github.com/TonyD365/venue-sound/releases/latest">⬇ Download VenueSound</a>
+    <a class="cta alt" href="https://github.com/TonyD365/venue-sound/wiki/Getting-started">Getting started</a>
+  </p>
+  <figure><img src="images/console.jpg" alt="The VS-12 console in game"><figcaption>The VS-12 mixing console in game: ten channel strips and a master section with a USB player.</figcaption></figure>
+
+  <h2 id="devices">Devices</h2>
+  <div class="cards">
+    <div class="card"><b>Sources</b><br>Wireless mic (16 channels), headset and lavalier mics you wear, stand, gooseneck and choir mics, media deck, video capture for WATERFrAMES screens.</div>
+    <div class="card"><b>Consoles</b><br>VS-12 (8 + 2 stereo, 3×2 blocks) and VS-24 (16 + 4, 5×2 blocks): gain, 3-band EQ, AUX, effects, pan, mute, faders, meters.</div>
+    <div class="card"><b>Rack</b><br>Power amplifier, graphic EQ, compressor, effects processor, crossover, power sequencer, rack cabinet.</div>
+    <div class="card"><b>Speakers</b><br>Line arrays (also flown from trusses), PA cabinets, a 4×6 concert stack, floor wedges, subwoofers, in-ear monitors.</div>
+    <div class="card"><b>Cabling</b><br>XLR, speaker cable, multicore snake with 8/16-channel stage boxes, wall outlets, DI box, cable clips. Cables can't go through walls.</div>
+  </div>
+  <div class="grid" style="margin-top:18px">
+    <figure><img src="images/vs24.jpg" alt="VS-24 console"><figcaption>VS-24: twenty channel strips.</figcaption></figure>
+    <figure><img src="images/console-front.jpg" alt="Console sockets"><figcaption>Inputs (blue) and outputs (red) on the console's front.</figcaption></figure>
+    <figure><img src="images/amplifier-front.jpg" alt="Amplifier"><figcaption>Power amplifier: power rocker and level knob.</figcaption></figure>
+    <figure><img src="images/pro-gear-1.jpg" alt="Rack gear and mics"><figcaption>Rack gear and microphones.</figcaption></figure>
+  </div>
+  <figure style="margin-top:18px"><img src="images/models.png" alt="All device models"><figcaption>The device models.</figcaption></figure>
+
+  <h2 id="start">Quick start</h2>
+  <ol>
+    <li>Install Fabric Loader for Minecraft 1.20.1, Fabric API and Simple Voice Chat, and put VenueSound in <code>mods/</code>.</li>
+    <li>Place a mixing console, a power amplifier and two PA speakers.</li>
+    <li>With an audio cable: console <b>MAIN L → IN A</b>, <b>MAIN R → IN B</b> on the amplifier; amplifier <b>OUT 1</b> and <b>OUT 3</b> → each speaker's <b>INPUT</b>.</li>
+    <li>Cable a wireless receiver's <b>OUT</b> to console <b>IN 1</b>.</li>
+    <li>Hold a wireless mic on the receiver's channel and talk. Push the faders up.</li>
+  </ol>
+
+  <h2 id="workbench">Workbench</h2>
+  <p>Not in Minecraft? The Workbench desktop app has the same devices, controls and signal engine. Build a system,
+    run cables, drag faders — and hear it from your computer's microphone and music files, in stereo.</p>
+  <figure><img src="images/workbench.png" alt="VenueSound Workbench"><figcaption>VenueSound Workbench.</figcaption></figure>
+  <pre>java -jar venuesound-workbench.jar</pre>
+</main>
+<footer>VenueSound · MIT licence · <a href="https://github.com/TonyD365/venue-sound">GitHub</a> · <a href="https://github.com/TonyD365/venue-sound/issues/new/choose">Report a problem</a></footer>
+</body>
+</html>
