@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "venuesound:block/mixer"
+    "facing=north,part=left": {
+      "model": "venuesound:block/mixer_left"
     },
-    "facing=east": {
-      "model": "venuesound:block/mixer",
+    "facing=north,part=right": {
+      "model": "venuesound:block/mixer_right"
+    },
+    "facing=east,part=left": {
+      "model": "venuesound:block/mixer_left",
       "y": 90
     },
-    "facing=south": {
-      "model": "venuesound:block/mixer",
+    "facing=east,part=right": {
+      "model": "venuesound:block/mixer_right",
+      "y": 90
+    },
+    "facing=south,part=left": {
+      "model": "venuesound:block/mixer_left",
       "y": 180
     },
-    "facing=west": {
-      "model": "venuesound:block/mixer",
+    "facing=south,part=right": {
+      "model": "venuesound:block/mixer_right",
+      "y": 180
+    },
+    "facing=west,part=left": {
+      "model": "venuesound:block/mixer_left",
+      "y": 270
+    },
+    "facing=west,part=right": {
+      "model": "venuesound:block/mixer_right",
       "y": 270
     }
   }

@@ -42,6 +42,56 @@ public class MediaDeckBlockEntity extends AudioNodeBlockEntity {
         MediaPlayback.get().setLoop(dimPos(), loop);
     }
 
+    /** A front-panel button: prev, play, stop, next or loop. */
+    public void press(String button) {
+        switch (button) {
+            case "prev", "next" -> {
+                java.util.List<String> tracks = MediaPlayback.listTracks();
+                if (tracks.isEmpty()) {
+                    return;
+                }
+                int i = Math.max(0, tracks.indexOf(track));
+                if (tracks.contains(track)) {
+                    i = Math.floorMod(i + ("next".equals(button) ? 1 : -1), tracks.size());
+                }
+                boolean wasPlaying = level instanceof ServerLevel && MediaPlayback.get().isPlaying(dimPos());
+                setTrack(tracks.get(i));
+                if (wasPlaying) {
+                    play();
+                }
+            }
+            case "play" -> {
+                if (track.isEmpty()) {
+                    java.util.List<String> tracks = MediaPlayback.listTracks();
+                    if (!tracks.isEmpty()) {
+                        setTrack(tracks.get(0));
+                    }
+                }
+                play();
+                setPlayingFlag(true);
+            }
+            case "stop" -> {
+                stop();
+                setPlayingFlag(false);
+            }
+            case "loop" -> setLoop(!loop);
+            default -> {
+            }
+        }
+    }
+
+    /** Whether the deck shows as playing on clients (the display and the play LED). */
+    private boolean playing;
+
+    public boolean isPlayingShown() {
+        return playing;
+    }
+
+    private void setPlayingFlag(boolean value) {
+        playing = value;
+        changed();
+    }
+
     public void play() {
         if (level instanceof ServerLevel && !track.isEmpty()) {
             MediaPlayback.get().play(dimPos(), track, loop);
@@ -67,6 +117,7 @@ public class MediaDeckBlockEntity extends AudioNodeBlockEntity {
         super.saveAdditional(tag);
         tag.putString("Track", track);
         tag.putBoolean("Loop", loop);
+        tag.putBoolean("Playing", playing);
     }
 
     @Override
@@ -74,5 +125,6 @@ public class MediaDeckBlockEntity extends AudioNodeBlockEntity {
         super.load(tag);
         track = tag.getString("Track");
         loop = tag.getBoolean("Loop");
+        playing = tag.getBoolean("Playing");
     }
 }

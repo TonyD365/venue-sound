@@ -20,6 +20,7 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
 
     private final float[] gains = new float[INPUTS];
     private final boolean[] mutes = new boolean[INPUTS];
+    private final float[] trims = new float[INPUTS];
     private final BlockPos[] inputs = new BlockPos[INPUTS];
     private float master = 1.0F;
 
@@ -27,6 +28,7 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
         super(Registration.MIXER_BE, pos, state);
         for (int i = 0; i < INPUTS; i++) {
             gains[i] = 1.0F;
+            trims[i] = 1.0F;
         }
     }
 
@@ -41,6 +43,17 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
 
     public boolean isMuted(int input) {
         return mutes[input];
+    }
+
+    /** Input trim (the knob above each mute button), 0-2. */
+    public float getTrim(int input) {
+        return trims[input];
+    }
+
+    /** Turns a trim knob one 10 % step up or down. */
+    public void stepTrim(int input, int direction) {
+        trims[input] = Math.max(0F, Math.min(MAX_GAIN, Math.round((trims[input] + direction * 0.1F) * 10F) / 10F));
+        changed();
     }
 
     public float getMaster() {
@@ -105,7 +118,7 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
         for (int i = 0; i < INPUTS; i++) {
             in[i] = inputs[i] == null ? null : new DimPos(level.dimension(), inputs[i]);
         }
-        RouterState.Mixer mixer = new RouterState.Mixer(gains.clone(), mutes.clone(), master, in);
+        RouterState.Mixer mixer = new RouterState.Mixer(gains.clone(), trims.clone(), mutes.clone(), master, in);
         return new RouterState.Node(dimPos(), kind(), outs, 0, mixer, 0F, 0, 0.5D);
     }
 
@@ -115,6 +128,7 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
         for (int i = 0; i < INPUTS; i++) {
             tag.putFloat("Gain" + i, gains[i]);
             tag.putBoolean("Mute" + i, mutes[i]);
+            tag.putFloat("Trim" + i, trims[i]);
             if (inputs[i] != null) {
                 tag.putLong("Input" + i, inputs[i].asLong());
             }
@@ -128,6 +142,7 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
         for (int i = 0; i < INPUTS; i++) {
             gains[i] = tag.contains("Gain" + i) ? tag.getFloat("Gain" + i) : 1.0F;
             mutes[i] = tag.getBoolean("Mute" + i);
+            trims[i] = tag.contains("Trim" + i) ? tag.getFloat("Trim" + i) : 1.0F;
             inputs[i] = tag.contains("Input" + i) ? BlockPos.of(tag.getLong("Input" + i)) : null;
         }
         master = tag.contains("Master") ? tag.getFloat("Master") : 1.0F;

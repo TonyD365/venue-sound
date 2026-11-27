@@ -233,3 +233,78 @@ rect(side, 6, 7, 9, 7, hexc("5a5f66"))
 side.save(BLOCK / "pa_side.png")
 pt = base(hexc("1c1e22")); rect(pt, 6, 6, 9, 9, hexc("7f8c8d")); pt.save(BLOCK / "pa_top.png")   # pole mount
 print("v0.2 textures written")
+
+# ================================================================== v0.3 control surfaces
+# Layout must match block/MixerLayout.java (panel units: u across both halves, depth from front).
+R = 4  # texture pixels per panel unit on the 64x64 console top
+
+def strip_u(i):
+    return 2.5 + 3.0 * i
+
+def console_top(half):
+    img = Image.new("RGBA", (64, 64), hexc("23262b"))
+    p = img.load()
+    def put(u, d, c):           # u in console units (0-32), d depth
+        lu = u - 16 * half
+        if 0 <= lu < 16 and 0 <= d < 16:
+            x = int((16 - lu) * R) - 1
+            y = int(d * R)
+            if 0 <= x < 64 and 0 <= y < 64:
+                p[x, y] = c
+    def fill(u0, u1, d0, d1, c):
+        uu = u0
+        while uu < u1:
+            dd = d0
+            while dd < d1:
+                put(uu, dd, c)
+                dd += 1 / R
+            uu += 1 / R
+    centers = [strip_u(i) for i in range(8)] + [28.5]
+    for i, cu in enumerate(centers):
+        fill(cu - 1.45, cu + 1.45, 0.3, 11.95, hexc("2b2e33") if i % 2 == 0 else hexc("272a2f"))   # strip panel
+        fill(cu - 0.12, cu + 0.12, 1.0, 7.4, hexc("0a0a0b"))                                       # fader slot
+        for k in range(7):                                                                         # scale ticks
+            dd = 1.2 + k * 1.0
+            fill(cu - 0.9, cu - 0.45, dd, dd + 0.12, hexc("6b7178"))
+        fill(cu + 0.45, cu + 1.1, 4.17, 4.3, hexc("e8b84a"))                                     # unity mark
+        if i < 8:
+            fill(cu - 0.75, cu + 0.75, 7.85, 9.25, hexc("1a1b1e"))                                 # mute well
+            fill(cu - 1.0, cu + 1.0, 9.6, 11.4, hexc("1a1b1e"))                                    # knob well
+            for n in range(i + 1):                                                                 # channel number dots
+                fill(cu - 1.2 + n * 0.3, cu - 1.05 + n * 0.3, 0.45, 0.6, hexc("c9cdd2"))
+    fill(25.4, 31.6, 0.3, 11.95, hexc("2e261c"))                                                   # master section
+    fill(28.38, 28.62, 1.0, 7.4, hexc("0a0a0b"))
+    fill(25.9, 26.7, 8.5, 11.4, hexc("111111"))                                                    # meter bezel
+    fill(27.2, 31.2, 8.4, 11.6, hexc("0b2a12"))                                                    # screen
+    fill(27.5, 30.9, 9.0, 9.2, hexc("3ddc84")); fill(27.5, 29.6, 9.8, 10.0, hexc("3ddc84"))
+    fill(25.5, 31.5, 0.4, 0.7, hexc("e8b84a"))                                                     # brand strip
+    return img
+
+console_top(0).save(BLOCK / "console_top_left.png")
+console_top(1).save(BLOCK / "console_top_right.png")
+
+jack = Image.new("RGBA", (16, 16), hexc("1c1e22"))
+pj = jack.load()
+for x in range(1, 15, 3):                         # XLR / jack inputs on the raised back panel
+    for y in (4, 10):
+        for dx in range(2):
+            for dy in range(2):
+                pj[x + dx, y + dy] = hexc("0a0a0b")
+        pj[x, y] = hexc("7f8c8d")
+for x in range(16):
+    pj[x, 0] = hexc("3d4148")
+jack.save(BLOCK / "console_jacks.png")
+cf = base(hexc("1c1e22")); rect(cf, 1, 9, 14, 9, hexc("e8b84a")); cf.save(BLOCK / "console_front.png")
+
+# amplifier front: live switch, knob and LED are drawn by the renderer
+a2 = base(hexc("1f2124"))
+rect(a2, 1, 1, 1, 14, hexc("7f8c8d")); rect(a2, 14, 1, 14, 14, hexc("7f8c8d"))     # rack ears
+for y in range(2, 5):
+    rect(a2, 2, y, 13, y, hexc("111111") if y % 2 == 0 else hexc("1f2124"))        # vent
+rect(a2, 2, 14, 13, 14, hexc("e8b84a"))                                             # brand strip
+a2.save(BLOCK / "amplifier_front.png")
+
+# media deck and receiver fronts: displays and buttons are drawn by the renderer
+d2 = base(hexc("23262b")); rect(d2, 1, 1, 14, 1, hexc("e8b84a")); d2.save(BLOCK / "media_deck_front.png")
+r2 = base(hexc("2b2e33")); r2.save(BLOCK / "receiver_front.png")
+print("v0.3 textures written")

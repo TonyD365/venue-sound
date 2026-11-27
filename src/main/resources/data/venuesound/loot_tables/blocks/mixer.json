@@ -6,7 +6,16 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "venuesound:mixer"
+          "name": "venuesound:mixer",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "venuesound:mixer",
+              "properties": {
+                "part": "left"
+              }
+            }
+          ]
         }
       ],
       "conditions": [

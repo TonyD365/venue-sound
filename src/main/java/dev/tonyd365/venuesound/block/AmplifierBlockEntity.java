@@ -15,7 +15,7 @@ import java.util.List;
 public class AmplifierBlockEntity extends AudioNodeBlockEntity {
 
     /** Output level steps, cycled by right-clicking. */
-    public static final int[] LEVELS = {25, 50, 75, 100, 125, 150, 175, 200};
+    public static final int[] LEVELS = PanelLayout.Amp.LEVELS;
 
     private boolean on = true;
     private int levelPercent = 100;
@@ -42,15 +42,19 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
         changed();
     }
 
-    public void cycleLevel(boolean backwards) {
+    /** Turns the level knob one step down or up (it stops at the ends, like a real knob). */
+    public void cycleLevel(boolean down) {
         int index = 3;
         for (int i = 0; i < LEVELS.length; i++) {
             if (LEVELS[i] == levelPercent) {
                 index = i;
             }
         }
-        levelPercent = LEVELS[Math.floorMod(index + (backwards ? -1 : 1), LEVELS.length)];
-        changed();
+        int next = Math.max(0, Math.min(LEVELS.length - 1, index + (down ? -1 : 1)));
+        if (next != index) {
+            levelPercent = LEVELS[next];
+            changed();
+        }
     }
 
     @Override

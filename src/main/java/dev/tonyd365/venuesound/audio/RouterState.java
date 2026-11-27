@@ -25,12 +25,12 @@ public final class RouterState {
     }
 
     /** Mixer settings. {@code inputs[i]} is the device cabled into input i, or null. Arrays are never mutated. */
-    public record Mixer(float[] gains, boolean[] mutes, float master, DimPos[] inputs) {
+    public record Mixer(float[] gains, float[] trims, boolean[] mutes, float master, DimPos[] inputs) {
 
         public float gainFor(DimPos upstream) {
             for (int i = 0; i < inputs.length; i++) {
                 if (upstream.equals(inputs[i])) {
-                    return mutes[i] ? 0F : gains[i] * master;
+                    return mutes[i] ? 0F : gains[i] * trims[i] * master;
                 }
             }
             return 0F;

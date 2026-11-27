@@ -33,9 +33,9 @@ def resolve(tex, ref):
         ref = tex[ref[1:]]
     return texture(ref)
 
-def proj(x, y, z, oy=0):
+def proj(x, y, z, oy=0, ox=0):
     # viewer stands north of the block, slightly up and to the west (screen right = west)
-    return ((16 - x) + KX * z) * P, ((32 - y - oy) - KY * z) * P
+    return ((16 - x + ox) + KX * z) * P, ((32 - y - oy) - KY * z) * P
 
 def shade(c, f):
     return (int(c[0] * f), int(c[1] * f), int(c[2] * f), c[3])
@@ -59,16 +59,18 @@ def draw_face(dr, img_tex, uv, corners, f):
                 return lerp(lerp(a, b, s), lerp(d, c, s), t)
             dr.polygon([at(s0, t0), at(s1, t0), at(s1, t1), at(s0, t1)], fill=shade(col, f))
 
-def render(models, size=(48 * P, 46 * P)):
+def render(models, size=(64 * P, 46 * P)):
     img = Image.new("RGBA", size, (0, 0, 0, 0))
     dr = ImageDraw.Draw(img)
-    for name, oy in models:
+    for entry in models:
+        name, oy = entry[0], entry[1]
+        ox = entry[2] if len(entry) > 2 else 0
         tex, els = load_model(name)
         # painter's order: far (south) first, then left-to-right on screen, low to high
         for e in sorted(els, key=lambda e: (-e["to"][2], e["from"][0], e["from"][1])):
             (x1, y1, z1), (x2, y2, z2) = e["from"], e["to"]
             fc = e["faces"]
-            P3 = lambda x, y, z: proj(x, y, z, oy)
+            P3 = lambda x, y, z: proj(x, y, z, oy, ox)
             if "west" in fc:   # right side on screen
                 t = fc["west"]; uv = t.get("uv", [z1, 16 - y2, z2, 16 - y1])
                 draw_face(dr, resolve(tex, t["texture"]), uv, [P3(x1, y2, z1), P3(x1, y2, z2), P3(x1, y1, z2), P3(x1, y1, z1)], 0.72)
@@ -86,7 +88,7 @@ devices = [
     ("Stand Microphone\n立式有线麦克风", [("stand_mic", 0)]),
     ("Media Deck\n媒体播放机", [("media_deck", 0)]),
     ("Wall Outlet\n墙面接口", [("outlet", 0)]),
-    ("Mixing Console\n调音台", [("mixer", 0)]),
+    ("Mixing Console (2 blocks)\n调音台（两格宽）", [("mixer_right", 0, 16), ("mixer_left", 0, 0)]),
     ("Power Amplifier\n功放机", [("amplifier", 0)]),
     ("Line Array Module\n线阵音箱模块", [("speaker", 0)]),
     ("PA Speaker (2 blocks)\n大型 PA 音箱（两格高）", [("pa_speaker_lower", 0), ("pa_speaker_upper", 16)]),

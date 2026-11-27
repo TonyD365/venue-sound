@@ -1,0 +1,388 @@
+package dev.tonyd365.venuesound.workbench;
+
+import dev.tonyd365.venuesound.block.MixerLayout;
+import dev.tonyd365.venuesound.block.PanelLayout;
+
+import javax.swing.JPanel;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.RoundRectangle2D;
+import java.util.Map;
+
+/**
+ * A close-up of the selected device's control surface. Uses the same layouts as the blocks in the
+ * game, so clicking and dragging here behaves like right-clicking and holding on the model.
+ */
+public final class Inspector extends JPanel {
+
+    private static final Color BG = new Color(0x202226);
+    private static final Color PANEL = new Color(0x2B2E33);
+    private static final Color TEXT = new Color(0xE8E8E8);
+    private static final Color DIM = new Color(0x9AA0A6);
+    private static final Color GOLD = new Color(0xE8B84A);
+    private static final Color GREEN = new Color(0x3DDC84);
+
+    private final Scene scene;
+    private final AudioEngine audio;
+    private final Runnable changed;
+    private Device device;
+    private int draggingStrip = -1;
+
+    public Inspector(Scene scene, AudioEngine audio, Runnable changed) {
+        this.scene = scene;
+        this.audio = audio;
+        this.changed = changed;
+        setBackground(BG);
+        setPreferredSize(new Dimension(700, 520));
+        MouseAdapter mouse = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                click(e.getX(), e.getY(), true);
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                click(e.getX(), e.getY(), false);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                draggingStrip = -1;
+            }
+        };
+        addMouseListener(mouse);
+        addMouseMotionListener(mouse);
+    }
+
+    public void show(Device d) {
+        this.device = d;
+        repaint();
+    }
+
+    // ------------------------------------------------------------------ geometry
+
+    private static final double MS = 20.5;   // console: pixels per panel unit
+    private static final int MX = 14, MY = 70;
+    private static final double FS = 24;     // front panels: pixels per panel unit
+    private static final int FX = 60, FY = 70;
+
+    private double cx(double u) {
+        return MX + u * MS;
+    }
+
+    private double cy(double depth) {
+        return MY + (12.2 - depth) * MS;
+    }
+
+    private double fx(double u) {
+        return FX + u * FS;
+    }
+
+    private double fy(double h, double height) {
+        return FY + (height - h) * FS;
+    }
+
+    // ------------------------------------------------------------------ input
+
+    private void click(int x, int y, boolean press) {
+        if (device == null) {
+            return;
+        }
+        switch (device.type) {
+            case MIXER -> clickMixer(x, y, press);
+            case AMPLIFIER -> {
+                if (!press) {
+                    return;
+                }
+                double u = (x - FX) / FS, h = 16 - (y - FY) / FS;
+                if (PanelLayout.Amp.onSwitch(u, h)) {
+                    device.ampOn = !device.ampOn;
+                } else if (PanelLayout.Amp.onKnob(u, h)) {
+                    device.stepAmpLevel(u < PanelLayout.Amp.KNOB_U);
+                }
+            }
+            case MEDIA_DECK -> {
+                if (!press) {
+                    return;
+                }
+                double u = (x - FX) / FS, h = 8 - (y - FY) / FS;
+                String button = PanelLayout.Deck.buttonAt(u, h);
+                if (button != null) {
+                    audio.pressDeck(device, button);
+                }
+            }
+            case RECEIVER -> {
+                if (!press) {
+                    return;
+                }
+                double u = (x - FX) / FS, h = 5 - (y - FY) / FS;
+                int b = PanelLayout.Receiver.buttonAt(u, h);
+                if (b != 0) {
+                    device.channel = Math.floorMod(device.channel - 1 + b, 8) + 1;
+                }
+            }
+            case PA_SPEAKER, LINE_ARRAY -> {
+                if (press && y > 300 && y < 340) {
+                    device.stepRange(x < 200);
+                }
+            }
+            default -> {
+            }
+        }
+        changed.run();
+        repaint();
+    }
+
+    private void clickMixer(int x, int y, boolean press) {
+        double u = (x - MX) / MS;
+        double depth = 12.2 - (y - MY) / MS;
+        int strip = press ? MixerLayout.stripAt(u) : draggingStrip;
+        if (strip < 0) {
+            return;
+        }
+        boolean onFader = depth >= MixerLayout.FADER_MIN - 0.6 && depth <= MixerLayout.FADER_MAX + 0.6;
+        if (press && onFader) {
+            draggingStrip = strip;
+        }
+        if (draggingStrip == strip) {
+            double v = MixerLayout.faderValue(depth);
+            if (Math.abs(v - 0.5) < 0.04) {
+                v = 0.5;
+            }
+            float gain = (float) (v * Device.MAX_GAIN);
+            if (strip == 8) {
+                device.master = gain;
+            } else {
+                device.gains[strip] = gain;
+            }
+            return;
+        }
+        if (!press || strip == 8) {
+            return;
+        }
+        if (depth >= MixerLayout.MUTE_MIN && depth <= MixerLayout.MUTE_MAX) {
+            device.mutes[strip] = !device.mutes[strip];
+        } else if (Math.abs(depth - MixerLayout.KNOB_DEPTH) <= MixerLayout.KNOB_RADIUS + 0.3) {
+            device.stepTrim(strip, u < MixerLayout.stripU(strip) ? -1 : 1);
+        }
+    }
+
+    // ------------------------------------------------------------------ drawing
+
+    @Override
+    protected void paintComponent(Graphics g0) {
+        super.paintComponent(g0);
+        Graphics2D g = (Graphics2D) g0;
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        if (device == null) {
+            g.setColor(DIM);
+            g.setFont(getFont().deriveFont(15f));
+            g.drawString("Click a device on the floor to use its controls.", 20, 40);
+            g.drawString("Toolbar: place devices, run cables, talk into your mic.", 20, 66);
+            return;
+        }
+        g.setColor(GOLD);
+        g.setFont(getFont().deriveFont(Font.BOLD, 20f));
+        g.drawString(device.type.label, 16, 32);
+        g.setFont(getFont().deriveFont(12f));
+        g.setColor(DIM);
+        g.drawString(hint(), 16, 52);
+        switch (device.type) {
+            case MIXER -> drawMixer(g);
+            case AMPLIFIER -> drawAmp(g);
+            case MEDIA_DECK -> drawDeck(g);
+            case RECEIVER -> drawReceiver(g);
+            case PA_SPEAKER, LINE_ARRAY -> drawSpeaker(g);
+            default -> {
+            }
+        }
+        drawRouting(g);
+    }
+
+    private String hint() {
+        return switch (device.type) {
+            case MIXER -> "Drag faders · click M to mute · click the left/right half of a knob to turn the trim";
+            case AMPLIFIER -> "Click the rocker for power · left/right half of the knob for level";
+            case MEDIA_DECK -> "Buttons: previous, play, stop, next, loop · files from " + scene.mediaFolder.getFileName();
+            case RECEIVER -> "Picks up the wireless mic on this channel (set yours in the toolbar)";
+            case STAND_MIC -> "Picks up your voice when you stand within 3 blocks";
+            case OUTLET -> "Patch point: chain cables or split one signal into up to 8";
+            default -> "Coverage: how far this speaker is heard";
+        };
+    }
+
+    private void drawMixer(Graphics2D g) {
+        g.setColor(new Color(0x23262B));
+        g.fill(new RoundRectangle2D.Double(cx(0), cy(12.2), 32 * MS, 12.2 * MS, 12, 12));
+        for (int s = 0; s <= 8; s++) {
+            double u = s == 8 ? MixerLayout.MASTER_U : MixerLayout.stripU(s);
+            g.setColor(s == 8 ? new Color(0x2E261C) : (s % 2 == 0 ? PANEL : new Color(0x272A2F)));
+            g.fill(new RoundRectangle2D.Double(cx(u - 1.45), cy(11.95), 2.9 * MS, 11.65 * MS, 6, 6));
+            // fader slot and scale
+            g.setColor(Color.BLACK);
+            g.fill(new RoundRectangle2D.Double(cx(u - 0.12), cy(7.4), 0.24 * MS, 6.4 * MS, 3, 3));
+            g.setColor(new Color(0x6B7178));
+            for (int k = 0; k <= 6; k++) {
+                double dd = MixerLayout.FADER_MIN + k;
+                g.draw(new Line2D.Double(cx(u - 0.95), cy(dd), cx(u - 0.45), cy(dd)));
+            }
+            g.setColor(GOLD);
+            g.draw(new Line2D.Double(cx(u + 0.45), cy(4.2), cx(u + 1.1), cy(4.2)));
+            float gain = s == 8 ? device.master : device.gains[s];
+            double fd = MixerLayout.faderDepth(gain / Device.MAX_GAIN);
+            g.setColor(s == 8 ? new Color(0xD0312B) : new Color(0xD9DCE0));
+            g.fill(new RoundRectangle2D.Double(cx(u - 0.8), cy(fd + 0.45), 1.6 * MS, 0.9 * MS, 5, 5));
+            g.setColor(Color.DARK_GRAY);
+            g.draw(new Line2D.Double(cx(u - 0.8), cy(fd), cx(u + 0.8), cy(fd)));
+            g.setFont(getFont().deriveFont(Font.BOLD, 11f));
+            g.setColor(TEXT);
+            String pct = Math.round(gain * 100) + "%";
+            g.drawString(pct, (float) (cx(u) - g.getFontMetrics().stringWidth(pct) / 2.0), (float) cy(0.1) + 2);
+            if (s == 8) {
+                g.setColor(GOLD);
+                g.drawString("MASTER", (float) cx(u - 1.3), (float) cy(11.4));
+                continue;
+            }
+            // mute
+            boolean muted = device.mutes[s];
+            g.setColor(muted ? new Color(0xFF3030) : new Color(0x3A3D42));
+            g.fill(new RoundRectangle2D.Double(cx(u - 0.6), cy(MixerLayout.MUTE_MAX - 0.1), 1.2 * MS, 0.9 * MS, 4, 4));
+            g.setColor(muted ? Color.WHITE : DIM);
+            g.drawString("M", (float) cx(u - 0.25), (float) cy(MixerLayout.MUTE_MIN + 0.3));
+            // trim knob with pointer
+            double k = MixerLayout.KNOB_DEPTH;
+            g.setColor(new Color(0x1A1B1E));
+            g.fill(new Ellipse2D.Double(cx(u - 0.85), cy(k + 0.85), 1.7 * MS, 1.7 * MS));
+            g.setColor(new Color(0x9AA0A6));
+            g.fill(new Ellipse2D.Double(cx(u - 0.55), cy(k + 0.55), 1.1 * MS, 1.1 * MS));
+            double a = Math.toRadians(-135 + device.trims[s] / Device.MAX_GAIN * 270);
+            g.setColor(Color.WHITE);
+            g.setStroke(new BasicStroke(2f));
+            g.draw(new Line2D.Double(cx(u), cy(k), cx(u + Math.sin(a) * 0.75), cy(k + Math.cos(a) * 0.75)));
+            g.setStroke(new BasicStroke(1f));
+            // signal LED and label
+            boolean patched = device.inputs[s] != null;
+            g.setColor(patched ? GREEN : new Color(0x444444));
+            g.fill(new Ellipse2D.Double(cx(u - 1.2), cy(11.75), 0.4 * MS, 0.4 * MS));
+            g.setColor(patched ? GREEN : DIM);
+            g.drawString((s + 1) + " " + Scene.sourceLabel(device.inputs[s]), (float) cx(u - 0.7), (float) cy(11.35));
+        }
+    }
+
+    private void frontBody(Graphics2D g, double height) {
+        g.setColor(new Color(0x1F2124));
+        g.fill(new RoundRectangle2D.Double(fx(0), fy(height, height), 16 * FS, height * FS, 10, 10));
+    }
+
+    private void drawAmp(Graphics2D g) {
+        frontBody(g, 16);
+        boolean on = device.ampOn;
+        g.setColor(new Color(0x15161A));
+        g.fill(new RoundRectangle2D.Double(fx(PanelLayout.Amp.SWITCH_U0), fy(PanelLayout.Amp.SWITCH_H1, 16),
+                (PanelLayout.Amp.SWITCH_U1 - PanelLayout.Amp.SWITCH_U0) * FS, (PanelLayout.Amp.SWITCH_H1 - PanelLayout.Amp.SWITCH_H0) * FS, 6, 6));
+        double mid = (PanelLayout.Amp.SWITCH_H0 + PanelLayout.Amp.SWITCH_H1) / 2;
+        g.setColor(on ? new Color(0xE74C3C) : new Color(0x3A3D42));
+        g.fill(new RoundRectangle2D.Double(fx(PanelLayout.Amp.SWITCH_U0 + 0.3), fy(on ? PanelLayout.Amp.SWITCH_H1 - 0.3 : mid, 16),
+                (PanelLayout.Amp.SWITCH_U1 - PanelLayout.Amp.SWITCH_U0 - 0.6) * FS, (mid - PanelLayout.Amp.SWITCH_H0 - 0.3) * FS, 5, 5));
+        g.setColor(TEXT);
+        g.setFont(getFont().deriveFont(Font.BOLD, 14f));
+        g.drawString(on ? "POWER ON" : "POWER OFF", (float) fx(1.6), (float) fy(PanelLayout.Amp.SWITCH_H0 - 1, 16));
+        double r = PanelLayout.Amp.KNOB_R, ku = PanelLayout.Amp.KNOB_U, kh = PanelLayout.Amp.KNOB_H;
+        g.setColor(new Color(0x1A1B1E));
+        g.fill(new Ellipse2D.Double(fx(ku - r), fy(kh + r, 16), 2 * r * FS, 2 * r * FS));
+        g.setColor(new Color(0x9AA0A6));
+        g.fill(new Ellipse2D.Double(fx(ku - r + 0.6), fy(kh + r - 0.6, 16), 2 * (r - 0.6) * FS, 2 * (r - 0.6) * FS));
+        double a = Math.toRadians(-135 + (device.ampLevel - 25) / 175.0 * 270);
+        g.setColor(Color.WHITE);
+        g.setStroke(new BasicStroke(4f));
+        g.draw(new Line2D.Double(fx(ku), fy(kh, 16), fx(ku + Math.sin(a) * (r - 0.8)), fy(kh + Math.cos(a) * (r - 0.8), 16)));
+        g.setStroke(new BasicStroke(1f));
+        g.setColor(GOLD);
+        g.drawString("LEVEL " + device.ampLevel + "%", (float) fx(ku - 2.2), (float) fy(kh - r - 1.2, 16));
+        g.setColor(on ? GREEN : new Color(0x444444));
+        g.fill(new Ellipse2D.Double(fx(12.6), fy(13.8, 16), 0.8 * FS, 0.8 * FS));
+    }
+
+    private void drawDeck(Graphics2D g) {
+        frontBody(g, 8);
+        g.setColor(device.playing ? new Color(0x0F3A1C) : new Color(0x0B2A12));
+        g.fillRect((int) fx(PanelLayout.Deck.DISPLAY_U0), (int) fy(PanelLayout.Deck.DISPLAY_H1, 8),
+                (int) ((PanelLayout.Deck.DISPLAY_U1 - PanelLayout.Deck.DISPLAY_U0) * FS), (int) ((PanelLayout.Deck.DISPLAY_H1 - PanelLayout.Deck.DISPLAY_H0) * FS));
+        g.setColor(GREEN);
+        g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 15));
+        String name = device.track.isEmpty() ? "NO TRACK" : device.track;
+        g.drawString((device.playing ? "▶ " : "  ") + name, (float) fx(2.3), (float) fy(6.0, 8));
+        g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        g.drawString((device.loop ? "LOOP  " : "") + audio.deckStatus(device), (float) fx(2.3), (float) fy(4.6, 8));
+        String[] labels = {"|◀", "▶", "■", "▶|", "LOOP"};
+        for (int i = 0; i < labels.length; i++) {
+            double u = PanelLayout.Deck.buttonU0(i);
+            boolean lit = (i == 1 && device.playing) || (i == 4 && device.loop);
+            g.setColor(lit ? new Color(0x2ECC71) : new Color(0x3A3D42));
+            g.fill(new RoundRectangle2D.Double(fx(u), fy(PanelLayout.Deck.BUTTON_H1, 8), PanelLayout.Deck.BUTTON_W * FS,
+                    (PanelLayout.Deck.BUTTON_H1 - PanelLayout.Deck.BUTTON_H0) * FS, 6, 6));
+            g.setColor(TEXT);
+            g.setFont(getFont().deriveFont(Font.BOLD, 13f));
+            g.drawString(labels[i], (float) fx(u + 0.35), (float) fy(1.7, 8));
+        }
+    }
+
+    private void drawReceiver(Graphics2D g) {
+        frontBody(g, 5);
+        g.setColor(new Color(0x0B2A12));
+        g.fillRect((int) fx(2.5), (int) fy(4.0, 5), (int) (6 * FS), (int) (2.7 * FS));
+        g.setColor(GREEN);
+        g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 34));
+        g.drawString("CH " + device.channel, (float) fx(2.9), (float) fy(1.8, 5));
+        for (double u0 : new double[] {PanelLayout.Receiver.DOWN_U0, PanelLayout.Receiver.UP_U0}) {
+            g.setColor(new Color(0x9AA0A6));
+            g.fill(new RoundRectangle2D.Double(fx(u0), fy(PanelLayout.Receiver.BUTTON_H1, 5), PanelLayout.Receiver.BUTTON_W * FS,
+                    (PanelLayout.Receiver.BUTTON_H1 - PanelLayout.Receiver.BUTTON_H0) * FS, 6, 6));
+            g.setColor(Color.BLACK);
+            g.setFont(getFont().deriveFont(Font.BOLD, 22f));
+            g.drawString(u0 == PanelLayout.Receiver.DOWN_U0 ? "–" : "+", (float) fx(u0 + 0.55), (float) fy(1.9, 5));
+        }
+    }
+
+    private void drawSpeaker(Graphics2D g) {
+        g.setColor(TEXT);
+        g.setFont(getFont().deriveFont(Font.BOLD, 26f));
+        g.drawString("Coverage: " + device.range + " blocks", 40, 200);
+        g.setFont(getFont().deriveFont(Font.BOLD, 20f));
+        g.setColor(new Color(0x3A3D42));
+        g.fillRoundRect(40, 300, 140, 40, 10, 10);
+        g.fillRoundRect(220, 300, 140, 40, 10, 10);
+        g.setColor(TEXT);
+        g.drawString("– smaller", 62, 327);
+        g.drawString("+ larger", 248, 327);
+        double d = Math.hypot(device.x + 0.5 - scene.listenerX, device.z + 0.5 - scene.listenerZ);
+        g.setFont(getFont().deriveFont(14f));
+        g.setColor(DIM);
+        g.drawString(String.format("You are %.1f blocks away: %s", d, d <= device.range ? "you hear it" : "out of range"), 40, 240);
+    }
+
+    private void drawRouting(Graphics2D g) {
+        g.setFont(getFont().deriveFont(13f));
+        int y = getHeight() - 70;
+        g.setColor(DIM);
+        if (device.kind().isSource()) {
+            Map<Device, Float> routes = scene.routes(device);
+            g.drawString(routes.isEmpty() ? "Not reaching any speaker yet — cable it to a console, then to an amplifier and speakers."
+                    : "Reaches " + routes.size() + " speaker(s) at " + Math.round(routes.values().iterator().next() * 100) + "% gain", 16, y);
+        }
+        g.drawString("Outputs: " + device.outputs.size() + "/" + device.kind().maxOutputs(), 16, y + 20);
+        g.drawString("Level meter: " + (int) Math.round(audio.meter(device) * 100) + "%", 16, y + 40);
+        g.setColor(GREEN);
+        g.fillRect(150, y + 30, (int) (300 * Math.min(1, audio.meter(device))), 10);
+    }
+}

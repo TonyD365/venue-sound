@@ -1,6 +1,7 @@
 package dev.tonyd365.venuesound.item;
 
 import dev.tonyd365.venuesound.block.AudioNodeBlockEntity;
+import dev.tonyd365.venuesound.block.MixerBlock;
 import dev.tonyd365.venuesound.block.MixerBlockEntity;
 import dev.tonyd365.venuesound.block.PaSpeakerBlock;
 import net.minecraft.ChatFormatting;
@@ -35,10 +36,16 @@ public class AudioCableItem extends Item {
         super(properties);
     }
 
-    /** Resolves multi-block devices (the PA cabinet's top half) to the block holding the device. */
+    /** Resolves multi-block devices (PA cabinet top, console right half) to the block holding the device. */
     public static BlockPos devicePos(Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        return state.getBlock() instanceof PaSpeakerBlock ? PaSpeakerBlock.basePos(state, pos) : pos;
+        if (state.getBlock() instanceof PaSpeakerBlock) {
+            return PaSpeakerBlock.basePos(state, pos);
+        }
+        if (state.getBlock() instanceof MixerBlock) {
+            return MixerBlock.mainPos(state, pos);
+        }
+        return pos;
     }
 
     @Override
