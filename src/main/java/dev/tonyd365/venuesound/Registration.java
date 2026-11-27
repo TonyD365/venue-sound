@@ -76,8 +76,11 @@ public final class Registration {
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.3F).sound(SoundType.METAL).noOcclusion().noCollission());
 
     public static final WirelessMicItem WIRELESS_MIC = new WirelessMicItem(new Item.Properties().stacksTo(1));
-    public static final dev.tonyd365.venuesound.item.BodyPackMicItem HEADSET_MIC = new dev.tonyd365.venuesound.item.BodyPackMicItem(new Item.Properties().stacksTo(1));
-    public static final dev.tonyd365.venuesound.item.BodyPackMicItem LAVALIER_MIC = new dev.tonyd365.venuesound.item.BodyPackMicItem(new Item.Properties().stacksTo(1));
+    public static final dev.tonyd365.venuesound.item.BodyPackMicItem HEADSET_MIC = new dev.tonyd365.venuesound.item.BodyPackMicItem(net.minecraft.world.entity.EquipmentSlot.HEAD, new Item.Properties().stacksTo(1));
+    public static final dev.tonyd365.venuesound.item.BodyPackMicItem LAVALIER_MIC = new dev.tonyd365.venuesound.item.BodyPackMicItem(net.minecraft.world.entity.EquipmentSlot.CHEST, new Item.Properties().stacksTo(1));
+    public static final dev.tonyd365.venuesound.item.ZoneSelectorItem ZONE_SELECTOR = new dev.tonyd365.venuesound.item.ZoneSelectorItem(new Item.Properties().stacksTo(1));
+    public static final dev.tonyd365.venuesound.block.VideoCaptureBlock VIDEO_CAPTURE = new dev.tonyd365.venuesound.block.VideoCaptureBlock(deviceProps());
+    public static BlockEntityType<dev.tonyd365.venuesound.block.VideoCaptureBlockEntity> VIDEO_CAPTURE_BE;
     public static final Item IEM_EARPIECE = new Item(new Item.Properties().stacksTo(1));
     public static final AudioCableItem XLR_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
     public static final AudioCableItem SPEAKER_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
@@ -112,6 +115,9 @@ public final class Registration {
         block("iem_transmitter", IEM_TRANSMITTER);
         block("stage_box", STAGE_BOX);
         block("stage_box_16", STAGE_BOX_16);
+        block("video_capture", VIDEO_CAPTURE);
+        Registry.register(BuiltInRegistries.ITEM, VenueSound.id("zone_selector"), ZONE_SELECTOR);
+        VIDEO_CAPTURE_BE = be("video_capture", FabricBlockEntityTypeBuilder.create(dev.tonyd365.venuesound.block.VideoCaptureBlockEntity::new, VIDEO_CAPTURE).build());
         block("power_sequencer", POWER_SEQUENCER);
         block("rack_cabinet", RACK_CABINET);
         block("truss_point", TRUSS_POINT);
@@ -154,6 +160,8 @@ public final class Registration {
                             output.accept(CABLE_REEL);
                             output.accept(STAGE_BOX);
                             output.accept(STAGE_BOX_16);
+                            output.accept(VIDEO_CAPTURE);
+                            output.accept(ZONE_SELECTOR);
                             output.accept(FX_PROCESSOR);
                             output.accept(CROSSOVER);
                             output.accept(POWER_SEQUENCER);

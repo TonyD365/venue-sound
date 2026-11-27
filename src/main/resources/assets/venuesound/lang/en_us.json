@@ -83,5 +83,13 @@
   "item.venuesound.cable_reel": "Cable Reel",
   "message.venuesound.sequencer_on": "Power sequencer: switching on %s devices",
   "message.venuesound.sequencer_off": "Power sequencer: switching off %s devices",
-  "block.venuesound.stage_box_16": "Stage Box (16 ch)"
+  "block.venuesound.stage_box_16": "Stage Box (16 ch)",
+  "block.venuesound.video_capture": "Video Capture",
+  "item.venuesound.zone_selector": "Zone Selector",
+  "message.venuesound.zone_first": "First corner set",
+  "message.venuesound.zone_second": "Second corner set: click a Video Capture block",
+  "message.venuesound.zone_too_big": "Zone too big (max 48 blocks per side)",
+  "message.venuesound.zone_set": "Capture zone stored",
+  "message.venuesound.zone_none": "Select two corners first",
+  "message.venuesound.zone_cleared": "Selection cleared"
 }

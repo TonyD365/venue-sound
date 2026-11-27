@@ -84,3 +84,14 @@ for k, base, col in [("headset_mic", "wireless_mic", (230, 200, 170)), ("lavalie
                      ("cable_reel", "audio_cable", (240, 180, 30))]:
     tex(f"item/{k}", f"item/{base}", lambda d, W, H, c=col: d.rectangle([W * 10 // 16, 0, W - 1, H * 6 // 16], fill=c + (255,)))
 print("pro device textures written")
+
+tex("block/video_capture_front", "block/media_deck_front", stripe((40, 200, 230)))
+
+
+def selector(d, W, H):
+    d.rectangle([0, 0, W - 1, H - 1], fill=(0, 0, 0, 0))
+    d.line([2, H - 3, W - 5, 4], fill=(120, 120, 125, 255), width=2)
+    d.rectangle([W - 6, 1, W - 2, 5], outline=(80, 220, 255, 255))
+
+
+tex("item/zone_selector", "item/audio_cable", selector)

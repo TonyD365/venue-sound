@@ -64,7 +64,7 @@ public final class PortLayout {
                 p.add(new Port("SNAKE", Dir.OUT, Face.FRONT, 0, 6.0, 10.0, 1.0, 4.0, 14.0));
             }
             case "stand_mic", "gooseneck_mic", "choir_mic" -> p.add(new Port("OUT", Dir.OUT, Face.ANY, 0, 0, 16, 0, 16, 8.0));
-            case "media_deck" -> p.add(new Port("OUT", Dir.OUT, Face.BACK, 0, 6.5, 9.5, 2.0, 5.0, 16.0));
+            case "media_deck", "video_capture" -> p.add(new Port("OUT", Dir.OUT, Face.BACK, 0, 6.5, 9.5, 2.0, 5.0, 16.0));
             case "outlet" -> {
                 // four sockets on the plate; each can take a cable in or send one on
                 int n = 0;

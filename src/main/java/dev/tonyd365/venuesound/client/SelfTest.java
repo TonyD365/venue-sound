@@ -48,7 +48,9 @@ public final class SelfTest {
             new View(4.5, 5.0, 3.0, 180, 18, "selftest-console-front.png"),
             new View(8.5, 5.2, 2.2, 180, 22, "selftest-amp-front.png"),
             new View(8.5, 5.2, -1.8, 0, 22, "selftest-amp-back.png"),
-            new View(13.5, 5.0, 1.7, 180, 35, "selftest-receiver.png"));
+            new View(13.5, 5.0, 1.7, 180, 35, "selftest-receiver.png"),
+            new View(8.0, 6.5, 11.0, 180, 20, "selftest-pro-left.png"),
+            new View(22.0, 6.5, 11.0, 180, 20, "selftest-pro-right.png"));
 
     private SelfTest() {
     }
@@ -138,6 +140,14 @@ public final class SelfTest {
         }
         if (level.getBlockEntity(amp) instanceof AudioNodeBlockEntity a) {
             a.addLink(spk, 0, 0);
+        }
+        // pro devices in a row behind the console
+        net.minecraft.world.level.block.Block[] pro = {Registration.GRAPHIC_EQ, Registration.COMPRESSOR, Registration.FX_PROCESSOR,
+                Registration.CROSSOVER, Registration.DI_BOX, Registration.POWER_SEQUENCER, Registration.STAGE_BOX, Registration.STAGE_BOX_16,
+                Registration.VIDEO_CAPTURE, Registration.IEM_TRANSMITTER, Registration.FLOOR_WEDGE, Registration.SUBWOOFER,
+                Registration.GOOSENECK_MIC, Registration.RACK_CABINET, Registration.TRUSS_POINT};
+        for (int i = 0; i < pro.length; i++) {
+            place(level, pro[i], new BlockPos(1 + i * 2, y, 4), Direction.SOUTH);
         }
         VenueSound.LOGGER.info("selftest: devices placed");
     }

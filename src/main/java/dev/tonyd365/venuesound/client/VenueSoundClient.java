@@ -19,6 +19,8 @@ public class VenueSoundClient implements ClientModInitializer {
         BlockEntityRenderers.register(Registration.RECEIVER_BE, ctx -> new DeviceRenderers.Receiver());
         BlockEntityRenderers.register(Registration.SIMPLE_NODE_BE, ctx -> new CableRenderer<>());
         BlockEntityRenderers.register(Registration.MEDIA_DECK_BE, ctx -> new DeviceRenderers.Deck());
+        BlockEntityRenderers.register(Registration.VIDEO_CAPTURE_BE, ctx -> new CableRenderer<>());
+        net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.AFTER_ENTITIES.register(ZoneOutlineRenderer::render);
         BlockEntityRenderers.register(Registration.MIXER_BE, ctx -> new MixerRenderer());
         BlockEntityRenderers.register(Registration.AMPLIFIER_BE, ctx -> new DeviceRenderers.Amplifier());
         BlockEntityRenderers.register(Registration.SPEAKER_BE, ctx -> new DeviceRenderers.Speaker());

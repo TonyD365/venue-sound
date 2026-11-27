@@ -4,7 +4,9 @@
   "version": "${version}",
   "name": "VenueSound",
   "description": "A full venue sound system: wireless microphones, receivers, a mixing console and PA speakers, built on Simple Voice Chat.",
-  "authors": ["TonyD365"],
+  "authors": [
+    "TonyD365"
+  ],
   "contact": {
     "sources": "https://github.com/TonyD365/venue-sound",
     "issues": "https://github.com/TonyD365/venue-sound/issues"
@@ -13,9 +15,15 @@
   "icon": "assets/venuesound/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": ["dev.tonyd365.venuesound.VenueSound"],
-    "client": ["dev.tonyd365.venuesound.client.VenueSoundClient"],
-    "voicechat": ["dev.tonyd365.venuesound.VenueSoundVoicechatPlugin"]
+    "main": [
+      "dev.tonyd365.venuesound.VenueSound"
+    ],
+    "client": [
+      "dev.tonyd365.venuesound.client.VenueSoundClient"
+    ],
+    "voicechat": [
+      "dev.tonyd365.venuesound.VenueSoundVoicechatPlugin"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.15.0",
@@ -23,5 +31,11 @@
     "java": ">=17",
     "fabric-api": "*",
     "voicechat": ">=1.20.1-2.5.0"
+  },
+  "mixins": [
+    "venuesound.mixins.json"
+  ],
+  "suggests": {
+    "waterframes": "*"
   }
 }

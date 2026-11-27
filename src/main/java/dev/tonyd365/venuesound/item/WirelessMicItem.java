@@ -44,6 +44,11 @@ public class WirelessMicItem extends Item {
                 return getChannel(stack);
             }
         }
+        for (ItemStack stack : player.getInventory().armor) {
+            if (stack.getItem() instanceof BodyPackMicItem && !isMuted(stack)) {
+                return getChannel(stack);
+            }
+        }
         for (ItemStack stack : player.getInventory().items) {
             if (stack.getItem() instanceof BodyPackMicItem && !isMuted(stack)) {
                 return getChannel(stack);

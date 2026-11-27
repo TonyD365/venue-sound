@@ -83,5 +83,13 @@
   "item.venuesound.cable_reel": "线缆卷盘",
   "message.venuesound.sequencer_on": "电源时序器：依次开启 %s 台设备",
   "message.venuesound.sequencer_off": "电源时序器：依次关闭 %s 台设备",
-  "block.venuesound.stage_box_16": "舞台接口箱（16 路）"
+  "block.venuesound.stage_box_16": "舞台接口箱（16 路）",
+  "block.venuesound.video_capture": "视频采集器",
+  "item.venuesound.zone_selector": "区域选择器",
+  "message.venuesound.zone_first": "已设置第一个角",
+  "message.venuesound.zone_second": "已设置第二个角：右键视频采集器保存",
+  "message.venuesound.zone_too_big": "区域太大（每边最多 48 格）",
+  "message.venuesound.zone_set": "采集区域已保存",
+  "message.venuesound.zone_none": "请先选择两个角",
+  "message.venuesound.zone_cleared": "已清除选择"
 }
