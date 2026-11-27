@@ -33,8 +33,10 @@ public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
                     double a = MixerLayout.knobAngle(c, v);
                     double pu = u + Math.sin(a) * r * 0.55, pd = dd + Math.cos(a) * r * 0.55;
                     d.box(pu - 0.12, pu + 0.12, pd - 0.12, pd + 0.12, top + 1.0, top + 1.08, 0xFFFFFF, light);
-                    if (c.param().endsWith(".0") || !c.param().contains(".") || c.param().endsWith(".m") || c.param().equals("efx.time")) {
-                        d.topText(buffers, c.label(), u - 0.95, dd + 1.55, top, 0.45, 0xFFB8BEC4);
+                    if (u > 36) {
+                        d.topText(buffers, c.label(), u - 1.0, dd - 1.0, top, 0.45, 0xFFB8BEC4); // master: under the knob
+                    } else {
+                        d.topText(buffers, c.label(), u + 0.9, dd + 0.18, top, 0.34, 0xFFB8BEC4); // strips: right of the knob
                     }
                 }
                 case FADER -> {

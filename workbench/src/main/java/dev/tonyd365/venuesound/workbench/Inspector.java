@@ -260,10 +260,12 @@ public final class Inspector extends JPanel {
                     g.setStroke(new BasicStroke(2f));
                     g.draw(new Line2D.Double(cx(u), cy(dd), cx(u + Math.sin(a) * r * 0.8), cy(dd + Math.cos(a) * r * 0.8)));
                     g.setStroke(new BasicStroke(1f));
-                    if (c.param().endsWith(".0") || !c.param().matches(".*\\.\\d+")) {
-                        g.setColor(DIM);
-                        g.setFont(getFont().deriveFont(8.5f));
-                        g.drawString(c.label(), (float) cx(u - 1.0), (float) cy(dd + 1.05));
+                    g.setColor(DIM);
+                    g.setFont(getFont().deriveFont(8f));
+                    if (u > 36) {
+                        g.drawString(c.label(), (float) cx(u - 1.0), (float) cy(dd - 1.0) + 8);
+                    } else {
+                        g.drawString(c.label(), (float) cx(u + 0.92), (float) cy(dd) + 3);
                     }
                 }
                 case FADER -> {
