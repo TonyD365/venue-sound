@@ -53,6 +53,9 @@ public class AudioCableItem extends Item {
         if (state.getBlock() instanceof MixerBlock) {
             return MixerBlock.mainPos(state, pos);
         }
+        if (state.getBlock() instanceof dev.tonyd365.venuesound.block.ConcertSpeakerBlock) {
+            return dev.tonyd365.venuesound.block.ConcertSpeakerBlock.mainPos(state, pos);
+        }
         return pos;
     }
 

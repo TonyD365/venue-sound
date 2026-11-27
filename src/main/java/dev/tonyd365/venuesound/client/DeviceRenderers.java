@@ -91,7 +91,11 @@ public final class DeviceRenderers {
     public static class Speaker extends CableRenderer<dev.tonyd365.venuesound.block.SpeakerBlockEntity> {
         @Override
         protected void renderPanel(dev.tonyd365.venuesound.block.SpeakerBlockEntity sp, PanelDraw d, MultiBufferSource buffers, int light) {
-            double depth = "pa_speaker".equals(sp.deviceKey()) ? 15.0 : 16.0;
+            double depth = switch (sp.deviceKey()) {
+                case "pa_speaker" -> 15.0;
+                case "concert_speaker" -> 32.0;
+                default -> 16.0;
+            };
             boolean on = sp.isOn();
             double u0 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_U0, u1 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_U1;
             double h0 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_H0, h1 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_H1;

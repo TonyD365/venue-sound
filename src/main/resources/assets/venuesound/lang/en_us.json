@@ -57,5 +57,6 @@
   "block.venuesound.cable_clip": "Cable Clip",
   "message.venuesound.clip_need_cable": "Plug a cable into an OUT socket first, then click clips to run it along them.",
   "message.venuesound.clip_added": "Cable runs through %s clip(s). Click more clips, or an IN socket to finish.",
-  "message.venuesound.cable_blocked": "The cable would go through a wall. Add a cable clip to route around it."
+  "message.venuesound.cable_blocked": "The cable would go through a wall. Add a cable clip to route around it.",
+  "block.venuesound.concert_speaker": "Concert Speaker Stack (4×6)"
 }

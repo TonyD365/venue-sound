@@ -47,7 +47,7 @@ public final class SceneView extends JPanel {
         this.onSelect = onSelect;
         this.status = status;
         setBackground(new Color(0x1B1D21));
-        setPreferredSize(new Dimension((int) ((Scene.WIDTH + Scene.DEPTH * 0.38 + 1) * view.px), (int) ((Scene.DEPTH * 0.5 + 4.2) * view.px)));
+        setPreferredSize(new Dimension((int) ((Scene.WIDTH + Scene.DEPTH * 0.38 + 1) * view.px), (int) ((Scene.DEPTH * 0.5 + 8.8) * view.px)));
         MouseAdapter mouse = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -88,7 +88,7 @@ public final class SceneView extends JPanel {
     }
 
     private double oy() {
-        return (Scene.DEPTH * 0.5 + 2.6) * view.px;
+        return (Scene.DEPTH * 0.5 + 7.2) * view.px;
     }
 
     // ------------------------------------------------------------------ modes
@@ -291,10 +291,14 @@ public final class SceneView extends JPanel {
         drawFloor(g, ox, oy);
         List<Device> list = sorted();
         for (Device d : list) {
-            for (int[] c : d.cells()) {
+            java.util.List<int[]> cells = new java.util.ArrayList<>(d.cells());
+            cells.sort(java.util.Comparator.<int[]>comparingInt(c -> c[2]).thenComparingInt(c -> -c[0]).thenComparingInt(c -> c[1]));
+            for (int[] c : cells) {
                 String model = d.type.model;
                 if (d.type == Device.Type.MIXER) {
                     model = "mixer_c" + c[3] + "_r" + c[4];
+                } else if (d.type == Device.Type.CONCERT_SPEAKER) {
+                    model = "concert_c" + c[3] + "_l" + c[4] + "_d" + c[5];
                 } else if (d.type == Device.Type.PA_SPEAKER && c[1] == 1) {
                     model = "pa_speaker_upper";
                 }

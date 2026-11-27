@@ -241,8 +241,10 @@ public final class Scene {
     /** A small theatre: two PA cabinets on stage, an amplifier, a console at the back and three sources. */
     public void loadDemo() {
         devices.clear();
-        Device paLeft = add(Device.Type.PA_SPEAKER, 3, 2, Device.Facing.SOUTH);
-        Device paRight = add(Device.Type.PA_SPEAKER, 22, 2, Device.Facing.SOUTH);
+        Device paLeft = add(Device.Type.CONCERT_SPEAKER, 0, 2, Device.Facing.SOUTH);
+        Device paRight = add(Device.Type.CONCERT_SPEAKER, 22, 2, Device.Facing.SOUTH);
+        paLeft.range = 128;
+        paRight.range = 128;
         Device amp = add(Device.Type.AMPLIFIER, 12, 1, Device.Facing.SOUTH);
         Device outlet = add(Device.Type.OUTLET, 15, 1, Device.Facing.SOUTH);
         Device stand = add(Device.Type.STAND_MIC, 13, 5, Device.Facing.SOUTH);

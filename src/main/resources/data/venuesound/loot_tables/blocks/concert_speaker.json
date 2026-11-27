@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "venuesound:concert_speaker",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "venuesound:concert_speaker",
+              "properties": {
+                "col": "0",
+                "lvl": "0",
+                "dep": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

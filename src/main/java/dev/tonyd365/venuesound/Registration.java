@@ -51,6 +51,7 @@ public final class Registration {
     public static final AmplifierBlock AMPLIFIER = new AmplifierBlock(deviceProps());
     public static final SpeakerBlock SPEAKER = new SpeakerBlock(deviceProps());
     public static final PaSpeakerBlock PA_SPEAKER = new PaSpeakerBlock(deviceProps());
+    public static final dev.tonyd365.venuesound.block.ConcertSpeakerBlock CONCERT_SPEAKER = new dev.tonyd365.venuesound.block.ConcertSpeakerBlock(deviceProps());
     public static final dev.tonyd365.venuesound.block.CableClipBlock CABLE_CLIP = new dev.tonyd365.venuesound.block.CableClipBlock(
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.3F).sound(SoundType.METAL).noOcclusion().noCollission());
 
@@ -73,6 +74,7 @@ public final class Registration {
         block("amplifier", AMPLIFIER);
         block("speaker", SPEAKER);
         block("pa_speaker", PA_SPEAKER);
+        block("concert_speaker", CONCERT_SPEAKER);
         block("cable_clip", CABLE_CLIP);
 
         Registry.register(BuiltInRegistries.ITEM, VenueSound.id("wireless_mic"), WIRELESS_MIC);
@@ -83,7 +85,7 @@ public final class Registration {
         MEDIA_DECK_BE = be("media_deck", FabricBlockEntityTypeBuilder.create(MediaDeckBlockEntity::new, MEDIA_DECK).build());
         MIXER_BE = be("mixer", FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER).build());
         AMPLIFIER_BE = be("amplifier", FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER).build());
-        SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER).build());
+        SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER, CONCERT_SPEAKER).build());
 
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VenueSound.id("main"),
                 FabricItemGroup.builder()
@@ -99,6 +101,7 @@ public final class Registration {
                             output.accept(OUTLET);
                             output.accept(MIXER);
                             output.accept(AMPLIFIER);
+                            output.accept(CONCERT_SPEAKER);
                             output.accept(PA_SPEAKER);
                             output.accept(SPEAKER);
                         })

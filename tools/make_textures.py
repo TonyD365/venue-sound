@@ -327,3 +327,65 @@ a2.save(BLOCK / "amplifier_front.png")
 d2 = base(hexc("23262b")); rect(d2, 1, 1, 14, 1, hexc("e8b84a")); d2.save(BLOCK / "media_deck_front.png")
 r2 = base(hexc("2b2e33")); r2.save(BLOCK / "receiver_front.png")
 print("v0.3 textures written")
+
+# ================================================================== v0.4 concert speaker (4 x 6 blocks front, 32 px per block)
+CS = 32
+front = Image.new("RGBA", (4 * CS, 6 * CS), hexc("0d0e10"))
+fp = front.load()
+for x in range(4 * CS):
+    for y in range(6 * CS):
+        if (x // 2 + y // 2) % 2 == 0:
+            fp[x, y] = hexc("15161a")                       # grille mesh
+def disc(cx, cy, r, ring, cone, cap):
+    for x in range(int(cx - r - 2), int(cx + r + 3)):
+        for y in range(int(cy - r - 2), int(cy + r + 3)):
+            if 0 <= x < 4 * CS and 0 <= y < 6 * CS:
+                d = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
+                if d <= r + 1.5 and d > r - 1:
+                    fp[x, y] = hexc(ring)
+                elif d <= r - 1:
+                    fp[x, y] = hexc(cone) if (int(d) % 6) else hexc("1d1f23")
+                if d <= r * 0.28:
+                    fp[x, y] = hexc(cap)
+# top two blocks: four line-array horn modules
+for m in range(4):
+    y0 = m * 16
+    for x in range(4, 4 * CS - 4):
+        for y in range(y0 + 2, y0 + 14):
+            fp[x, y] = hexc("1c1e22")
+    for k in range(6):                                       # horn slots
+        cx = 10 + k * 21
+        for x in range(cx - 6, cx + 7):
+            for y in range(y0 + 4, y0 + 12):
+                w = 6 - abs(y - (y0 + 8)) * 0.4
+                if abs(x - cx) <= w:
+                    fp[x, y] = hexc("2c2f34") if abs(x - cx) > 1 else hexc("070708")
+# middle two blocks: four 15" drivers, bottom two: two 18" subwoofers
+for cx in (32, 96):
+    for cy in (78, 114):
+        disc(cx, cy, 16, "3d4148", "26282c", "5a5f66")
+    disc(cx, 158, 28, "3d4148", "222428", "4a4e55")
+for x in range(44, 84):                                     # logo plate
+    for y in range(184, 190):
+        fp[x, y] = hexc("c9cdd2")
+for x in range(48, 80):
+    for y in range(186, 188):
+        fp[x, y] = hexc("e8b84a")
+for x in range(4 * CS):                                     # frame
+    for t in (0, 1):
+        fp[x, t] = hexc("3d4148"); fp[x, 6 * CS - 1 - t] = hexc("3d4148")
+for y in range(6 * CS):
+    for t in (0, 1):
+        fp[t, y] = hexc("3d4148"); fp[4 * CS - 1 - t, y] = hexc("3d4148")
+for c in range(4):
+    for l in range(6):
+        # tile for column c (from the left, seen from the front) and level l (from the bottom)
+        tile = front.crop((c * CS, (5 - l) * CS, (c + 1) * CS, (6 - l) * CS))
+        tile.save(BLOCK / f"concert_front_c{c}_l{l}.png")
+cs_side = Image.new("RGBA", (16, 16), hexc("17181b"))
+for x in range(16):
+    for y in range(16):
+        if (x * 5 + y * 3) % 9 == 0:
+            cs_side.putpixel((x, y), hexc("1d1f23"))
+cs_side.save(BLOCK / "concert_side.png")
+print("v0.4 concert textures written")

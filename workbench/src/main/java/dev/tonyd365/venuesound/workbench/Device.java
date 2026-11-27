@@ -45,6 +45,7 @@ public final class Device {
         AMPLIFIER("Power Amplifier", NodeKind.AMPLIFIER, "amplifier", "amplifier"),
         PA_SPEAKER("PA Speaker", NodeKind.SPEAKER, "pa_speaker_lower", "pa_speaker"),
         LINE_ARRAY("Line Array Module", NodeKind.SPEAKER, "speaker", "speaker"),
+        CONCERT_SPEAKER("Concert Speaker Stack 4x6", NodeKind.SPEAKER, "concert_c0_l0_d0", "concert_speaker"),
         CABLE_CLIP("Cable Clip", null, "cable_clip", "cable_clip");
 
         public final String label;
@@ -129,13 +130,24 @@ public final class Device {
             }
         } else if (type == Type.PA_SPEAKER) {
             cells.add(new int[] {x, 1, z});
+        } else if (type == Type.CONCERT_SPEAKER) {
+            Facing right = facing.counterClockwise();
+            Facing back = facing.clockwise().clockwise();
+            cells.clear();
+            for (int d = 0; d < 2; d++) {
+                for (int l = 0; l < 6; l++) {
+                    for (int c = 0; c < 4; c++) {
+                        cells.add(new int[] {x + right.dx() * c + back.dx() * d, l, z + right.dz() * c + back.dz() * d, c, l, d});
+                    }
+                }
+            }
         }
         return cells;
     }
 
     /** Height of the sound source above the block, for speakers. */
     public double soundHeight() {
-        return type == Type.PA_SPEAKER ? 1.0 : 0.5;
+        return type == Type.CONCERT_SPEAKER ? 3.0 : type == Type.PA_SPEAKER ? 1.0 : 0.5;
     }
 
     // ------------------------------------------------------------------ same rules as the mod

@@ -129,7 +129,7 @@ public final class Inspector extends JPanel {
                     device.channel = Math.floorMod(device.channel - 1 + b, 8) + 1;
                 }
             }
-            case PA_SPEAKER, LINE_ARRAY -> {
+            case PA_SPEAKER, LINE_ARRAY, CONCERT_SPEAKER -> {
                 if (press && y > 300 && y < 340) {
                     device.stepRange(x < 200);
                 } else if (press && y > 360 && y < 400 && x >= 40 && x <= 360) {
@@ -188,7 +188,7 @@ public final class Inspector extends JPanel {
             case AMPLIFIER -> drawAmp(g);
             case MEDIA_DECK -> drawDeck(g);
             case RECEIVER -> drawReceiver(g);
-            case PA_SPEAKER, LINE_ARRAY -> drawSpeaker(g);
+            case PA_SPEAKER, LINE_ARRAY, CONCERT_SPEAKER -> drawSpeaker(g);
             default -> {
             }
         }
