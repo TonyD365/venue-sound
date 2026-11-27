@@ -10,7 +10,6 @@ base {
 }
 
 repositories {
-    maven { url = 'https://api.modrinth.com/maven'; content { includeGroup 'maven.modrinth' } }
     mavenCentral()
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
 }
