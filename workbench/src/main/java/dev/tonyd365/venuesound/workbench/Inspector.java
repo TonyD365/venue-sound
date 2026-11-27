@@ -133,6 +133,8 @@ public final class Inspector extends JPanel {
             case PA_SPEAKER, LINE_ARRAY -> {
                 if (press && y > 300 && y < 340) {
                     device.stepRange(x < 200);
+                } else if (press && y > 360 && y < 400 && x >= 40 && x <= 360) {
+                    device.speakerOn = !device.speakerOn;
                 }
             }
             default -> {
@@ -217,7 +219,7 @@ public final class Inspector extends JPanel {
             case RECEIVER -> "Picks up the wireless mic on this channel (set yours in the toolbar)";
             case STAND_MIC -> "Picks up your voice when you stand within 3 blocks";
             case OUTLET -> "Patch point: chain cables or split one signal into up to 8";
-            default -> "Coverage: how far this speaker is heard";
+            default -> "Rear panel: INPUT socket, power switch and coverage knob";
         };
     }
 
@@ -365,6 +367,10 @@ public final class Inspector extends JPanel {
         g.setColor(TEXT);
         g.drawString("– smaller", 62, 327);
         g.drawString("+ larger", 248, 327);
+        g.setColor(device.speakerOn ? new Color(0xE74C3C) : new Color(0x3A3D42));
+        g.fillRoundRect(40, 360, 320, 40, 10, 10);
+        g.setColor(TEXT);
+        g.drawString(device.speakerOn ? "POWER ON (rear switch)" : "POWER OFF (rear switch)", 70, 387);
         double d = Math.hypot(device.x + 0.5 - scene.listenerX, device.z + 0.5 - scene.listenerZ);
         g.setFont(getFont().deriveFont(14f));
         g.setColor(DIM);
@@ -380,7 +386,7 @@ public final class Inspector extends JPanel {
             g.drawString(routes.isEmpty() ? "Not reaching any speaker yet — cable it to a console, then to an amplifier and speakers."
                     : "Reaches " + routes.size() + " speaker(s) at " + Math.round(routes.values().iterator().next() * 100) + "% gain", 16, y);
         }
-        g.drawString("Outputs: " + device.outputs.size() + "/" + device.kind().maxOutputs(), 16, y + 20);
+        g.drawString("Cables out: " + device.links.size() + "/" + device.kind().maxOutputs(), 16, y + 20);
         g.drawString("Level meter: " + (int) Math.round(audio.meter(device) * 100) + "%", 16, y + 40);
         g.setColor(GREEN);
         g.fillRect(150, y + 30, (int) (300 * Math.min(1, audio.meter(device))), 10);

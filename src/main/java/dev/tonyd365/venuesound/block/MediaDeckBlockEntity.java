@@ -19,6 +19,11 @@ public class MediaDeckBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
+    public String deviceKey() {
+        return "media_deck";
+    }
+
+    @Override
     public NodeKind kind() {
         return NodeKind.MEDIA_DECK;
     }

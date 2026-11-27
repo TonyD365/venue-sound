@@ -25,6 +25,11 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
+    public String deviceKey() {
+        return "amplifier";
+    }
+
+    @Override
     public NodeKind kind() {
         return NodeKind.AMPLIFIER;
     }

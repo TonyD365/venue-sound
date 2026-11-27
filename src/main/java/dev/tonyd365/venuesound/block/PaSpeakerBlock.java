@@ -92,10 +92,9 @@ public class PaSpeakerBlock extends DeviceBlock {
         if (player.getItemInHand(hand).getItem() instanceof AudioCableItem) {
             return InteractionResult.PASS;
         }
-        if (!level.isClientSide && level.getBlockEntity(basePos(state, pos)) instanceof SpeakerBlockEntity speaker) {
-            speaker.cycleRange(player.isShiftKeyDown());
-            player.displayClientMessage(Component.translatable("message.venuesound.speaker_range", speaker.getRange()), true);
+        if (SpeakerBlock.useRearPanel(level, basePos(state, pos), state.getValue(FACING), player, hit)) {
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.PASS;
     }
 }

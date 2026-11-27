@@ -2,6 +2,7 @@ package dev.tonyd365.venuesound.workbench;
 
 import dev.tonyd365.venuesound.block.MixerLayout;
 import dev.tonyd365.venuesound.block.PanelLayout;
+import dev.tonyd365.venuesound.block.PortLayout;
 
 import javax.swing.JPanel;
 import java.awt.BasicStroke;
@@ -33,6 +34,7 @@ public final class SceneView extends JPanel {
     private Device.Facing placeFacing = Device.Facing.SOUTH;
     private Device selected;
     private Device cableFrom;
+    private int cableFromPort;
     private boolean draggingListener;
     private int hoverX = -1, hoverZ = -1;
     private final Consumer<Device> onSelect;
@@ -164,18 +166,9 @@ public final class SceneView extends JPanel {
                     status.accept("Cable dropped.");
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     scene.unplug(hit);
-                    status.accept("Unplugged " + hit.type.label + ".");
-                } else if (cableFrom == null) {
-                    if (hit.kind().maxOutputs() == 0) {
-                        status.accept("Speakers are the end of the chain. Start from a source.");
-                    } else {
-                        cableFrom = hit;
-                        status.accept("From " + hit.type.label + " — now click where the signal goes.");
-                    }
+                    status.accept("Unplugged every cable of " + hit.type.label + ".");
                 } else {
-                    String error = scene.connect(cableFrom, hit);
-                    status.accept(error == null ? "Connected " + cableFrom.type.label + " → " + hit.type.label + "." : error);
-                    cableFrom = null;
+                    socketMenu(hit, e.getX(), e.getY());
                 }
                 onSelect.accept(selected);
             }
@@ -196,6 +189,48 @@ public final class SceneView extends JPanel {
             }
         }
         repaint();
+    }
+
+    /** Lets you pick the socket to plug into, like right-clicking it on the model in game. */
+    private void socketMenu(Device d, int x, int y) {
+        javax.swing.JPopupMenu menu = new javax.swing.JPopupMenu();
+        boolean start = cableFrom == null;
+        menu.add(new javax.swing.JLabel("  " + d.type.label + (start ? " — plug into an OUT socket" : " — plug into an IN socket")));
+        menu.addSeparator();
+        int shown = 0;
+        for (PortLayout.Port port : PortLayout.ports(d.type.key)) {
+            if (start ? !port.givesOut() : !port.acceptsIn()) {
+                continue;
+            }
+            String label = port.label() + " (" + port.face().name().toLowerCase() + ")";
+            boolean busy = start ? d.portInUse(port.index())
+                    : d.kind() == dev.tonyd365.venuesound.audio.NodeKind.MIXER && d.inputs[port.index()] != null;
+            if (busy) {
+                label += start ? " — in use" : " — " + Scene.sourceLabel(d.inputs[port.index()]);
+            }
+            javax.swing.JMenuItem item = new javax.swing.JMenuItem(label);
+            item.setEnabled(!busy);
+            item.addActionListener(a -> {
+                if (start) {
+                    cableFrom = d;
+                    cableFromPort = port.index();
+                    status.accept("Plugged into " + port.label() + " of " + d.type.label + ". Now click where the signal goes.");
+                } else {
+                    String error = scene.connect(cableFrom, cableFromPort, d, port.index());
+                    status.accept(error == null ? "Connected " + cableFrom.type.label + " → " + d.type.label + " " + port.label() + "." : error);
+                    cableFrom = null;
+                }
+                onSelect.accept(selected);
+                repaint();
+            });
+            menu.add(item);
+            shown++;
+        }
+        if (shown == 0) {
+            status.accept(start ? "Speakers have no OUT socket: they are the end of the chain." : d.type.label + " has no IN socket.");
+            return;
+        }
+        menu.show(this, x, y);
     }
 
     private Device pick(int mx, int my) {
@@ -263,8 +298,9 @@ public final class SceneView extends JPanel {
         }
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         for (Device d : list) {
-            for (Device out : d.outputs) {
-                drawCable(g, d, out);
+            for (Device.Link l : d.links) {
+                drawCable(g, socket(d, PortLayout.byIndex(d.type.key, PortLayout.Dir.OUT, l.fromPort())),
+                        socket(l.target(), PortLayout.byIndex(l.target().type.key, PortLayout.Dir.IN, l.toPort())));
             }
         }
         drawListener(g);
@@ -294,15 +330,28 @@ public final class SceneView extends JPanel {
         g.drawString("STAGE", (int) (ox + view.sx(1, 0, 6.6)), (int) (oy + view.sy(1, 0, 6.6)));
     }
 
-    private void drawCable(Graphics2D g, Device a, Device b) {
-        double ax = a.x + 0.5, az = a.z + 0.5, bx = b.x + 0.5, bz = b.z + 0.5;
-        double len = Math.hypot(bx - ax, bz - az);
+    /** World position of a socket (same anchor as the mod's cable renderer). */
+    private double[] socket(Device d, PortLayout.Port port) {
+        double u = 8, h = 4, dd = 8;
+        if (port != null && port.face() == PortLayout.Face.ANY) {
+            h = 0.6;
+        } else if (port != null) {
+            u = port.u();
+            h = port.h();
+            dd = port.face() == PortLayout.Face.FRONT ? port.depth() - 0.5 : port.depth() + 0.5;
+        }
+        double[] r = Models.rotate((16 - u) / 16, h / 16, dd / 16, d.facing.rotation, true);
+        return new double[] {d.x + r[0], r[1], d.z + r[2]};
+    }
+
+    private void drawCable(Graphics2D g, double[] a, double[] b) {
+        double len = Math.hypot(b[0] - a[0], b[2] - a[2]);
         double sag = Math.min(2.5, 0.12 * len + 0.15);
         Path2D p = new Path2D.Double();
         for (int i = 0; i <= 24; i++) {
             double t = i / 24.0;
-            double x = ax + (bx - ax) * t, z = az + (bz - az) * t;
-            double y = 0.3 - sag * 4 * t * (1 - t) * 0.25;
+            double x = a[0] + (b[0] - a[0]) * t, z = a[2] + (b[2] - a[2]) * t;
+            double y = a[1] + (b[1] - a[1]) * t - sag * 4 * t * (1 - t);
             double sx = ox() + view.sx(x, Math.max(0.02, y), z), sy = oy() + view.sy(x, Math.max(0.02, y), z);
             if (i == 0) {
                 p.moveTo(sx, sy);
@@ -388,6 +437,16 @@ public final class SceneView extends JPanel {
     }
 
     private void drawLiveParts(Graphics2D g, Device d) {
+        for (PortLayout.Port port : PortLayout.ports(d.type.key)) {
+            if (port.face() == PortLayout.Face.ANY) {
+                continue;
+            }
+            int ring = port.dir() == PortLayout.Dir.IN ? 0x2E86C1 : port.dir() == PortLayout.Dir.OUT ? 0xC0392B : 0x9AA0A6;
+            double r = Math.min(port.u1() - port.u0(), port.h1() - port.h0()) / 2;
+            boolean front = port.face() == PortLayout.Face.FRONT;
+            panelBox(g, d, port.u() - r, port.u() + r, front ? port.depth() - 0.35 : port.depth(), front ? port.depth() : port.depth() + 0.35,
+                    port.h() - r, port.h() + r, ring);
+        }
         switch (d.type) {
             case MIXER -> {
                 double top = MixerLayout.TOP;

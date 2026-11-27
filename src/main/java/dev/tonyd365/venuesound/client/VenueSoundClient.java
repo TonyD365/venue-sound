@@ -21,7 +21,7 @@ public class VenueSoundClient implements ClientModInitializer {
         BlockEntityRenderers.register(Registration.MEDIA_DECK_BE, ctx -> new DeviceRenderers.Deck());
         BlockEntityRenderers.register(Registration.MIXER_BE, ctx -> new MixerRenderer());
         BlockEntityRenderers.register(Registration.AMPLIFIER_BE, ctx -> new DeviceRenderers.Amplifier());
-        BlockEntityRenderers.register(Registration.SPEAKER_BE, ctx -> new CableRenderer<>());
+        BlockEntityRenderers.register(Registration.SPEAKER_BE, ctx -> new DeviceRenderers.Speaker());
 
         ClientPlayNetworking.registerGlobalReceiver(MixerPackets.OPEN, (client, handler, buf, responseSender) -> {
             BlockPos pos = buf.readBlockPos();

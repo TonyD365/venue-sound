@@ -23,6 +23,11 @@ public class ReceiverBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
+    public String deviceKey() {
+        return "receiver";
+    }
+
+    @Override
     public NodeKind kind() {
         return NodeKind.RECEIVER;
     }

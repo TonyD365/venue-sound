@@ -29,7 +29,11 @@ import java.util.List;
  */
 public abstract class AudioNodeBlockEntity extends BlockEntity {
 
-    private final List<BlockPos> outputs = new ArrayList<>();
+    /** A cable this device sends out: to which device, from which of our sockets, into which of theirs. */
+    public record Link(BlockPos target, int fromPort, int toPort) {
+    }
+
+    private final List<Link> links = new ArrayList<>();
 
     protected AudioNodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -37,21 +41,47 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
 
     public abstract NodeKind kind();
 
+    /** Key for {@link PortLayout}: the block id without the namespace. */
+    public abstract String deviceKey();
+
+    public List<Link> getLinks() {
+        return Collections.unmodifiableList(links);
+    }
+
     public List<BlockPos> getOutputs() {
-        return Collections.unmodifiableList(outputs);
+        List<BlockPos> out = new ArrayList<>(links.size());
+        for (Link l : links) {
+            out.add(l.target());
+        }
+        return out;
     }
 
     public boolean hasOutput(BlockPos target) {
-        return outputs.contains(target);
+        for (Link l : links) {
+            if (l.target().equals(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Whether one of our sockets already has a cable going out. */
+    public boolean portInUse(int fromPort) {
+        for (Link l : links) {
+            if (l.fromPort() == fromPort) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean canAddOutput() {
-        return outputs.size() < kind().maxOutputs();
+        return links.size() < kind().maxOutputs();
     }
 
-    public void addOutput(BlockPos target) {
-        if (!outputs.contains(target) && canAddOutput()) {
-            outputs.add(target.immutable());
+    public void addLink(BlockPos target, int fromPort, int toPort) {
+        if (!hasOutput(target) && canAddOutput()) {
+            links.add(new Link(target.immutable(), fromPort, toPort));
             changed();
         }
     }
@@ -59,14 +89,31 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
     /** Unplugs every cable this device sends out; frees the matching mixer inputs. */
     public void clearOutputs() {
         if (level != null) {
-            for (BlockPos out : outputs) {
-                if (level.getBlockEntity(out) instanceof MixerBlockEntity mixer) {
+            for (Link l : links) {
+                if (level.getBlockEntity(l.target()) instanceof MixerBlockEntity mixer) {
                     mixer.releaseInput(worldPosition);
                 }
             }
         }
-        outputs.clear();
+        links.clear();
         changed();
+    }
+
+    /** Unplugs the cable leaving from one socket. */
+    public void unplugPort(int fromPort) {
+        Link found = null;
+        for (Link l : links) {
+            if (l.fromPort() == fromPort) {
+                found = l;
+            }
+        }
+        if (found != null) {
+            if (level != null && level.getBlockEntity(found.target()) instanceof MixerBlockEntity mixer) {
+                mixer.releaseInput(worldPosition);
+            }
+            links.remove(found);
+            changed();
+        }
     }
 
     public DimPos dimPos() {
@@ -77,9 +124,9 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
 
     public final void syncToRouter() {
         if (level instanceof ServerLevel serverLevel && !isRemoved()) {
-            List<DimPos> outs = new ArrayList<>(outputs.size());
-            for (BlockPos p : outputs) {
-                outs.add(new DimPos(serverLevel.dimension(), p));
+            List<DimPos> outs = new ArrayList<>(links.size());
+            for (Link l : links) {
+                outs.add(new DimPos(serverLevel.dimension(), l.target()));
             }
             SoundRouter.get().put(serverLevel, snapshot(serverLevel, List.copyOf(outs)));
         }
@@ -122,18 +169,27 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         ListTag list = new ListTag();
-        for (BlockPos p : outputs) {
-            list.add(LongTag.valueOf(p.asLong()));
+        for (Link l : links) {
+            CompoundTag c = new CompoundTag();
+            c.putLong("Pos", l.target().asLong());
+            c.putInt("From", l.fromPort());
+            c.putInt("To", l.toPort());
+            list.add(c);
         }
-        tag.put("Outputs", list);
+        tag.put("Links", list);
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        outputs.clear();
+        links.clear();
+        for (Tag t : tag.getList("Links", Tag.TAG_COMPOUND)) {
+            CompoundTag c = (CompoundTag) t;
+            links.add(new Link(BlockPos.of(c.getLong("Pos")), c.getInt("From"), c.getInt("To")));
+        }
+        // worlds from 0.2.0 stored plain positions
         for (Tag t : tag.getList("Outputs", Tag.TAG_LONG)) {
-            outputs.add(BlockPos.of(((LongTag) t).getAsLong()));
+            links.add(new Link(BlockPos.of(((LongTag) t).getAsLong()), 0, 0));
         }
     }
 

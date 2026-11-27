@@ -33,6 +33,11 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
+    public String deviceKey() {
+        return "mixer";
+    }
+
+    @Override
     public NodeKind kind() {
         return NodeKind.MIXER;
     }
@@ -65,6 +70,25 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
         return inputs[input];
     }
 
+    /** Plugs {@code upstream} into input {@code slot} (0-7). False if another device is already plugged in there. */
+    public boolean assignInput(BlockPos upstream, int slot) {
+        if (slot < 0 || slot >= INPUTS || (inputs[slot] != null && !inputs[slot].equals(upstream))) {
+            return false;
+        }
+        releaseInputQuietly(upstream);
+        inputs[slot] = upstream.immutable();
+        changed();
+        return true;
+    }
+
+    private void releaseInputQuietly(BlockPos upstream) {
+        for (int i = 0; i < INPUTS; i++) {
+            if (upstream.equals(inputs[i])) {
+                inputs[i] = null;
+            }
+        }
+    }
+
     /** Plugs {@code upstream} into the first free input. Returns the input number (1-8) or -1 if full. */
     public int assignInput(BlockPos upstream) {
         for (int i = 0; i < INPUTS; i++) {
@@ -89,6 +113,13 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
             }
         }
         changed();
+    }
+
+    public void releaseInputSlot(int slot) {
+        if (slot >= 0 && slot < INPUTS && inputs[slot] != null) {
+            inputs[slot] = null;
+            changed();
+        }
     }
 
     public void clearInputs() {

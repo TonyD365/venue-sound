@@ -214,7 +214,7 @@ public final class SoundRouter {
                     }
                 }
                 case SPEAKER -> {
-                    if (mixed && gain > 0F) {
+                    if (mixed && gain > 0F && next.range() > 0) {
                         perSpeaker.computeIfAbsent(next.pos(), k -> new ArrayList<>()).add(AudioMath.applyGain(pcm, gain));
                     }
                 }

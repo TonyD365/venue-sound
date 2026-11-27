@@ -100,6 +100,71 @@ public final class PanelDraw {
         pose.popPose();
     }
 
+    /** Like {@link #frontText} but on the back face, readable from behind the device. */
+    public void backText(MultiBufferSource buffers, String text, double u, double h, double depth, double size, int argb) {
+        net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+        pose.pushPose();
+        pose.translate((16 - u) / 16, h / 16, depth / 16 + 0.003);
+        float k = (float) (size / 8.0 / 16.0);
+        pose.scale(k, -k, k);
+        font.drawInBatch(text, 0, 0, argb, false, pose.last().pose(), buffers,
+                net.minecraft.client.gui.Font.DisplayMode.POLYGON_OFFSET, 0, FULL_BRIGHT);
+        pose.popPose();
+    }
+
+    /** Draws every socket of a device with its label. */
+    public void sockets(MultiBufferSource buffers, String deviceKey, int light) {
+        for (dev.tonyd365.venuesound.block.PortLayout.Port p : dev.tonyd365.venuesound.block.PortLayout.ports(deviceKey)) {
+            if (p.face() == dev.tonyd365.venuesound.block.PortLayout.Face.ANY) {
+                continue;
+            }
+            int ring = switch (p.dir()) {
+                case IN -> 0x2E86C1;
+                case OUT -> 0xC0392B;
+                case BOTH -> 0x9AA0A6;
+            };
+            double cu = p.u(), ch = p.h();
+            double r = Math.min(p.u1() - p.u0(), p.h1() - p.h0()) / 2;
+            boolean front = p.face() == dev.tonyd365.venuesound.block.PortLayout.Face.FRONT;
+            double d0 = front ? p.depth() - 0.35 : p.depth();
+            double d1 = front ? p.depth() : p.depth() + 0.35;
+            double di0 = front ? p.depth() - 0.45 : p.depth() + 0.25;
+            double di1 = front ? p.depth() - 0.25 : p.depth() + 0.45;
+            box(cu - r, cu + r, d0, d1, ch - r, ch + r, ring, light);
+            box(cu - r * 0.55, cu + r * 0.55, di0, di1, ch - r * 0.55, ch + r * 0.55, 0x0A0A0B, light);
+            double size = Math.max(0.6, Math.min(1.0, r * 0.7));
+            if (front) {
+                frontText(buffers, p.label(), p.u0() - 0.1, p.h1() + size + 0.2, p.depth(), size, 0xFFDDDDDD);
+            } else {
+                backText(buffers, p.label(), p.u1() + 0.1, p.h1() + size + 0.2, p.depth(), size, 0xFFDDDDDD);
+            }
+        }
+    }
+
+    /**
+     * Where a cable attaches to a socket, in the block-local space of the device's own position.
+     */
+    public static org.joml.Vector3f anchor(net.minecraft.core.Direction facing, dev.tonyd365.venuesound.block.PortLayout.Port port) {
+        double u, h, d;
+        if (port == null) {
+            u = 8;
+            h = 4;
+            d = 8;
+        } else if (port.face() == dev.tonyd365.venuesound.block.PortLayout.Face.ANY) {
+            u = 8;
+            h = 0.6;
+            d = 8;
+        } else {
+            u = port.u();
+            h = port.h();
+            d = port.face() == dev.tonyd365.venuesound.block.PortLayout.Face.FRONT ? port.depth() - 0.5 : port.depth() + 0.5;
+        }
+        org.joml.Matrix4f m = new org.joml.Matrix4f().translate(0.5F, 0, 0.5F)
+                .rotateY((float) Math.toRadians(PanelMath.modelRotation(facing))).translate(-0.5F, 0, -0.5F);
+        org.joml.Vector3f v = new org.joml.Vector3f((float) ((16 - u) / 16), (float) (h / 16), (float) (d / 16));
+        return m.transformPosition(v);
+    }
+
     public PoseStack pose() {
         return pose;
     }

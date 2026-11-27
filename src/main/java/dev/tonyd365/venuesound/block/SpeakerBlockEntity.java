@@ -18,14 +18,44 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
     public static final int[] RANGES = {16, 32, 48, 64, 96, 128};
 
     private int range = 64;
+    private boolean on = true;
 
     public SpeakerBlockEntity(BlockPos pos, BlockState state) {
         super(Registration.SPEAKER_BE, pos, state);
     }
 
     @Override
+    public String deviceKey() {
+        return getBlockState().getBlock() instanceof PaSpeakerBlock ? "pa_speaker" : "speaker";
+    }
+
+    @Override
     public NodeKind kind() {
         return NodeKind.SPEAKER;
+    }
+
+    public boolean isOn() {
+        return on;
+    }
+
+    public void togglePower() {
+        on = !on;
+        changed();
+    }
+
+    /** Turns the coverage knob one step (stops at the ends). */
+    public void stepRange(boolean down) {
+        int index = 0;
+        for (int i = 0; i < RANGES.length; i++) {
+            if (RANGES[i] == range) {
+                index = i;
+            }
+        }
+        int next = Math.max(0, Math.min(RANGES.length - 1, index + (down ? -1 : 1)));
+        if (next != index) {
+            range = RANGES[next];
+            changed();
+        }
     }
 
     public int getRange() {
@@ -46,18 +76,20 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
     @Override
     protected RouterState.Node snapshot(ServerLevel level, List<DimPos> outs) {
         double height = getBlockState().getBlock() instanceof PaSpeakerBlock ? 1.0D : 0.5D;
-        return new RouterState.Node(dimPos(), kind(), outs, 0, null, 0F, range, height);
+        return new RouterState.Node(dimPos(), kind(), outs, 0, null, 0F, on ? range : 0, height);
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt("Range", range);
+        tag.putBoolean("On", on);
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
         range = tag.contains("Range") ? tag.getInt("Range") : 64;
+        on = !tag.contains("On") || tag.getBoolean("On");
     }
 }

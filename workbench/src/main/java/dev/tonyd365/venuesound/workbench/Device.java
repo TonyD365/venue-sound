@@ -37,23 +37,26 @@ public final class Device {
     }
 
     public enum Type {
-        RECEIVER("Wireless Receiver", NodeKind.RECEIVER, "receiver"),
-        STAND_MIC("Stand Microphone", NodeKind.STAND_MIC, "stand_mic"),
-        MEDIA_DECK("Media Deck", NodeKind.MEDIA_DECK, "media_deck"),
-        OUTLET("Wall Outlet", NodeKind.OUTLET, "outlet"),
-        MIXER("Mixing Console", NodeKind.MIXER, "mixer_left"),
-        AMPLIFIER("Power Amplifier", NodeKind.AMPLIFIER, "amplifier"),
-        PA_SPEAKER("PA Speaker", NodeKind.SPEAKER, "pa_speaker_lower"),
-        LINE_ARRAY("Line Array Module", NodeKind.SPEAKER, "speaker");
+        RECEIVER("Wireless Receiver", NodeKind.RECEIVER, "receiver", "receiver"),
+        STAND_MIC("Stand Microphone", NodeKind.STAND_MIC, "stand_mic", "stand_mic"),
+        MEDIA_DECK("Media Deck", NodeKind.MEDIA_DECK, "media_deck", "media_deck"),
+        OUTLET("Wall Outlet", NodeKind.OUTLET, "outlet", "outlet"),
+        MIXER("Mixing Console", NodeKind.MIXER, "mixer_left", "mixer"),
+        AMPLIFIER("Power Amplifier", NodeKind.AMPLIFIER, "amplifier", "amplifier"),
+        PA_SPEAKER("PA Speaker", NodeKind.SPEAKER, "pa_speaker_lower", "pa_speaker"),
+        LINE_ARRAY("Line Array Module", NodeKind.SPEAKER, "speaker", "speaker");
 
         public final String label;
         public final NodeKind kind;
         public final String model;
+        /** Key into PortLayout, same as the block id. */
+        public final String key;
 
-        Type(String label, NodeKind kind, String model) {
+        Type(String label, NodeKind kind, String model, String key) {
             this.label = label;
             this.kind = kind;
             this.model = model;
+            this.key = key;
         }
 
         @Override
@@ -70,7 +73,11 @@ public final class Device {
     public int x;
     public int z;
     public Facing facing;
-    public final List<Device> outputs = new ArrayList<>();
+    /** A cable from one of our sockets into a socket of {@code target}. */
+    public record Link(Device target, int fromPort, int toPort) {
+    }
+
+    public final List<Link> links = new ArrayList<>();
 
     // receiver
     public int channel = 1;
@@ -85,6 +92,7 @@ public final class Device {
     public int ampLevel = 100;
     // speakers
     public int range = 64;
+    public boolean speakerOn = true;
     // media deck
     public String track = "";
     public boolean loop;
@@ -126,7 +134,24 @@ public final class Device {
     // ------------------------------------------------------------------ same rules as the mod
 
     public boolean canAddOutput() {
-        return outputs.size() < kind().maxOutputs();
+        return links.size() < kind().maxOutputs();
+    }
+
+    public List<Device> outputs() {
+        List<Device> out = new ArrayList<>();
+        for (Link l : links) {
+            out.add(l.target());
+        }
+        return out;
+    }
+
+    public boolean portInUse(int fromPort) {
+        for (Link l : links) {
+            if (l.fromPort() == fromPort) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public float gainFor(Device upstream) {

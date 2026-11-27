@@ -56,7 +56,7 @@ public final class Scene {
     public void remove(Device d) {
         devices.remove(d);
         for (Device other : devices) {
-            other.outputs.remove(d);
+            other.links.removeIf(l -> l.target() == d);
             for (int i = 0; i < Device.INPUTS; i++) {
                 if (other.inputs[i] == d) {
                     other.inputs[i] = null;
@@ -65,8 +65,8 @@ public final class Scene {
         }
     }
 
-    /** Connects a cable FROM {@code a} TO {@code b}. Returns null on success, or why it failed. */
-    public String connect(Device a, Device b) {
+    /** Connects a cable from socket {@code fromPort} of {@code a} into socket {@code toPort} of {@code b}. Null on success, else why not. */
+    public String connect(Device a, int fromPort, Device b, int toPort) {
         if (a == b) {
             return "That's the same device.";
         }
@@ -79,34 +79,49 @@ public final class Scene {
         if (Math.hypot(a.x - b.x, a.z - b.z) > MAX_CABLE) {
             return "Too far: a cable reaches " + MAX_CABLE + " blocks.";
         }
-        if (a.outputs.contains(b)) {
+        if (a.outputs().contains(b)) {
             return "Already connected.";
         }
-        if (!a.canAddOutput()) {
-            return "No free output on " + a.type.label + ".";
+        if (a.portInUse(fromPort) || !a.canAddOutput()) {
+            return "That socket already has a cable.";
         }
         if (b.kind() == NodeKind.MIXER) {
-            int input = b.assignInput(a);
-            if (input < 0) {
-                return "All 8 console inputs are in use.";
+            if (toPort < 0 || toPort >= Device.INPUTS || (b.inputs[toPort] != null && b.inputs[toPort] != a)) {
+                return "IN " + (toPort + 1) + " already has a cable.";
             }
+            b.inputs[toPort] = a;
         }
-        a.outputs.add(b);
+        a.links.add(new Device.Link(b, fromPort, toPort));
         return null;
     }
 
+    /** First free OUT socket and matching IN socket, for the demo. */
+    public String connect(Device a, Device b) {
+        int from = 0;
+        while (a.portInUse(from)) {
+            from++;
+        }
+        int to = 0;
+        if (b.kind() == NodeKind.MIXER) {
+            while (to < Device.INPUTS && b.inputs[to] != null) {
+                to++;
+            }
+        }
+        return connect(a, from, b, to);
+    }
+
     public void unplug(Device a) {
-        for (Device out : a.outputs) {
+        for (Device out : a.outputs()) {
             for (int i = 0; i < Device.INPUTS; i++) {
                 if (out.inputs[i] == a) {
                     out.inputs[i] = null;
                 }
             }
         }
-        a.outputs.clear();
+        a.links.clear();
         if (a.kind() == NodeKind.MIXER) {
             for (Device d : devices) {
-                d.outputs.remove(a);
+                d.links.removeIf(l -> l.target() == a);
             }
             for (int i = 0; i < Device.INPUTS; i++) {
                 a.inputs[i] = null;
@@ -127,7 +142,7 @@ public final class Scene {
         if (depth > MAX_HOPS || !visited.add(from)) {
             return;
         }
-        for (Device next : from.outputs) {
+        for (Device next : from.outputs()) {
             switch (next.kind()) {
                 case OUTLET -> walk(next, gain, out, visited, depth + 1, mixed);
                 case MIXER -> {
@@ -144,7 +159,7 @@ public final class Scene {
                     }
                 }
                 case SPEAKER -> {
-                    if (mixed && gain > 0F) {
+                    if (mixed && gain > 0F && next.speakerOn) {
                         out.merge(next, gain, Float::sum);
                     }
                 }

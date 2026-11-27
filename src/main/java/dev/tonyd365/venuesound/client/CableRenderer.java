@@ -3,7 +3,8 @@ package dev.tonyd365.venuesound.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.tonyd365.venuesound.block.AudioNodeBlockEntity;
-import dev.tonyd365.venuesound.block.PaSpeakerBlock;
+import dev.tonyd365.venuesound.block.DeviceBlock;
+import dev.tonyd365.venuesound.block.PortLayout;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -21,25 +22,38 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
 
     @Override
     public void render(T be, float partialTick, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-        if (be.getOutputs().isEmpty() || be.getLevel() == null) {
+        if (be.getLevel() == null) {
+            return;
+        }
+        if (be.getBlockState().hasProperty(DeviceBlock.FACING)) {
+            PanelDraw d = PanelDraw.begin(pose, buffers, be.getBlockState().getValue(DeviceBlock.FACING));
+            d.sockets(buffers, be.deviceKey(), light);
+            renderPanel(be, d, buffers, light);
+            d.end();
+        }
+        if (be.getLinks().isEmpty()) {
             return;
         }
         Level level = be.getLevel();
         BlockPos origin = be.getBlockPos();
-        Vec3 start = anchor(level, origin).subtract(Vec3.atLowerCornerOf(origin));
         VertexConsumer vc = buffers.getBuffer(RenderType.debugQuads());
         Matrix4f m = pose.last().pose();
-        for (BlockPos target : be.getOutputs()) {
-            Vec3 end = anchor(level, target).subtract(Vec3.atLowerCornerOf(origin));
+        for (AudioNodeBlockEntity.Link link : be.getLinks()) {
+            Vec3 start = socket(level, origin, be.deviceKey(), PortLayout.Dir.OUT, link.fromPort()).subtract(Vec3.atLowerCornerOf(origin));
+            String targetKey = level.getBlockEntity(link.target()) instanceof AudioNodeBlockEntity t ? t.deviceKey() : "";
+            Vec3 end = socket(level, link.target(), targetKey, PortLayout.Dir.IN, link.toPort()).subtract(Vec3.atLowerCornerOf(origin));
             drawCable(vc, m, start, end);
         }
     }
 
-    /** Where a cable attaches on a device: low on the block, or on the cabinet base for PA speakers. */
-    private static Vec3 anchor(Level level, BlockPos pos) {
+    /** World position of a socket on the device at {@code pos}. */
+    private static Vec3 socket(Level level, BlockPos pos, String key, PortLayout.Dir dir, int index) {
         BlockState state = level.getBlockState(pos);
-        double y = state.getBlock() instanceof PaSpeakerBlock ? 0.25D : 0.3D;
-        return new Vec3(pos.getX() + 0.5D, pos.getY() + y, pos.getZ() + 0.5D);
+        if (!state.hasProperty(DeviceBlock.FACING)) {
+            return Vec3.atCenterOf(pos);
+        }
+        org.joml.Vector3f a = PanelDraw.anchor(state.getValue(DeviceBlock.FACING), PortLayout.byIndex(key, dir, index));
+        return new Vec3(pos.getX() + a.x(), pos.getY() + a.y(), pos.getZ() + a.z());
     }
 
     private static void drawCable(VertexConsumer vc, Matrix4f m, Vec3 a, Vec3 b) {
@@ -58,6 +72,10 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
                 prev = next;
             }
         }
+    }
+
+    /** Extra live parts drawn on the device, in panel coordinates. */
+    protected void renderPanel(T be, PanelDraw d, MultiBufferSource buffers, int light) {
     }
 
     private static Vec3 point(Vec3 a, Vec3 d, double sag, float t) {

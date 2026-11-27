@@ -13,6 +13,11 @@ public class SimpleNodeBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
+    public String deviceKey() {
+        return getBlockState().getBlock() instanceof StandMicBlock ? "stand_mic" : "outlet";
+    }
+
+    @Override
     public NodeKind kind() {
         return getBlockState().getBlock() instanceof StandMicBlock ? NodeKind.STAND_MIC : NodeKind.OUTLET;
     }

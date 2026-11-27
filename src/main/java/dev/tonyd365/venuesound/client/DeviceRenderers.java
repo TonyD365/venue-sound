@@ -87,4 +87,37 @@ public final class DeviceRenderers {
             d.end();
         }
     }
+
+    public static class Speaker extends CableRenderer<dev.tonyd365.venuesound.block.SpeakerBlockEntity> {
+        @Override
+        protected void renderPanel(dev.tonyd365.venuesound.block.SpeakerBlockEntity sp, PanelDraw d, MultiBufferSource buffers, int light) {
+            double depth = "pa_speaker".equals(sp.deviceKey()) ? 15.0 : 16.0;
+            boolean on = sp.isOn();
+            double u0 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_U0, u1 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_U1;
+            double h0 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_H0, h1 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_H1;
+            double mid = (h0 + h1) / 2;
+            d.box(u0, u1, depth, depth + 0.3, h0, h1, 0x15161A, light);
+            d.box(u0 + 0.25, u1 - 0.25, depth, depth + 0.55, on ? mid : h0 + 0.25, on ? h1 - 0.25 : mid,
+                    on ? 0xE74C3C : 0x3A3D42, on ? PanelDraw.FULL_BRIGHT : light);
+            d.backText(buffers, on ? "ON" : "OFF", u1, h0 - 0.4, depth, 0.9, 0xFFC9CDD2);
+            double ku = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.KNOB_U;
+            double kh = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.KNOB_H;
+            double r = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.KNOB_R;
+            d.box(ku - r, ku + r, depth, depth + 0.5, kh - r, kh + r, 0x1A1B1E, light);
+            d.box(ku - r + 0.4, ku + r - 0.4, depth, depth + 0.7, kh - r + 0.4, kh + r - 0.4, 0x9AA0A6, light);
+            int idx = 0;
+            for (int i = 0; i < dev.tonyd365.venuesound.block.SpeakerBlockEntity.RANGES.length; i++) {
+                if (dev.tonyd365.venuesound.block.SpeakerBlockEntity.RANGES[i] == sp.getRange()) {
+                    idx = i;
+                }
+            }
+            double a = Math.toRadians(-135 + idx / 5.0 * 270);
+            // seen from behind, the knob turns the other way round
+            double pu = ku - Math.sin(a) * (r - 0.6);
+            double ph = kh + Math.cos(a) * (r - 0.6);
+            d.box(pu - 0.22, pu + 0.22, depth, depth + 0.85, ph - 0.22, ph + 0.22, 0xFFFFFF, light);
+            d.backText(buffers, sp.getRange() + "m", ku + 1.2, kh - r - 0.3, depth, 0.9, 0xFFE8B84A);
+            d.box(13.4, 14.2, depth, depth + 0.2, 13.0, 13.8, on ? 0x3DDC84 : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
+        }
+    }
 }
