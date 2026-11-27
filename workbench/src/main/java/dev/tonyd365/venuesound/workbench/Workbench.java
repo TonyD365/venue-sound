@@ -138,7 +138,7 @@ public final class Workbench {
             }
             sceneView.repaint();
         });
-        JSpinner channel = new JSpinner(new SpinnerNumberModel(1, 1, 8, 1));
+        JSpinner channel = new JSpinner(new SpinnerNumberModel(1, 1, 16, 1));
         channel.addChangeListener(e -> scene.micChannel = (Integer) channel.getValue());
         JButton media = new JButton("Media folder…");
         media.addActionListener(e -> {

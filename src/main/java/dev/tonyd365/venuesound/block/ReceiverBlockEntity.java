@@ -14,7 +14,7 @@ import java.util.List;
 /** Wireless receiver: picks up wireless mics on its channel. */
 public class ReceiverBlockEntity extends AudioNodeBlockEntity {
 
-    public static final int CHANNELS = 8;
+    public static final int CHANNELS = 16;
 
     private int channel = 1;
 
