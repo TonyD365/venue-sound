@@ -82,5 +82,6 @@
   "item.venuesound.snake_cable": "多芯信号缆",
   "item.venuesound.cable_reel": "线缆卷盘",
   "message.venuesound.sequencer_on": "电源时序器：依次开启 %s 台设备",
-  "message.venuesound.sequencer_off": "电源时序器：依次关闭 %s 台设备"
+  "message.venuesound.sequencer_off": "电源时序器：依次关闭 %s 台设备",
+  "block.venuesound.stage_box_16": "舞台接口箱（16 路）"
 }

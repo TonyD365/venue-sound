@@ -56,6 +56,13 @@ public final class PortLayout {
                 }
                 p.add(new Port("SNAKE", Dir.OUT, Face.FRONT, 0, 6.0, 10.0, 1.0, 4.0, 14.0));
             }
+            case "stage_box_16" -> {
+                for (int i = 0; i < 16; i++) {
+                    double u = 0.8 + (i % 8) * 1.8, h = i < 8 ? 11.0 : 7.5;
+                    p.add(new Port("CH " + (i + 1), Dir.IN, Face.FRONT, i, u, u + 1.4, h, h + 1.4, 14.0));
+                }
+                p.add(new Port("SNAKE", Dir.OUT, Face.FRONT, 0, 6.0, 10.0, 1.0, 4.0, 14.0));
+            }
             case "stand_mic", "gooseneck_mic", "choir_mic" -> p.add(new Port("OUT", Dir.OUT, Face.ANY, 0, 0, 16, 0, 16, 8.0));
             case "media_deck" -> p.add(new Port("OUT", Dir.OUT, Face.BACK, 0, 6.5, 9.5, 2.0, 5.0, 16.0));
             case "outlet" -> {

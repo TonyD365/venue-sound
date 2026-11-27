@@ -82,5 +82,6 @@
   "item.venuesound.snake_cable": "Multicore Snake",
   "item.venuesound.cable_reel": "Cable Reel",
   "message.venuesound.sequencer_on": "Power sequencer: switching on %s devices",
-  "message.venuesound.sequencer_off": "Power sequencer: switching off %s devices"
+  "message.venuesound.sequencer_off": "Power sequencer: switching off %s devices",
+  "block.venuesound.stage_box_16": "Stage Box (16 ch)"
 }

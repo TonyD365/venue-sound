@@ -68,6 +68,7 @@ public final class Registration {
     public static final dev.tonyd365.venuesound.block.ProSpeakerBlock IEM_TRANSMITTER = new dev.tonyd365.venuesound.block.ProSpeakerBlock("iem_transmitter",
             dev.tonyd365.venuesound.audio.SpeakerOutput.IEM - 1, Block.box(1, 0, 3, 15, 5, 13), deviceProps());
     public static final dev.tonyd365.venuesound.block.StageBoxBlock STAGE_BOX = new dev.tonyd365.venuesound.block.StageBoxBlock(deviceProps());
+    public static final dev.tonyd365.venuesound.block.StageBoxBlock STAGE_BOX_16 = new dev.tonyd365.venuesound.block.StageBoxBlock(16, deviceProps());
     public static final dev.tonyd365.venuesound.block.SequencerBlock POWER_SEQUENCER = new dev.tonyd365.venuesound.block.SequencerBlock(deviceProps());
     public static final dev.tonyd365.venuesound.block.RackBlock RACK_CABINET = new dev.tonyd365.venuesound.block.RackBlock(deviceProps());
     public static final dev.tonyd365.venuesound.block.RackBlock TRUSS_POINT = new dev.tonyd365.venuesound.block.RackBlock(deviceProps());
@@ -110,6 +111,7 @@ public final class Registration {
         block("flown_array", FLOWN_ARRAY);
         block("iem_transmitter", IEM_TRANSMITTER);
         block("stage_box", STAGE_BOX);
+        block("stage_box_16", STAGE_BOX_16);
         block("power_sequencer", POWER_SEQUENCER);
         block("rack_cabinet", RACK_CABINET);
         block("truss_point", TRUSS_POINT);
@@ -126,7 +128,7 @@ public final class Registration {
         Registry.register(BuiltInRegistries.ITEM, VenueSound.id("audio_cable"), AUDIO_CABLE);
 
         RECEIVER_BE = be("receiver", FabricBlockEntityTypeBuilder.create(ReceiverBlockEntity::new, RECEIVER).build());
-        SIMPLE_NODE_BE = be("simple_node", FabricBlockEntityTypeBuilder.create(SimpleNodeBlockEntity::new, OUTLET, STAND_MIC, GOOSENECK_MIC, CHOIR_MIC, STAGE_BOX).build());
+        SIMPLE_NODE_BE = be("simple_node", FabricBlockEntityTypeBuilder.create(SimpleNodeBlockEntity::new, OUTLET, STAND_MIC, GOOSENECK_MIC, CHOIR_MIC, STAGE_BOX, STAGE_BOX_16).build());
         MEDIA_DECK_BE = be("media_deck", FabricBlockEntityTypeBuilder.create(MediaDeckBlockEntity::new, MEDIA_DECK).build());
         MIXER_BE = be("mixer", FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER).build());
         AMPLIFIER_BE = be("amplifier", FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX, FX_PROCESSOR, CROSSOVER).build());
@@ -151,6 +153,7 @@ public final class Registration {
                             output.accept(SNAKE_CABLE);
                             output.accept(CABLE_REEL);
                             output.accept(STAGE_BOX);
+                            output.accept(STAGE_BOX_16);
                             output.accept(FX_PROCESSOR);
                             output.accept(CROSSOVER);
                             output.accept(POWER_SEQUENCER);

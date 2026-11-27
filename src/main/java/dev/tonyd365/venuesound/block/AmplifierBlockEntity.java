@@ -19,6 +19,21 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
 
     private boolean on = true;
     private int levelPercent = 100;
+    /** Processor settings (see ProcessorLayout); empty for a plain amplifier. */
+    private final java.util.Map<String, Float> params = new java.util.HashMap<>();
+
+    public float get(String key) {
+        Float v = params.get(key);
+        if (v == null) {
+            v = ProcessorLayout.defaults(deviceKey()).get(key);
+        }
+        return v == null ? 0F : v;
+    }
+
+    public void set(String key, float value) {
+        params.put(key, value);
+        changed();
+    }
 
     public AmplifierBlockEntity(BlockPos pos, BlockState state) {
         super(Registration.AMPLIFIER_BE, pos, state);
@@ -64,7 +79,13 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
 
     @Override
     protected RouterState.Node snapshot(ServerLevel level, List<RouterState.Out> outs) {
-        return new RouterState.Node(dimPos(), kind(), outs, 0, null, on ? levelPercent / 100F : 0F, 0, 0.5D);
+        return new RouterState.Node(dimPos(), kind(), outs, 0, settings(), on ? levelPercent / 100F : 0F, 0, 0.5D);
+    }
+
+    private RouterState.Mixer settings() {
+        java.util.Map<String, Float> m = new java.util.HashMap<>(ProcessorLayout.defaults(deviceKey()));
+        m.putAll(params);
+        return new RouterState.Mixer(java.util.Map.copyOf(m), new DimPos[0]);
     }
 
     @Override
@@ -72,6 +93,9 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
         super.saveAdditional(tag);
         tag.putBoolean("On", on);
         tag.putInt("Level", levelPercent);
+        CompoundTag p = new CompoundTag();
+        params.forEach(p::putFloat);
+        tag.put("Params", p);
     }
 
     @Override
@@ -79,5 +103,10 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
         super.load(tag);
         on = !tag.contains("On") || tag.getBoolean("On");
         levelPercent = tag.contains("Level") ? tag.getInt("Level") : 100;
+        params.clear();
+        CompoundTag p = tag.getCompound("Params");
+        for (String k : p.getAllKeys()) {
+            params.put(k, p.getFloat(k));
+        }
     }
 }

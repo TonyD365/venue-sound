@@ -38,6 +38,23 @@ public final class DeviceRenderers {
             double ph = kh + Math.cos(a) * (r - 0.9);
             d.frontBox(pu - 0.3, pu + 0.3, ph - 0.3, ph + 0.3, 1.3, 0xFFFFFF, light);
             d.frontText(buffers, amp.getLevelPercent() + "%", ku - 1.6, kh - r - 0.5, 0, 1.2, 0xFFE8B84A);
+            // processor controls (graphic EQ sliders, compressor / FX / crossover knobs)
+            for (var pc : dev.tonyd365.venuesound.block.ProcessorLayout.controls(amp.deviceKey())) {
+                double t = pc.t(amp.get(pc.param()));
+                if (pc.slider()) {
+                    double s0 = pc.SLIDER_H0, s1 = pc.SLIDER_H1, hh = s0 + t * (s1 - s0);
+                    d.frontBox(pc.u() - 0.15, pc.u() + 0.15, s0, s1, 0.1, 0x050506, light);
+                    d.frontBox(pc.u() - 0.6, pc.u() + 0.6, hh - 0.3, hh + 0.3, 0.6, 0xE8E8E8, light);
+                    d.frontText(buffers, pc.label(), pc.u() - 0.7, s0 - 0.5, 0, 0.5, 0xFFC9CDD2);
+                } else {
+                    double kr = pc.KNOB_R, ka = Math.toRadians(-135 + t * 270);
+                    d.frontBox(pc.u() - kr, pc.u() + kr, pc.h() - kr, pc.h() + kr, 0.7, 0x1A1B1E, light);
+                    double qu = pc.u() + Math.sin(ka) * kr * 0.6, qh = pc.h() + Math.cos(ka) * kr * 0.6;
+                    d.frontBox(qu - 0.2, qu + 0.2, qh - 0.2, qh + 0.2, 0.9, 0xFFFFFF, light);
+                    String lbl = pc.param().equals("xo.mode") ? new String[] {"FULL", "LOW", "HIGH"}[Math.round(amp.get(pc.param()))] : pc.label();
+                    d.frontText(buffers, lbl, pc.u() - kr, pc.h() - kr - 0.5, 0, 0.6, 0xFFC9CDD2);
+                }
+            }
             // power LED
             d.frontBox(12.6, 13.4, 13.0, 13.8, 0.2, on ? 0x3DDC84 : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
             d.end();

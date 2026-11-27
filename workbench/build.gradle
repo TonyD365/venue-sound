@@ -37,6 +37,7 @@ sourceSets {
             include 'dev/tonyd365/venuesound/block/MixerLayout.java'
             include 'dev/tonyd365/venuesound/block/PanelLayout.java'
             include 'dev/tonyd365/venuesound/block/PortLayout.java'
+            include 'dev/tonyd365/venuesound/block/ProcessorLayout.java'
         }
         resources {
             srcDir "${rootDir}/src/main/resources"

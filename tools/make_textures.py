@@ -424,3 +424,6 @@ pa.paste(Image.open(BLOCK / "pa_front_upper.png"), (0, 0))
 pa.paste(Image.open(BLOCK / "pa_front_lower.png"), (0, 16))
 icon_from(pa.resize((32, 64), Image.NEAREST)).save(ITEM / "pa_speaker.png")
 print("icons written")
+
+import runpy
+runpy.run_path(str(Path(__file__).resolve().parent / "make_pro_textures.py"))

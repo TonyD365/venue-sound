@@ -58,6 +58,10 @@ public final class Device {
         CROSSOVER("Crossover / Speaker Processor", NodeKind.PROCESSOR, "crossover", "crossover"),
         FLOWN_ARRAY("Flown Line Array", NodeKind.SPEAKER, "flown_array", "flown_array"),
         IEM_TRANSMITTER("In-Ear Monitor Transmitter", NodeKind.SPEAKER, "iem_transmitter", "iem_transmitter"),
+        STAGE_BOX_16("Stage Box (16 ch snake)", NodeKind.OUTLET, "stage_box_16", "stage_box_16"),
+        POWER_SEQUENCER("Power Sequencer", null, "power_sequencer", "power_sequencer"),
+        RACK_CABINET("Rack Cabinet", null, "rack_cabinet", "rack_cabinet"),
+        TRUSS_POINT("Truss Hanging Point", null, "truss_point", "truss_point"),
         CABLE_CLIP("Cable Clip", null, "cable_clip", "cable_clip");
 
         public final String label;

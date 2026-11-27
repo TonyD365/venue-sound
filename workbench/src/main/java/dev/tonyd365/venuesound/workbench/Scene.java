@@ -164,12 +164,16 @@ public final class Scene {
 
         @Override
         public float param(Device console, String key) {
-            return console.get(key);
+            Float v = console.params.get(key);
+            if (v == null) {
+                v = dev.tonyd365.venuesound.block.ProcessorLayout.defaults(console.type.key).get(key);
+            }
+            return v == null ? 0F : v;
         }
 
         @Override
         public boolean multichannel(Device d) {
-            return d.type == Device.Type.STAGE_BOX;
+            return d.type == Device.Type.STAGE_BOX || d.type == Device.Type.STAGE_BOX_16;
         }
 
         @Override

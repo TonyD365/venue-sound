@@ -69,6 +69,9 @@ public final class SignalEngine<N> {
 
     public void clear() {
         eqs.clear();
+        procEqs.clear();
+        procEchoes.clear();
+        envelopes.clear();
         echoes.clear();
     }
 
@@ -96,13 +99,13 @@ public final class SignalEngine<N> {
             if (kind == NodeKind.OUTLET && visited.add(g.id(next))) {
                 beforeConsole(g, next, stream, pcm, sink, visited, depth + 1, g.multichannel(next) ? e.toPort() : chan);
             } else if (kind == NodeKind.PROCESSOR && visited.add(g.id(next))) {
-                float k = g.ampLevel(next);
-                if (k > 0F) {
-                    short[] out = new short[pcm.length];
-                    for (int i = 0; i < pcm.length; i++) {
-                        out[i] = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, pcm[i] * k));
-                    }
-                    beforeConsole(g, next, stream, out, sink, visited, depth + 1, chan);
+                float[] f = new float[pcm.length];
+                for (int i = 0; i < pcm.length; i++) {
+                    f[i] = pcm[i];
+                }
+                f = processor(g, next, stream, f);
+                if (f != null) {
+                    beforeConsole(g, next, stream, ConsoleDsp.toPcm(f), sink, visited, depth + 1, chan);
                 }
             } else if (kind == NodeKind.MIXER && visited.add(g.id(next))) {
                 int slot = g.inputSlot(next, from);
@@ -147,12 +150,12 @@ public final class SignalEngine<N> {
                 continue;
             }
             Set<Object> v = new HashSet<>(visited);
-            deliver(g, e, bus[b], sink, v, 0);
+            deliver(g, stream, e, bus[b], sink, v, 0);
         }
     }
 
     /** After the console: follow outlets to amplifiers and speakers. */
-    private void deliver(Graph<N> g, Edge<N> e, float[] frame, Sink<N> sink, Set<Object> visited, int depth) {
+    private void deliver(Graph<N> g, Object stream, Edge<N> e, float[] frame, Sink<N> sink, Set<Object> visited, int depth) {
         N next = e.target();
         if (depth > MAX_HOPS || !visited.add(g.id(next))) {
             return;
@@ -160,15 +163,14 @@ public final class SignalEngine<N> {
         switch (g.kind(next)) {
             case OUTLET -> {
                 for (Edge<N> out : g.outputs(next)) {
-                    deliver(g, out, frame, sink, visited, depth + 1);
+                    deliver(g, stream, out, frame, sink, visited, depth + 1);
                 }
             }
             case PROCESSOR -> {
-                float level = g.ampLevel(next);
-                if (level > 0F) {
-                    float[] f = scale(frame, level);
+                float[] f = processor(g, next, stream, frame);
+                if (f != null) {
                     for (Edge<N> out : g.outputs(next)) {
-                        deliver(g, out, f, sink, new HashSet<>(visited), depth + 1);
+                        deliver(g, stream, out, f, sink, new HashSet<>(visited), depth + 1);
                     }
                 }
             }
@@ -181,7 +183,7 @@ public final class SignalEngine<N> {
                 float[] amped = scale(frame, level);
                 for (Edge<N> out : g.outputs(next)) {
                     if ((out.fromPort() < 2 ? 0 : 1) == side) {
-                        deliver(g, out, amped, sink, new HashSet<>(visited), depth + 1);
+                        deliver(g, stream, out, amped, sink, new HashSet<>(visited), depth + 1);
                     }
                 }
             }
@@ -193,6 +195,59 @@ public final class SignalEngine<N> {
             default -> {
             }
         }
+    }
+
+    private record ProcKey(Object node, Object stream) {
+    }
+
+    private final Map<ProcKey, ConsoleDsp.Eq> procEqs = new ConcurrentHashMap<>();
+    private final Map<ProcKey, ConsoleDsp.Echo> procEchoes = new ConcurrentHashMap<>();
+    private final Map<ProcKey, float[]> envelopes = new ConcurrentHashMap<>();
+
+    /** Graphic EQ (7 bands folded onto the 3-band filter), compressor, or plain level; null when off. */
+    private float[] processor(Graph<N> g, N p, Object stream, float[] in) {
+        float k = g.ampLevel(p);
+        if (k <= 0F) {
+            return null;
+        }
+        ProcKey key = new ProcKey(g.id(p), stream);
+        if (g.param(p, "proc.eq") > 0.5F) {
+            float low = (g.param(p, "eq.0") + g.param(p, "eq.1")) / 2;
+            float mid = (g.param(p, "eq.2") + g.param(p, "eq.3") + g.param(p, "eq.4")) / 3;
+            float high = (g.param(p, "eq.5") + g.param(p, "eq.6")) / 2;
+            return procEqs.computeIfAbsent(key, x -> new ConsoleDsp.Eq()).process(ConsoleDsp.toPcm(in), low, mid, high, k);
+        }
+        if (g.param(p, "proc.comp") > 0.5F) {
+            float thr = g.param(p, "comp.thr") * 32767F * 0.5F;
+            float ratio = Math.max(1F, g.param(p, "comp.ratio"));
+            float[] env = envelopes.computeIfAbsent(key, x -> new float[1]);
+            float[] out = new float[in.length];
+            for (int i = 0; i < in.length; i++) {
+                float a = Math.abs(in[i]);
+                env[0] = a > env[0] ? a : env[0] * 0.9995F;
+                float gain = env[0] > thr ? (thr + (env[0] - thr) / ratio) / env[0] : 1F;
+                out[i] = in[i] * gain * k;
+            }
+            return out;
+        }
+        if (g.param(p, "proc.fx") > 0.5F) {
+            float mix = g.param(p, "fx.mix");
+            float[] wet = procEchoes.computeIfAbsent(key, x -> new ConsoleDsp.Echo()).process(in, g.param(p, "fx.time"));
+            float[] out = new float[in.length];
+            for (int i = 0; i < in.length; i++) {
+                out[i] = (in[i] + wet[i] * mix) * k;
+            }
+            return out;
+        }
+        if (g.param(p, "proc.xo") > 0.5F) {
+            int mode = Math.round(g.param(p, "xo.mode"));
+            if (mode != 0) {
+                // LOW: sub output (mid and highs cut); HIGH: tops output (lows cut)
+                return procEqs.computeIfAbsent(key, x -> new ConsoleDsp.Eq())
+                        .process(ConsoleDsp.toPcm(in), mode == 1 ? 6 : -12, -12, mode == 1 ? -12 : 0, k);
+            }
+        }
+        return scale(in, k);
     }
 
     private static float[] scale(float[] in, float k) {

@@ -45,6 +45,9 @@ public class AmplifierBlock extends DeviceBlock {
                     amp.togglePower();
                     level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.4F, amp.isOn() ? 0.9F : 0.7F);
                 }
+            } else if (ProcessorLayout.at(amp.deviceKey(), p.u(), p.height()) != null) {
+                ProcessorLayout.Ctl c = ProcessorLayout.at(amp.deviceKey(), p.u(), p.height());
+                amp.set(c.param(), c.apply(amp.get(c.param()), p.u(), p.height()));
             } else if (PanelLayout.Amp.onKnob(p.u(), p.height())) {
                 // holding right-click keeps turning the knob
                 amp.cycleLevel(p.u() < KNOB_U);

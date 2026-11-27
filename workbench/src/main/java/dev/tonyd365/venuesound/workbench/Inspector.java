@@ -103,10 +103,26 @@ public final class Inspector extends JPanel {
                     return;
                 }
                 double u = (x - FX) / FS, h = 16 - (y - FY) / FS;
-                if (PanelLayout.Amp.onSwitch(u, h)) {
+                var pc = dev.tonyd365.venuesound.block.ProcessorLayout.at(device.type.key, u, h);
+                if (pc != null) {
+                    float cur = (float) scene.graph.param(device, pc.param());
+                    device.params.put(pc.param(), pc.apply(cur, u, h));
+                } else if (PanelLayout.Amp.onSwitch(u, h)) {
                     device.ampOn = !device.ampOn;
                 } else if (PanelLayout.Amp.onKnob(u, h)) {
                     device.stepAmpLevel(u < PanelLayout.Amp.KNOB_U);
+                }
+            }
+            case POWER_SEQUENCER -> {
+                if (press) {
+                    boolean target = scene.devices.stream().noneMatch(d -> d.type == Device.Type.AMPLIFIER && d.ampOn);
+                    for (Device d : scene.devices) {
+                        if (d.type == Device.Type.AMPLIFIER) {
+                            d.ampOn = target;
+                        } else if (d.type.kind == dev.tonyd365.venuesound.audio.NodeKind.SPEAKER) {
+                            d.speakerOn = target;
+                        }
+                    }
                 }
             }
             case MEDIA_DECK -> {
@@ -203,6 +219,8 @@ public final class Inspector extends JPanel {
             case RECEIVER -> "Picks up the wireless mic on this channel (set yours in the toolbar)";
             case STAND_MIC -> "Picks up your voice when you stand within 3 blocks";
             case OUTLET -> "Patch point: chain cables or split one signal into up to 8";
+            case POWER_SEQUENCER -> "Click to switch every amplifier and speaker on (speakers first) or off (amps first)";
+            case RACK_CABINET, TRUSS_POINT -> "Mounting hardware: no signal";
             case CABLE_CLIP -> "Holds cables to the floor or a wall";
             default -> "Rear panel: INPUT socket, power switch and coverage knob";
         };
@@ -325,6 +343,25 @@ public final class Inspector extends JPanel {
         g.fill(new Ellipse2D.Double(fx(ku - r), fy(kh + r, 16), 2 * r * FS, 2 * r * FS));
         g.setColor(new Color(0x9AA0A6));
         g.fill(new Ellipse2D.Double(fx(ku - r + 0.6), fy(kh + r - 0.6, 16), 2 * (r - 0.6) * FS, 2 * (r - 0.6) * FS));
+        for (var pc : dev.tonyd365.venuesound.block.ProcessorLayout.controls(device.type.key)) {
+            double t = pc.t((float) scene.graph.param(device, pc.param()));
+            g.setColor(new Color(0x1A1B1E));
+            if (pc.slider()) {
+                g.fillRect((int) fx(pc.u() - 0.2), (int) fy(pc.SLIDER_H1, 16), (int) (0.4 * FS), (int) ((pc.SLIDER_H1 - pc.SLIDER_H0) * FS));
+                g.setColor(new Color(0xE8E8E8));
+                double hh = pc.SLIDER_H0 + t * (pc.SLIDER_H1 - pc.SLIDER_H0);
+                g.fillRect((int) fx(pc.u() - 0.6), (int) fy(hh + 0.3, 16), (int) (1.2 * FS), (int) (0.6 * FS));
+            } else {
+                double kr = pc.KNOB_R;
+                g.fill(new Ellipse2D.Double(fx(pc.u() - kr), fy(pc.h() + kr, 16), 2 * kr * FS, 2 * kr * FS));
+                g.setColor(new Color(0x9AA0A6));
+                double ka = Math.toRadians(-135 + t * 270);
+                g.fill(new Ellipse2D.Double(fx(pc.u() + Math.sin(ka) * kr * 0.6 - 0.25), fy(pc.h() + Math.cos(ka) * kr * 0.6 + 0.25, 16), 0.5 * FS, 0.5 * FS));
+            }
+            g.setColor(TEXT);
+            g.setFont(getFont().deriveFont(10f));
+            g.drawString(pc.label(), (float) fx(pc.u() - 0.8), (float) fy(pc.slider() ? pc.SLIDER_H0 - 0.6 : pc.h() - pc.KNOB_R - 0.6, 16));
+        }
         double a = Math.toRadians(-135 + (device.ampLevel - 25) / 175.0 * 270);
         g.setColor(Color.WHITE);
         g.setStroke(new BasicStroke(4f));

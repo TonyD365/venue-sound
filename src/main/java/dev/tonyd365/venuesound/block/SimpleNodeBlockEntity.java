@@ -17,7 +17,7 @@ public class SimpleNodeBlockEntity extends AudioNodeBlockEntity {
         if (getBlockState().getBlock() instanceof StandMicBlock m) {
             return m.key;
         }
-        return getBlockState().getBlock() instanceof StageBoxBlock ? "stage_box" : "outlet";
+        return getBlockState().getBlock() instanceof StageBoxBlock b ? (b.channels == 16 ? "stage_box_16" : "stage_box") : "outlet";
     }
 
     @Override
