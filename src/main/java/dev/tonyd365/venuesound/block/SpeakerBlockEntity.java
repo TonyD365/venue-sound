@@ -2,25 +2,30 @@ package dev.tonyd365.venuesound.block;
 
 import dev.tonyd365.venuesound.Registration;
 import dev.tonyd365.venuesound.audio.DimPos;
+import dev.tonyd365.venuesound.audio.NodeKind;
 import dev.tonyd365.venuesound.audio.RouterState;
-import dev.tonyd365.venuesound.audio.SoundRouter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
-public class SpeakerBlockEntity extends RoutedBlockEntity implements Patchable {
+import java.util.List;
+
+/** Line array module or two-block PA cabinet: plays what reaches it through the cables. */
+public class SpeakerBlockEntity extends AudioNodeBlockEntity {
 
     /** Coverage steps in blocks, cycled by right-clicking the speaker. */
     public static final int[] RANGES = {16, 32, 48, 64, 96, 128};
 
-    private int range = 48;
-    @Nullable
-    private BlockPos mixer;
+    private int range = 64;
 
     public SpeakerBlockEntity(BlockPos pos, BlockState state) {
         super(Registration.SPEAKER_BE, pos, state);
+    }
+
+    @Override
+    public NodeKind kind() {
+        return NodeKind.SPEAKER;
     }
 
     public int getRange() {
@@ -39,34 +44,20 @@ public class SpeakerBlockEntity extends RoutedBlockEntity implements Patchable {
     }
 
     @Override
-    public void setMixer(@Nullable BlockPos mixer) {
-        this.mixer = mixer;
-        changed();
-    }
-
-    @Nullable
-    @Override
-    public BlockPos getMixer() {
-        return mixer;
-    }
-
-    @Override
-    protected void publish(ServerLevel level) {
-        DimPos mixerPos = mixer == null ? null : new DimPos(level.dimension(), mixer);
-        SoundRouter.get().putSpeaker(level, new RouterState.Speaker(dimPos(), mixerPos, range));
+    protected RouterState.Node snapshot(ServerLevel level, List<DimPos> outs) {
+        double height = getBlockState().getBlock() instanceof PaSpeakerBlock ? 1.0D : 0.5D;
+        return new RouterState.Node(dimPos(), kind(), outs, 0, null, 0F, range, height);
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt("Range", range);
-        putPos(tag, "Mixer", mixer);
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        range = tag.contains("Range") ? tag.getInt("Range") : 48;
-        mixer = getPos(tag, "Mixer");
+        range = tag.contains("Range") ? tag.getInt("Range") : 64;
     }
 }

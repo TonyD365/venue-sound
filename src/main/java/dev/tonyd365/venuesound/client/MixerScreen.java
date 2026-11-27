@@ -1,5 +1,6 @@
 package dev.tonyd365.venuesound.client;
 
+import dev.tonyd365.venuesound.audio.NodeKind;
 import dev.tonyd365.venuesound.block.MixerBlockEntity;
 import dev.tonyd365.venuesound.net.MixerPackets;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -20,23 +21,25 @@ public class MixerScreen extends Screen {
     private static final int STRIP_W = 34;
     private static final int FADER_H = 110;
     private static final int PANEL_W = STRIP_W * (MixerBlockEntity.INPUTS + 1) + 30;
-    private static final int PANEL_H = 196;
+    private static final int PANEL_H = 214;
 
     private final BlockPos pos;
     private final float[] gains;
     private final boolean[] mutes;
     private float master;
-    private final int patchedMask;
+    private final int[] kinds;
+    private final int[] channels;
     private final int speakers;
     private final Button[] muteButtons = new Button[MixerBlockEntity.INPUTS];
 
-    public MixerScreen(BlockPos pos, float[] gains, boolean[] mutes, float master, int patchedMask, int speakers) {
+    public MixerScreen(BlockPos pos, float[] gains, boolean[] mutes, float master, int[] kinds, int[] channels, int speakers) {
         super(Component.translatable("screen.venuesound.mixer"));
         this.pos = pos;
         this.gains = gains;
         this.mutes = mutes;
         this.master = master;
-        this.patchedMask = patchedMask;
+        this.kinds = kinds;
+        this.channels = channels;
         this.speakers = speakers;
     }
 
@@ -50,7 +53,7 @@ public class MixerScreen extends Screen {
 
     @Override
     protected void init() {
-        int faderTop = top() + 36;
+        int faderTop = top() + 46;
         for (int i = 0; i < MixerBlockEntity.INPUTS; i++) {
             final int input = i;
             int x = left() + 10 + i * STRIP_W;
@@ -94,12 +97,13 @@ public class MixerScreen extends Screen {
         g.drawString(font, title, l + 10, t + 8, 0xFFE8B84A, false);
         g.drawString(font, Component.translatable("screen.venuesound.speakers", speakers), l + 10, t + 20, 0xFF9AA0A6, false);
 
-        int faderTop = t + 36;
+        int faderTop = t + 46;
         for (int i = 0; i < MixerBlockEntity.INPUTS; i++) {
             int x = l + 10 + i * STRIP_W;
             g.fill(x, t + 32, x + STRIP_W - 2, t + PANEL_H - 6, 0xFF2B2E33);
-            boolean patched = (patchedMask & (1 << i)) != 0;
+            boolean patched = kinds[i] >= 0;
             g.fill(x + 3, t + 34, x + 7, t + 38, patched ? 0xFF3DDC84 : 0xFF555555);
+            g.drawString(font, sourceLabel(i), x + 9, t + 33, patched ? 0xFFB8F5D0 : 0xFF6B7178, false);
             g.drawCenteredString(font, "CH" + (i + 1), x + 18, faderTop + FADER_H + 6, 0xFFFFFFFF);
             g.drawCenteredString(font, percent(gains[i]), x + 16, t + PANEL_H - 16, mutes[i] ? 0xFFE05050 : 0xFFCCCCCC);
         }
@@ -109,6 +113,20 @@ public class MixerScreen extends Screen {
         g.drawCenteredString(font, percent(master), mx + 16, t + PANEL_H - 16, 0xFFE8B84A);
 
         super.render(g, mouseX, mouseY, partialTick);
+    }
+
+    /** Short label of what is plugged into input {@code i}, like a scribble strip on a real console. */
+    private Component sourceLabel(int i) {
+        int k = kinds[i];
+        if (k < 0 || k >= NodeKind.values().length) {
+            return Component.literal("--");
+        }
+        return switch (NodeKind.values()[k]) {
+            case RECEIVER -> Component.translatable("screen.venuesound.src_rx", channels[i]);
+            case STAND_MIC -> Component.translatable("screen.venuesound.src_mic");
+            case MEDIA_DECK -> Component.translatable("screen.venuesound.src_deck");
+            default -> Component.translatable("screen.venuesound.src_line");
+        };
     }
 
     private static String percent(float gain) {

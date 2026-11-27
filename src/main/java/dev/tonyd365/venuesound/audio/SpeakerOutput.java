@@ -35,11 +35,13 @@ public final class SpeakerOutput implements Supplier<short[]> {
     @Nullable
     private AudioPlayer player;
     private int range;
+    private final double heightOff;
 
-    public SpeakerOutput(ServerLevel level, DimPos pos, int range) {
+    public SpeakerOutput(ServerLevel level, DimPos pos, int range, double heightOff) {
         this.level = level;
         this.pos = pos;
         this.range = range;
+        this.heightOff = heightOff;
         this.channelId = UUID.nameUUIDFromBytes(("venuesound:speaker:" + pos.dimension().location() + ":" + pos.pos().asLong()).getBytes());
     }
 
@@ -72,7 +74,7 @@ public final class SpeakerOutput implements Supplier<short[]> {
         if (api == null) {
             return;
         }
-        Position position = api.createPosition(pos.pos().getX() + 0.5D, pos.pos().getY() + 0.5D, pos.pos().getZ() + 0.5D);
+        Position position = api.createPosition(pos.pos().getX() + 0.5D, pos.pos().getY() + heightOff, pos.pos().getZ() + 0.5D);
         LocationalAudioChannel channel = api.createLocationalAudioChannel(channelId, api.fromServerLevel(level), position);
         if (channel == null) {
             return;

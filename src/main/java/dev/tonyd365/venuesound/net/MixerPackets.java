@@ -1,6 +1,8 @@
 package dev.tonyd365.venuesound.net;
 
 import dev.tonyd365.venuesound.VenueSound;
+import dev.tonyd365.venuesound.audio.DimPos;
+import dev.tonyd365.venuesound.audio.RouterState;
 import dev.tonyd365.venuesound.audio.SoundRouter;
 import dev.tonyd365.venuesound.block.MixerBlockEntity;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -10,7 +12,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.Set;
 
 /** Opens the mixer screen on the client and applies fader moves on the server. */
 public final class MixerPackets {
@@ -32,12 +33,14 @@ public final class MixerPackets {
             buf.writeBoolean(mixer.isMuted(i));
         }
         buf.writeFloat(mixer.getMaster());
-        Set<Integer> patched = SoundRouter.get().patchedChannels(mixer.dimPos());
-        int mask = 0;
-        for (int channel : patched) {
-            mask |= 1 << (channel - 1);
+        // What is plugged into each input: node kind ordinal (or -1) and receiver channel.
+        for (int i = 0; i < MixerBlockEntity.INPUTS; i++) {
+            BlockPos input = mixer.getInput(i);
+            RouterState.Node node = input == null ? null
+                    : SoundRouter.get().node(new DimPos(mixer.getLevel().dimension(), input));
+            buf.writeVarInt(node == null ? -1 : node.kind().ordinal());
+            buf.writeVarInt(node == null ? 0 : node.channel());
         }
-        buf.writeVarInt(mask);
         buf.writeVarInt(SoundRouter.get().countSpeakers(mixer.dimPos()));
         ServerPlayNetworking.send(player, OPEN, buf);
     }

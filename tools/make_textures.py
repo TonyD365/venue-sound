@@ -123,3 +123,113 @@ icon = Image.new("RGBA", (128, 128), hexc("e8b84a"))
 icon.paste(m.resize((112, 112), Image.NEAREST), (8, 8))
 icon.save(ROOT / "icon.png")
 print("textures written")
+
+# ================================================================== v0.2 devices
+
+# ---------- wall outlet (stage box plate)
+o = Image.new("RGBA", (16, 16), hexc("9aa0a6"))
+po = o.load()
+for i in range(16):
+    po[i, 0] = hexc("c9cdd2"); po[0, i] = hexc("c9cdd2"); po[i, 15] = hexc("6b7178"); po[15, i] = hexc("6b7178")
+for cx, cy in ((5, 5), (10, 5), (5, 10), (10, 10)):   # four XLR sockets
+    for x in range(cx - 2, cx + 2):
+        for y in range(cy - 2, cy + 2):
+            po[x, y] = hexc("1c1e22")
+    po[cx - 1, cy - 1] = hexc("5a5f66")
+rect(o, 3, 13, 12, 13, hexc("e8b84a"))                # label strip
+o.save(BLOCK / "outlet_front.png")
+Image.new("RGBA", (16, 16), hexc("7f8c8d")).save(BLOCK / "outlet_side.png")
+
+# ---------- stand mic
+Image.new("RGBA", (16, 16), hexc("1c1e22")).save(BLOCK / "stand_metal.png")
+head = Image.new("RGBA", (16, 16), hexc("9aa0a6"))
+ph = head.load()
+for x in range(16):
+    for y in range(16):
+        if (x + y) % 2 == 0:
+            ph[x, y] = hexc("c9cdd2")
+head.save(BLOCK / "mic_head.png")
+
+# ---------- amplifier (rack power amp)
+a = base(hexc("1f2124"))
+rect(a, 1, 2, 14, 2, hexc("5a5f66"))
+rect(a, 2, 4, 7, 9, hexc("0e0f11"))                   # ventilation grille
+for y in (5, 7):
+    rect(a, 2, y, 7, y, hexc("2b2e33"))
+for x, c in ((9, "3ddc84"), (11, "3ddc84"), (13, "e74c3c")):
+    rect(a, x, 4, x, 4, hexc(c))                       # LEDs
+rect(a, 9, 7, 10, 8, hexc("c9cdd2")); rect(a, 12, 7, 13, 8, hexc("c9cdd2"))  # gain knobs
+rect(a, 2, 12, 13, 12, hexc("e8b84a"))                # brand strip
+rect(a, 1, 1, 1, 14, hexc("7f8c8d")); rect(a, 14, 1, 14, 14, hexc("7f8c8d"))  # rack ears
+a.save(BLOCK / "amplifier_front.png")
+base(hexc("1f2124")).save(BLOCK / "amplifier_side.png")
+at = base(hexc("1f2124"))
+for y in range(3, 13, 2):
+    rect(at, 3, y, 12, y, hexc("111111"))
+at.save(BLOCK / "amplifier_top.png")
+
+# ---------- media deck
+dk = base(hexc("23262b"))
+rect(dk, 2, 3, 9, 6, hexc("0b2a12")); rect(dk, 3, 4, 8, 5, hexc("3ddc84"))   # display
+rect(dk, 11, 3, 13, 5, hexc("c9cdd2"))                                        # jog
+for x, c in ((2, "3498db"), (5, "2ecc71"), (8, "e74c3c")):
+    rect(dk, x, 9, x + 1, 10, hexc(c))                                        # transport buttons
+rect(dk, 2, 12, 13, 13, hexc("111111"))                                       # disc slot
+dk.save(BLOCK / "media_deck_front.png")
+dt = base(hexc("23262b"))
+for x in range(16):
+    for y in range(16):
+        if (x - 7.5) ** 2 + (y - 7.5) ** 2 <= 30:
+            dt.load()[x, y] = hexc("3a3d42")
+dt.load()[7, 7] = hexc("c9cdd2")
+dt.save(BLOCK / "media_deck_top.png")
+
+# ---------- big PA cabinet (2 blocks tall)
+def grille(img):
+    p = img.load()
+    for x in range(1, 15):
+        for y in range(1, 15):
+            p[x, y] = hexc("16171a") if (x + y) % 2 else hexc("202226")
+
+low = Image.new("RGBA", (16, 16), hexc("101113"))
+grille(low)
+pl = low.load()
+for cy in (4, 11):                                     # two 15" woofers
+    for x in range(16):
+        for y in range(16):
+            dd = (x - 7.5) ** 2 + (y - cy) ** 2
+            if dd <= 14:
+                pl[x, y] = hexc("26282c")
+            if dd <= 5:
+                pl[x, y] = hexc("33363b")
+            if dd <= 1.2:
+                pl[x, y] = hexc("5a5f66")
+for i in range(16):
+    pl[i, 15] = hexc("0a0a0b"); pl[0, i] = hexc("2b2e33"); pl[15, i] = hexc("0a0a0b")
+low.save(BLOCK / "pa_front_lower.png")
+
+up = Image.new("RGBA", (16, 16), hexc("101113"))
+grille(up)
+pu = up.load()
+for x in range(2, 14):                                 # horn flare
+    for y in range(3, 11):
+        if abs(x - 7.5) <= 2 + (y - 3) * 0.6:
+            pu[x, y] = hexc("2c2f34")
+rect(up, 6, 3, 9, 5, hexc("0b0b0c"))                   # horn throat
+rect(up, 4, 12, 11, 13, hexc("c9cdd2"))                # logo plate
+rect(up, 5, 12, 10, 12, hexc("e8b84a"))
+for i in range(16):
+    pu[i, 0] = hexc("2b2e33"); pu[0, i] = hexc("2b2e33"); pu[15, i] = hexc("0a0a0b")
+up.save(BLOCK / "pa_front_upper.png")
+
+side = Image.new("RGBA", (16, 16), hexc("1c1e22"))
+ps = side.load()
+for x in range(16):
+    for y in range(16):
+        if (x * 7 + y * 3) % 11 == 0:
+            ps[x, y] = hexc("232529")                  # textured paint
+rect(side, 5, 6, 10, 7, hexc("0a0a0b"))               # handle
+rect(side, 6, 7, 9, 7, hexc("5a5f66"))
+side.save(BLOCK / "pa_side.png")
+pt = base(hexc("1c1e22")); rect(pt, 6, 6, 9, 9, hexc("7f8c8d")); pt.save(BLOCK / "pa_top.png")   # pole mount
+print("v0.2 textures written")

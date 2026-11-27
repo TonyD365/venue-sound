@@ -1,0 +1,112 @@
+# CodeQL code scanning (Java, workflows, the bot's TypeScript). On every pull request, main, and every two days.
+# Dependency updates come from Dependabot (see dependabot.yml).
+# On main and in the scheduled scan, a finding opens a "Security report" issue (or adds to the open
+# one), and the issue closes itself once everything is clean again. A pull request whose
+# scan fails gets the "security" label until it passes.
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request: # every pull request, documentation too, so every commit on main was scanned
+  schedule:
+    - cron: "41 5 */2 * *" # every two days
+  workflow_dispatch:
+
+concurrency:
+  group: security-${{ github.ref }}
+  # Only a pull request's older run is cancelled: a cancelled run on main shows as a failed
+  # CodeQL configuration on the Security page.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  codeql:
+    name: CodeQL (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [java-kotlin, actions, javascript-typescript]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+          # The extended suite: more security queries than the default (for workflows, also
+          # untrusted checkouts, artifact poisoning, cache poisoning and excessive secrets).
+          queries: security-extended
+      - uses: github/codeql-action/analyze@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          category: /language:${{ matrix.language }}
+
+  report:
+    # A security finding on main or in the scheduled scan becomes an issue, so it is not
+    # missed in the e-mail. Pull requests show it on their checks instead.
+    name: Security report
+    needs: [codeql]
+    if: always() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.AGENT_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
+          CODEQL: ${{ needs.codeql.result }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SCANNING: ${{ github.server_url }}/${{ github.repository }}/security/code-scanning
+        run: |
+          title="Security report"
+          gh label create security --color b60205 --description "Security findings" 2>/dev/null || true
+          open=$(gh issue list --state open --label security --search "\"$title\" in:title" --json number -q '.[0].number')
+          if [ "$CODEQL" = "success" ]; then
+            [ -n "$open" ] && gh issue close "$open" --comment "All clear again: $RUN"
+            exit 0
+          fi
+          {
+            echo "The security scan found something ($(date -u '+%Y-%m-%d')). Please look at it soon."
+            echo
+            echo "- CodeQL code scanning: **$CODEQL** (details: $SCANNING)"
+            echo
+            echo "Run: $RUN"
+            echo
+            echo "Open the code scanning alert, fix the code, or dismiss it with a reason if it is a false positive."
+          } > body.md
+          if [ -n "$open" ]; then gh issue comment "$open" --body-file body.md
+          else gh issue create --title "$title" --label security --body-file body.md; fi
+
+  flag:
+    # On a pull request: the "security" label while its scan fails, taken off once it passes.
+    # (A pull request from a fork gets a read-only token, so it only shows the failed check.)
+    name: Security label
+    needs: [codeql]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.AGENT_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          CODEQL: ${{ needs.codeql.result }}
+        run: |
+          gh label create security --color b60205 --description "Security findings" 2>/dev/null || true
+          if [ "$CODEQL" = "failure" ]; then
+            gh api -X POST "repos/$GH_REPO/issues/$NUMBER/labels" -f "labels[]=security" >/dev/null || true
+          elif [ "$CODEQL" = "success" ]; then
+            gh api -X DELETE "repos/$GH_REPO/issues/$NUMBER/labels/security" >/dev/null 2>&1 || true
+          fi

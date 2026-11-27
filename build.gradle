@@ -10,6 +10,7 @@ base {
 }
 
 repositories {
+    mavenCentral()
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
 }
 
@@ -21,6 +22,9 @@ dependencies {
 
     // Simple Voice Chat plugin API (provided at runtime by the Simple Voice Chat mod)
     compileOnly "de.maxhenkel.voicechat:voicechat-api:${project.voicechat_api_version}"
+
+    // MP3 decoding for the media deck, bundled into the mod jar
+    include(implementation("javazoom:jlayer:1.0.1"))
 }
 
 processResources {
