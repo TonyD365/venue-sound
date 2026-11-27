@@ -41,7 +41,7 @@ public final class Device {
         STAND_MIC("Stand Microphone", NodeKind.STAND_MIC, "stand_mic", "stand_mic"),
         MEDIA_DECK("Media Deck", NodeKind.MEDIA_DECK, "media_deck", "media_deck"),
         OUTLET("Wall Outlet", NodeKind.OUTLET, "outlet", "outlet"),
-        MIXER("Mixing Console", NodeKind.MIXER, "mixer_left", "mixer"),
+        MIXER("Mixing Console", NodeKind.MIXER, "mixer_c0_r0", "mixer"),
         AMPLIFIER("Power Amplifier", NodeKind.AMPLIFIER, "amplifier", "amplifier"),
         PA_SPEAKER("PA Speaker", NodeKind.SPEAKER, "pa_speaker_lower", "pa_speaker"),
         LINE_ARRAY("Line Array Module", NodeKind.SPEAKER, "speaker", "speaker");
@@ -65,7 +65,7 @@ public final class Device {
         }
     }
 
-    public static final int INPUTS = 8;
+    public static final int INPUTS = dev.tonyd365.venuesound.block.MixerLayout.STRIPS;
     public static final float MAX_GAIN = 2.0F;
     public static final int[] RANGES = {16, 32, 48, 64, 96, 128};
 
@@ -81,12 +81,11 @@ public final class Device {
 
     // receiver
     public int channel = 1;
-    // mixer
-    public final float[] gains = new float[INPUTS];
-    public final float[] trims = new float[INPUTS];
-    public final boolean[] mutes = new boolean[INPUTS];
+    // console
+    public final java.util.Map<String, Float> params = new java.util.concurrent.ConcurrentHashMap<>(dev.tonyd365.venuesound.block.MixerLayout.defaults());
     public final Device[] inputs = new Device[INPUTS];
-    public float master = 1.0F;
+    public volatile String usbTrack = "";
+    public volatile boolean usbPlaying;
     // amplifier
     public boolean ampOn = true;
     public int ampLevel = 100;
@@ -103,10 +102,10 @@ public final class Device {
         this.x = x;
         this.z = z;
         this.facing = facing;
-        for (int i = 0; i < INPUTS; i++) {
-            gains[i] = 1.0F;
-            trims[i] = 1.0F;
-        }
+    }
+
+    public float get(String param) {
+        return params.getOrDefault(param, 0F);
     }
 
     public NodeKind kind() {
@@ -118,8 +117,15 @@ public final class Device {
         List<int[]> cells = new ArrayList<>();
         cells.add(new int[] {x, 0, z});
         if (type == Type.MIXER) {
+            // 3 wide (to the operator's right) by 2 deep (away from the operator)
             Facing right = facing.counterClockwise();
-            cells.add(new int[] {x + right.dx(), 0, z + right.dz()});
+            Facing back = facing.clockwise().clockwise();
+            cells.clear();
+            for (int r = 0; r < 2; r++) {
+                for (int c = 0; c < 3; c++) {
+                    cells.add(new int[] {x + right.dx() * c + back.dx() * r, 0, z + right.dz() * c + back.dz() * r, c, r});
+                }
+            }
         } else if (type == Type.PA_SPEAKER) {
             cells.add(new int[] {x, 1, z});
         }
@@ -154,15 +160,6 @@ public final class Device {
         return false;
     }
 
-    public float gainFor(Device upstream) {
-        for (int i = 0; i < INPUTS; i++) {
-            if (inputs[i] == upstream) {
-                return mutes[i] ? 0F : gains[i] * trims[i] * master;
-            }
-        }
-        return 0F;
-    }
-
     public int assignInput(Device upstream) {
         for (int i = 0; i < INPUTS; i++) {
             if (inputs[i] == upstream) {
@@ -176,10 +173,6 @@ public final class Device {
             }
         }
         return -1;
-    }
-
-    public void stepTrim(int input, int direction) {
-        trims[input] = Math.max(0F, Math.min(MAX_GAIN, Math.round((trims[input] + direction * 0.1F) * 10F) / 10F));
     }
 
     public void stepAmpLevel(boolean down) {

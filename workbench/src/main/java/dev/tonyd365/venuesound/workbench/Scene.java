@@ -79,14 +79,19 @@ public final class Scene {
         if (Math.hypot(a.x - b.x, a.z - b.z) > MAX_CABLE) {
             return "Too far: a cable reaches " + MAX_CABLE + " blocks.";
         }
-        if (a.outputs().contains(b)) {
-            return "Already connected.";
+        for (Device.Link l : a.links) {
+            if (l.target() == b && l.toPort() == toPort) {
+                return "Already connected.";
+            }
         }
         if (a.portInUse(fromPort) || !a.canAddOutput()) {
             return "That socket already has a cable.";
         }
         if (b.kind() == NodeKind.MIXER) {
-            if (toPort < 0 || toPort >= Device.INPUTS || (b.inputs[toPort] != null && b.inputs[toPort] != a)) {
+            if (toPort < 0 || toPort >= Device.INPUTS || toPort == dev.tonyd365.venuesound.block.MixerLayout.USB_STRIP) {
+                return "That console input doesn't take a cable.";
+            }
+            if (b.inputs[toPort] != null && b.inputs[toPort] != a) {
                 return "IN " + (toPort + 1) + " already has a cable.";
             }
             b.inputs[toPort] = a;
@@ -129,44 +134,72 @@ public final class Scene {
         }
     }
 
-    // ------------------------------------------------------------------ routing (same as SoundRouter)
+    // ------------------------------------------------------------------ routing: the mod's own SignalEngine
 
-    /** Gain from {@code source} to every speaker it reaches. */
-    public Map<Device, Float> routes(Device source) {
-        Map<Device, Float> out = new HashMap<>();
-        walk(source, 1F, out, new HashSet<>(), 0, false);
-        return out;
-    }
+    public final dev.tonyd365.venuesound.audio.SignalEngine<Device> engine = new dev.tonyd365.venuesound.audio.SignalEngine<>();
 
-    private void walk(Device from, float gain, Map<Device, Float> out, Set<Device> visited, int depth, boolean mixed) {
-        if (depth > MAX_HOPS || !visited.add(from)) {
-            return;
+    public final dev.tonyd365.venuesound.audio.SignalEngine.Graph<Device> graph = new dev.tonyd365.venuesound.audio.SignalEngine.Graph<>() {
+        @Override
+        public NodeKind kind(Device d) {
+            return d.kind();
         }
-        for (Device next : from.outputs()) {
-            switch (next.kind()) {
-                case OUTLET -> walk(next, gain, out, visited, depth + 1, mixed);
-                case MIXER -> {
-                    if (!mixed) {
-                        float g = next.gainFor(from);
-                        if (g > 0F) {
-                            walk(next, gain * g, out, visited, depth + 1, true);
-                        }
-                    }
-                }
-                case AMPLIFIER -> {
-                    if (mixed && next.ampOn) {
-                        walk(next, gain * next.ampLevel / 100F, out, visited, depth + 1, true);
-                    }
-                }
-                case SPEAKER -> {
-                    if (mixed && gain > 0F && next.speakerOn) {
-                        out.merge(next, gain, Float::sum);
-                    }
-                }
-                default -> {
+
+        @Override
+        public List<dev.tonyd365.venuesound.audio.SignalEngine.Edge<Device>> outputs(Device d) {
+            List<dev.tonyd365.venuesound.audio.SignalEngine.Edge<Device>> edges = new ArrayList<>();
+            for (Device.Link l : d.links) {
+                if (devices.contains(l.target())) {
+                    edges.add(new dev.tonyd365.venuesound.audio.SignalEngine.Edge<>(l.target(), l.fromPort(), l.toPort()));
                 }
             }
+            return edges;
         }
+
+        @Override
+        public float param(Device console, String key) {
+            return console.get(key);
+        }
+
+        @Override
+        public int inputSlot(Device console, Device upstream) {
+            for (int i = 0; i < Device.INPUTS; i++) {
+                if (console.inputs[i] == upstream) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        @Override
+        public float ampLevel(Device amp) {
+            return amp.ampOn ? amp.ampLevel / 100F : 0F;
+        }
+
+        @Override
+        public boolean speakerOn(Device speaker) {
+            return speaker.speakerOn;
+        }
+
+        @Override
+        public Object id(Device d) {
+            return d;
+        }
+    };
+
+    /** Overall gain from a source to every speaker it reaches (measured with a test tone, without touching effects memory). */
+    public Map<Device, Float> routes(Device source) {
+        Map<Device, Float> out = new HashMap<>();
+        short[] probe = new short[960];
+        java.util.Arrays.fill(probe, (short) 10000);
+        new dev.tonyd365.venuesound.audio.SignalEngine<Device>().route(graph, source, "probe", probe, (sp, frame) -> {
+            float peak = 0;
+            for (float f : frame) {
+                peak = Math.max(peak, Math.abs(f));
+            }
+            out.merge(sp, peak / 10000F, Float::sum);
+        });
+        out.values().removeIf(v -> v < 0.001F);
+        return out;
     }
 
     /** The sources your voice reaches right now: receivers on your mic channel, stand mics next to you. */
@@ -206,16 +239,17 @@ public final class Scene {
         Device amp = add(Device.Type.AMPLIFIER, 12, 1, Device.Facing.SOUTH);
         Device outlet = add(Device.Type.OUTLET, 15, 1, Device.Facing.SOUTH);
         Device stand = add(Device.Type.STAND_MIC, 13, 5, Device.Facing.SOUTH);
-        Device console = add(Device.Type.MIXER, 14, 15, Device.Facing.SOUTH);
-        Device receiver = add(Device.Type.RECEIVER, 16, 15, Device.Facing.SOUTH);
-        Device deck = add(Device.Type.MEDIA_DECK, 11, 15, Device.Facing.SOUTH);
-        connect(receiver, console);
-        connect(stand, outlet);
-        connect(outlet, console);
-        connect(deck, console);
-        connect(console, amp);
-        connect(amp, paLeft);
-        connect(amp, paRight);
+        Device console = add(Device.Type.MIXER, 14, 16, Device.Facing.SOUTH);
+        Device receiver = add(Device.Type.RECEIVER, 17, 17, Device.Facing.SOUTH);
+        Device deck = add(Device.Type.MEDIA_DECK, 10, 17, Device.Facing.SOUTH);
+        connect(receiver, 0, console, 0);
+        connect(stand, 0, outlet, 0);
+        connect(outlet, 1, console, 1);
+        connect(deck, 0, console, 2);
+        connect(console, dev.tonyd365.venuesound.block.MixerLayout.BUS_MAIN_L, amp, 0);
+        connect(console, dev.tonyd365.venuesound.block.MixerLayout.BUS_MAIN_R, amp, 1);
+        connect(amp, 0, paLeft, 0);
+        connect(amp, 2, paRight, 0);
         listenerX = 13.5;
         listenerZ = 11.5;
     }

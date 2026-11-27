@@ -88,7 +88,7 @@ devices = [
     ("Stand Microphone\n立式有线麦克风", [("stand_mic", 0)]),
     ("Media Deck\n媒体播放机", [("media_deck", 0)]),
     ("Wall Outlet\n墙面接口", [("outlet", 0)]),
-    ("Mixing Console (2 blocks)\n调音台（两格宽）", [("mixer_right", 0, 16), ("mixer_left", 0, 0)]),
+    ("Mixing Console (3x2 blocks)\n调音台（3×2）", [("mixer_c2_r0", 0, 32), ("mixer_c1_r0", 0, 16), ("mixer_c0_r0", 0, 0)]),
     ("Power Amplifier\n功放机", [("amplifier", 0)]),
     ("Line Array Module\n线阵音箱模块", [("speaker", 0)]),
     ("PA Speaker (2 blocks)\n大型 PA 音箱（两格高）", [("pa_speaker_lower", 0), ("pa_speaker_upper", 16)]),

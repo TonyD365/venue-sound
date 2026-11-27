@@ -100,6 +100,20 @@ public final class PanelDraw {
         pose.popPose();
     }
 
+    /** Text lying on a top surface at height {@code h}, readable by the operator, top-left at (u, depth). */
+    public void topText(MultiBufferSource buffers, String text, double u, double depth, double h, double size, int argb) {
+        net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;
+        pose.pushPose();
+        pose.translate((16 - u) / 16, h / 16 + 0.002, depth / 16);
+        pose.mulPose(Axis.XP.rotationDegrees(90));
+        pose.mulPose(Axis.YP.rotationDegrees(180));
+        float k = (float) (size / 8.0 / 16.0);
+        pose.scale(k, -k, k);
+        font.drawInBatch(text, 0, 0, argb, false, pose.last().pose(), buffers,
+                net.minecraft.client.gui.Font.DisplayMode.POLYGON_OFFSET, 0, FULL_BRIGHT);
+        pose.popPose();
+    }
+
     /** Like {@link #frontText} but on the back face, readable from behind the device. */
     public void backText(MultiBufferSource buffers, String text, double u, double h, double depth, double size, int argb) {
         net.minecraft.client.gui.Font font = net.minecraft.client.Minecraft.getInstance().font;

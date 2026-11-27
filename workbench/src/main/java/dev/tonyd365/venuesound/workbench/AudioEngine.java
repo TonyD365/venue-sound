@@ -152,6 +152,45 @@ public final class AudioEngine implements Runnable {
         t.start();
     }
 
+    /** The console's USB player buttons (prev, play, stop, next). */
+    public void pressUsb(Device console, String button) {
+        List<String> tracks = tracks();
+        switch (button) {
+            case "prev", "next" -> {
+                if (tracks.isEmpty()) {
+                    return;
+                }
+                int i = Math.max(0, tracks.indexOf(console.usbTrack));
+                if (tracks.contains(console.usbTrack)) {
+                    i = Math.floorMod(i + ("next".equals(button) ? 1 : -1), tracks.size());
+                }
+                console.usbTrack = tracks.get(i);
+                if (console.usbPlaying) {
+                    console.track = console.usbTrack;
+                    load(console);
+                }
+            }
+            case "play" -> {
+                if (console.usbTrack.isEmpty() && !tracks.isEmpty()) {
+                    console.usbTrack = tracks.get(0);
+                }
+                if (!console.usbTrack.isEmpty()) {
+                    console.usbPlaying = true;
+                    console.playing = true;
+                    console.track = console.usbTrack;
+                    load(console);
+                }
+            }
+            case "stop" -> {
+                console.usbPlaying = false;
+                console.playing = false;
+                deckPcm.remove(console);
+            }
+            default -> {
+            }
+        }
+    }
+
     private short[] nextDeckFrame(Device deck) {
         short[] pcm = deckPcm.get(deck);
         if (!deck.playing || pcm == null) {
@@ -216,6 +255,13 @@ public final class AudioEngine implements Runnable {
                     if (frame != null) {
                         route(d, frame, left, right, levels);
                     }
+                } else if (d.type == Device.Type.MIXER && d.usbPlaying) {
+                    short[] frame = nextDeckFrame(d);
+                    if (frame == null) {
+                        d.usbPlaying = false;
+                    } else {
+                        routeUsb(d, frame, left, right, levels);
+                    }
                 }
             }
             for (int i = 0; i < FRAME; i++) {
@@ -233,20 +279,34 @@ public final class AudioEngine implements Runnable {
 
     /** Sends one frame from {@code source} through the cables and mixes every reached speaker into the output. */
     private void route(Device source, short[] pcm, float[] left, float[] right, Map<Device, Double> levels) {
+        levels.merge(source, peak(pcm), Math::max);
+        scene.engine.route(scene.graph, source, source, pcm, (sp, frame) -> hear(sp, frame, left, right, levels));
+    }
+
+    private void routeUsb(Device console, short[] pcm, float[] left, float[] right, Map<Device, Double> levels) {
+        levels.merge(console, peak(pcm), Math::max);
+        scene.engine.routeIntoConsole(scene.graph, console, dev.tonyd365.venuesound.block.MixerLayout.USB_STRIP, "usb", pcm,
+                (sp, frame) -> hear(sp, frame, left, right, levels));
+    }
+
+    private static double peak(short[] pcm) {
         double peak = 0;
         for (short s : pcm) {
             peak = Math.max(peak, Math.abs(s) / 32768.0);
         }
-        levels.merge(source, peak, Math::max);
-        for (Map.Entry<Device, Float> e : scene.routes(source).entrySet()) {
-            Device sp = e.getKey();
-            float gain = e.getValue();
+        return peak;
+    }
+
+    /** One speaker's frame, heard from where you stand. */
+    private void hear(Device sp, float[] pcm, float[] left, float[] right, Map<Device, Double> levels) {
+        {
+            float gain = 1F;
             double dx = sp.x + 0.5 - scene.listenerX;
             double dz = sp.z + 0.5 - scene.listenerZ;
             double dist = Math.hypot(dx, dz);
             double atten = Math.max(0, 1 - dist / sp.range);
             if (atten <= 0) {
-                continue;
+                return;
             }
             // you face the stage (north): speakers to the east are on your right
             double pan = dist < 0.01 ? 0 : Math.max(-1, Math.min(1, dx / dist));
@@ -257,7 +317,11 @@ public final class AudioEngine implements Runnable {
                 left[i] += pcm[i] * gl;
                 right[i] += pcm[i] * gr;
             }
-            levels.merge(sp, Math.min(1, peak * gain * atten), Math::max);
+            float fp = 0;
+            for (float f : pcm) {
+                fp = Math.max(fp, Math.abs(f) / 32768F);
+            }
+            levels.merge(sp, Math.min(1, fp * atten), Math::max);
         }
     }
 

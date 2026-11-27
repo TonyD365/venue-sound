@@ -2,6 +2,7 @@ package dev.tonyd365.venuesound.block;
 
 import dev.tonyd365.venuesound.Registration;
 import dev.tonyd365.venuesound.audio.DimPos;
+import dev.tonyd365.venuesound.audio.MediaPlayback;
 import dev.tonyd365.venuesound.audio.NodeKind;
 import dev.tonyd365.venuesound.audio.RouterState;
 import net.minecraft.core.BlockPos;
@@ -10,26 +11,22 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/** Mixing console: 8 inputs, each with a fader and mute, plus a master fader. */
+/** Mixing console: 10 input strips, master section and a built-in USB player (on strip ST1). */
 public class MixerBlockEntity extends AudioNodeBlockEntity {
 
-    public static final int INPUTS = 8;
-    public static final float MAX_GAIN = 2.0F;
+    public static final int INPUTS = MixerLayout.STRIPS;
 
-    private final float[] gains = new float[INPUTS];
-    private final boolean[] mutes = new boolean[INPUTS];
-    private final float[] trims = new float[INPUTS];
+    private final Map<String, Float> params = new HashMap<>(MixerLayout.defaults());
     private final BlockPos[] inputs = new BlockPos[INPUTS];
-    private float master = 1.0F;
+    private String usbTrack = "";
+    private boolean usbPlaying;
 
     public MixerBlockEntity(BlockPos pos, BlockState state) {
         super(Registration.MIXER_BE, pos, state);
-        for (int i = 0; i < INPUTS; i++) {
-            gains[i] = 1.0F;
-            trims[i] = 1.0F;
-        }
     }
 
     @Override
@@ -42,27 +39,20 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
         return NodeKind.MIXER;
     }
 
-    public float getGain(int input) {
-        return gains[input];
+    public float get(String param) {
+        Float v = params.get(param);
+        return v != null ? v : MixerLayout.defaults().getOrDefault(param, 0F);
     }
 
-    public boolean isMuted(int input) {
-        return mutes[input];
+    public void set(String param, float value) {
+        if (MixerLayout.defaults().containsKey(param)) {
+            params.put(param, value);
+            changed();
+        }
     }
 
-    /** Input trim (the knob above each mute button), 0-2. */
-    public float getTrim(int input) {
-        return trims[input];
-    }
-
-    /** Turns a trim knob one 10 % step up or down. */
-    public void stepTrim(int input, int direction) {
-        trims[input] = Math.max(0F, Math.min(MAX_GAIN, Math.round((trims[input] + direction * 0.1F) * 10F) / 10F));
-        changed();
-    }
-
-    public float getMaster() {
-        return master;
+    public boolean isMuted(int strip) {
+        return get("mute." + strip) > 0.5F;
     }
 
     @Nullable
@@ -70,40 +60,29 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
         return inputs[input];
     }
 
-    /** Plugs {@code upstream} into input {@code slot} (0-7). False if another device is already plugged in there. */
-    public boolean assignInput(BlockPos upstream, int slot) {
-        if (slot < 0 || slot >= INPUTS || (inputs[slot] != null && !inputs[slot].equals(upstream))) {
-            return false;
-        }
-        releaseInputQuietly(upstream);
-        inputs[slot] = upstream.immutable();
-        changed();
-        return true;
+    public String getUsbTrack() {
+        return usbTrack;
     }
 
-    private void releaseInputQuietly(BlockPos upstream) {
+    public boolean isUsbPlaying() {
+        return usbPlaying;
+    }
+
+    // ------------------------------------------------------------------ inputs
+
+    /** Plugs {@code upstream} into input {@code slot}. False if another device is already plugged in there. */
+    public boolean assignInput(BlockPos upstream, int slot) {
+        if (slot < 0 || slot >= INPUTS || slot == MixerLayout.USB_STRIP || (inputs[slot] != null && !inputs[slot].equals(upstream))) {
+            return false;
+        }
         for (int i = 0; i < INPUTS; i++) {
             if (upstream.equals(inputs[i])) {
                 inputs[i] = null;
             }
         }
-    }
-
-    /** Plugs {@code upstream} into the first free input. Returns the input number (1-8) or -1 if full. */
-    public int assignInput(BlockPos upstream) {
-        for (int i = 0; i < INPUTS; i++) {
-            if (upstream.equals(inputs[i])) {
-                return i + 1;
-            }
-        }
-        for (int i = 0; i < INPUTS; i++) {
-            if (inputs[i] == null) {
-                inputs[i] = upstream.immutable();
-                changed();
-                return i + 1;
-            }
-        }
-        return -1;
+        inputs[slot] = upstream.immutable();
+        changed();
+        return true;
     }
 
     public void releaseInput(BlockPos upstream) {
@@ -129,53 +108,102 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
         changed();
     }
 
-    /** Applies a change from the console screen. {@code input} 0-7 is a channel, 8 is the master fader. */
-    public void apply(int input, float gain, boolean mute) {
-        gain = Math.max(0F, Math.min(MAX_GAIN, gain));
-        if (input == INPUTS) {
-            master = gain;
-        } else if (input >= 0 && input < INPUTS) {
-            gains[input] = gain;
-            mutes[input] = mute;
-        } else {
-            return;
+    // ------------------------------------------------------------------ USB player
+
+    public void usbButton(String button) {
+        List<String> tracks = MediaPlayback.listTracks();
+        switch (button) {
+            case "prev", "next" -> {
+                if (tracks.isEmpty()) {
+                    return;
+                }
+                int i = Math.max(0, tracks.indexOf(usbTrack));
+                if (tracks.contains(usbTrack)) {
+                    i = Math.floorMod(i + ("next".equals(button) ? 1 : -1), tracks.size());
+                }
+                usbTrack = tracks.get(i);
+                if (usbPlaying) {
+                    startUsb();
+                }
+                changed();
+            }
+            case "play" -> {
+                if (usbTrack.isEmpty() && !tracks.isEmpty()) {
+                    usbTrack = tracks.get(0);
+                }
+                if (!usbTrack.isEmpty()) {
+                    usbPlaying = true;
+                    startUsb();
+                    changed();
+                }
+            }
+            case "stop" -> {
+                usbPlaying = false;
+                if (level instanceof ServerLevel) {
+                    MediaPlayback.get().stop(dimPos());
+                }
+                changed();
+            }
+            default -> {
+            }
         }
-        changed();
+    }
+
+    private void startUsb() {
+        if (level instanceof ServerLevel) {
+            MediaPlayback.get().playIntoConsole(dimPos(), usbTrack, MixerLayout.USB_STRIP);
+        }
     }
 
     @Override
-    protected RouterState.Node snapshot(ServerLevel level, List<DimPos> outs) {
+    public void setRemoved() {
+        if (level instanceof ServerLevel) {
+            MediaPlayback.get().stop(dimPos());
+        }
+        super.setRemoved();
+    }
+
+    // ------------------------------------------------------------------ router / persistence
+
+    @Override
+    protected RouterState.Node snapshot(ServerLevel level, List<RouterState.Out> outs) {
         DimPos[] in = new DimPos[INPUTS];
         for (int i = 0; i < INPUTS; i++) {
             in[i] = inputs[i] == null ? null : new DimPos(level.dimension(), inputs[i]);
         }
-        RouterState.Mixer mixer = new RouterState.Mixer(gains.clone(), trims.clone(), mutes.clone(), master, in);
-        return new RouterState.Node(dimPos(), kind(), outs, 0, mixer, 0F, 0, 0.5D);
+        return new RouterState.Node(dimPos(), kind(), outs, 0, new RouterState.Mixer(Map.copyOf(params), in), 0F, 0, 0.5D);
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
+        CompoundTag p = new CompoundTag();
+        params.forEach(p::putFloat);
+        tag.put("Params", p);
         for (int i = 0; i < INPUTS; i++) {
-            tag.putFloat("Gain" + i, gains[i]);
-            tag.putBoolean("Mute" + i, mutes[i]);
-            tag.putFloat("Trim" + i, trims[i]);
             if (inputs[i] != null) {
                 tag.putLong("Input" + i, inputs[i].asLong());
             }
         }
-        tag.putFloat("Master", master);
+        tag.putString("UsbTrack", usbTrack);
+        tag.putBoolean("UsbPlaying", usbPlaying);
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
+        params.clear();
+        params.putAll(MixerLayout.defaults());
+        CompoundTag p = tag.getCompound("Params");
+        for (String key : p.getAllKeys()) {
+            if (MixerLayout.defaults().containsKey(key)) {
+                params.put(key, p.getFloat(key));
+            }
+        }
         for (int i = 0; i < INPUTS; i++) {
-            gains[i] = tag.contains("Gain" + i) ? tag.getFloat("Gain" + i) : 1.0F;
-            mutes[i] = tag.getBoolean("Mute" + i);
-            trims[i] = tag.contains("Trim" + i) ? tag.getFloat("Trim" + i) : 1.0F;
             inputs[i] = tag.contains("Input" + i) ? BlockPos.of(tag.getLong("Input" + i)) : null;
         }
-        master = tag.contains("Master") ? tag.getFloat("Master") : 1.0F;
+        usbTrack = tag.getString("UsbTrack");
+        usbPlaying = tag.getBoolean("UsbPlaying");
     }
 }

@@ -155,7 +155,7 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_wrong_way").withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        if (source.hasOutput(clicked)) {
+        if (source.hasLink(clicked, port.index())) {
             say(player, Component.translatable("message.venuesound.cable_already").withStyle(ChatFormatting.YELLOW));
             return InteractionResult.SUCCESS;
         }

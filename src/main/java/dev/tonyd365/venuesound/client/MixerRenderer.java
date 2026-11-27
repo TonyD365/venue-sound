@@ -1,58 +1,92 @@
 package dev.tonyd365.venuesound.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.tonyd365.venuesound.block.DeviceBlock;
 import dev.tonyd365.venuesound.block.MixerBlockEntity;
 import dev.tonyd365.venuesound.block.MixerLayout;
 import net.minecraft.client.renderer.MultiBufferSource;
 
-/** Draws the console's moving parts from its current settings, plus its cables. */
+/** Draws every control of the console from {@link MixerLayout} and the console's current settings. */
 public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
-
-    private static final int CAP = 0xD9DCE0;
-    private static final int CAP_MASTER = 0xD0312B;
-    private static final int[] KNOB_CAPS = {0xE74C3C, 0xE67E22, 0xF1C40F, 0x2ECC71, 0x1ABC9C, 0x3498DB, 0x9B59B6, 0xECF0F1};
 
     @Override
     public void render(MixerBlockEntity mixer, float partialTick, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
         super.render(mixer, partialTick, pose, buffers, light, overlay);
-        PanelDraw d = PanelDraw.begin(pose, buffers, mixer.getBlockState().getValue(DeviceBlock.FACING));
+    }
+
+    @Override
+    protected void renderPanel(MixerBlockEntity m, PanelDraw d, MultiBufferSource buffers, int light) {
         double top = MixerLayout.TOP;
+        boolean active = m.isUsbPlaying();
         for (int i = 0; i < MixerBlockEntity.INPUTS; i++) {
-            double u = MixerLayout.stripU(i);
-            // fader cap
-            double fd = MixerLayout.faderDepth(mixer.getGain(i) / MixerBlockEntity.MAX_GAIN);
-            d.box(u - 0.75, u + 0.75, fd - 0.45, fd + 0.45, top, top + 0.9, CAP, light);
-            d.box(u - 0.75, u + 0.75, fd - 0.06, fd + 0.06, top + 0.9, top + 0.95, 0x222222, light);
-            // mute button, lit red when muted
-            boolean muted = mixer.isMuted(i);
-            d.box(u - 0.6, u + 0.6, MixerLayout.MUTE_MIN + 0.1, MixerLayout.MUTE_MAX - 0.1, top, top + (muted ? 0.25 : 0.45),
-                    muted ? 0xFF3030 : 0x3A3D42, muted ? PanelDraw.FULL_BRIGHT : light);
-            // trim knob with a pointer: -135 deg at 0 %, +135 deg at 200 %
-            double k = MixerLayout.KNOB_DEPTH;
-            d.box(u - 0.8, u + 0.8, k - 0.8, k + 0.8, top, top + 0.8, 0x1A1B1E, light);
-            d.box(u - 0.45, u + 0.45, k - 0.45, k + 0.45, top + 0.8, top + 0.95, KNOB_CAPS[i], light);
-            double a = Math.toRadians(-135 + mixer.getTrim(i) / MixerBlockEntity.MAX_GAIN * 270);
-            double pu = u + Math.sin(a) * 0.6;
-            double pd = k + Math.cos(a) * 0.6;
-            d.box(pu - 0.15, pu + 0.15, pd - 0.15, pd + 0.15, top + 0.8, top + 1.0, 0xFFFFFF, light);
-            // signal LED: green when something is plugged into this input
-            boolean patched = mixer.getInput(i) != null;
-            d.box(u - 0.25, u + 0.25, 11.4, 11.8, top, top + 0.15, patched ? 0x3DDC84 : 0x2A2C30, patched ? PanelDraw.FULL_BRIGHT : light);
+            active |= m.getInput(i) != null;
         }
-        double mu = MixerLayout.MASTER_U;
-        double md = MixerLayout.faderDepth(mixer.getMaster() / MixerBlockEntity.MAX_GAIN);
-        d.box(mu - 0.85, mu + 0.85, md - 0.5, md + 0.5, top, top + 0.95, CAP_MASTER, light);
-        d.box(mu - 0.85, mu + 0.85, md - 0.06, md + 0.06, top + 0.95, top + 1.0, 0x222222, light);
-        // master level meter: LEDs up to the master level
-        int lit = Math.round(mixer.getMaster() / MixerBlockEntity.MAX_GAIN * 8);
-        for (int s = 0; s < 8; s++) {
-            int col = s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C;
-            boolean on = s < lit;
-            double dd = 8.6 + s * 0.35;
-            d.box(26.0, 26.6, dd, dd + 0.25, top, top + 0.1, on ? col : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
+        for (MixerLayout.Control c : MixerLayout.controls()) {
+            double u = c.u(), dd = c.depth();
+            switch (c.kind()) {
+                case KNOB -> {
+                    float v = m.get(c.param());
+                    double r = MixerLayout.KNOB_R;
+                    d.box(u - r, u + r, dd - r, dd + r, top, top + 0.45, 0x141518, light);
+                    d.box(u - r * 0.68, u + r * 0.68, dd - r * 0.68, dd + r * 0.68, top + 0.45, top + 1.0, c.color(), light);
+                    double a = MixerLayout.knobAngle(c, v);
+                    double pu = u + Math.sin(a) * r * 0.55, pd = dd + Math.cos(a) * r * 0.55;
+                    d.box(pu - 0.12, pu + 0.12, pd - 0.12, pd + 0.12, top + 1.0, top + 1.08, 0xFFFFFF, light);
+                    if (c.param().endsWith(".0") || !c.param().contains(".") || c.param().endsWith(".m") || c.param().equals("efx.time")) {
+                        d.topText(buffers, c.label(), u - 0.95, dd + 1.55, top, 0.45, 0xFFB8BEC4);
+                    }
+                }
+                case FADER -> {
+                    float v = m.get(c.param());
+                    d.box(u - 0.14, u + 0.14, MixerLayout.FADER_MIN - 0.4, MixerLayout.FADER_MAX + 0.4, top, top + 0.02, 0x050506, light);
+                    for (int k = 0; k <= 8; k++) {
+                        double tick = MixerLayout.faderDepth(k / 8.0);
+                        d.box(u - 0.75, u - 0.42, tick - 0.04, tick + 0.04, top, top + 0.02, k == 4 ? 0xE8B84A : 0x6B7178, light);
+                    }
+                    double fd = MixerLayout.faderDepth(v / 2.0);
+                    d.box(u - 0.62, u + 0.62, fd - 0.5, fd + 0.5, top, top + 0.55, 0x1A1B1E, light);
+                    d.box(u - 0.6, u + 0.6, fd - 0.42, fd + 0.42, top + 0.55, top + 1.15, c.color(), light);
+                    d.box(u - 0.6, u + 0.6, fd - 0.05, fd + 0.05, top + 1.15, top + 1.18, 0x111111, light);
+                    d.topText(buffers, c.label(), u - 0.5, 0.95, top, 0.5, 0xFFE8E8E8);
+                }
+                case BUTTON -> {
+                    boolean on = c.param().startsWith("usb.")
+                            ? c.param().equals("usb.play") && m.isUsbPlaying()
+                            : m.get(c.param()) > 0.5F;
+                    double hw = c.w() / 2, hd = c.d() / 2;
+                    d.box(u - hw, u + hw, dd - hd, dd + hd, top, top + (on ? 0.3 : 0.5),
+                            on ? c.color() : 0x3A3D42, on ? PanelDraw.FULL_BRIGHT : light);
+                    d.topText(buffers, c.label(), u - hw + 0.15, dd + 0.25, top + (on ? 0.3 : 0.5), 0.42, on ? 0xFF111111 : 0xFFDDDDDD);
+                }
+                case LED -> {
+                    boolean on;
+                    if (c.param().startsWith("peak.")) {
+                        int s = Integer.parseInt(c.param().substring(5));
+                        on = m.get("gain." + s) * m.get("fader." + s) > 1.6F && !m.isMuted(s);
+                    } else {
+                        int step = Integer.parseInt(c.param().substring(c.param().lastIndexOf('.') + 1));
+                        float lvl = c.param().startsWith("meter.l") ? m.get("main.l") : m.get("main.r");
+                        on = active && step < Math.round(lvl / 2F * 8);
+                    }
+                    d.box(u - 0.22, u + 0.22, dd - 0.22, dd + 0.22, top, top + 0.12, on ? c.color() : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
+                }
+                case DISPLAY -> {
+                    double hw = c.w() / 2, hd = c.d() / 2;
+                    d.box(u - hw - 0.3, u + hw + 0.3, dd - hd - 0.3, dd + hd + 0.3, top, top + 0.1, 0x111111, light);
+                    d.box(u - hw, u + hw, dd - hd, dd + hd, top, top + 0.15, 0x0B2A12, PanelDraw.FULL_BRIGHT);
+                    String track = m.getUsbTrack().isEmpty() ? "NO USB TRACK" : m.getUsbTrack();
+                    if (track.length() > 22) {
+                        track = track.substring(0, 21) + "~";
+                    }
+                    d.topText(buffers, "USB PLAYER  " + (m.isUsbPlaying() ? "> PLAY" : "[] STOP"), u - hw + 0.4, dd + hd - 0.6, top + 0.15, 0.7, 0xFF3DDC84);
+                    d.topText(buffers, track, u - hw + 0.4, dd + 0.2, top + 0.15, 0.7, 0xFF3DDC84);
+                }
+            }
         }
-        d.end();
+        // strip numbers along the front edge
+        for (int i = 0; i < MixerLayout.STRIPS; i++) {
+            d.topText(buffers, MixerLayout.stripName(i), MixerLayout.stripU(i) - 1.4, 31.9, MixerLayout.TOP, 0.55, 0xFFE8B84A);
+        }
+        d.topText(buffers, "VENUESOUND  VS-12", 37.6, 31.9, MixerLayout.TOP, 0.75, 0xFFE8B84A);
     }
 
     @Override

@@ -280,22 +280,41 @@ def console_top(half):
     fill(25.5, 31.5, 0.4, 0.7, hexc("e8b84a"))                                                     # brand strip
     return img
 
-console_top(0).save(BLOCK / "console_top_left.png")
-console_top(1).save(BLOCK / "console_top_right.png")
-
-jack = Image.new("RGBA", (16, 16), hexc("1c1e22"))
-pj = jack.load()
-for x in range(1, 15, 3):                         # XLR / jack inputs on the raised back panel
-    for y in (4, 10):
-        for dx in range(2):
-            for dy in range(2):
-                pj[x + dx, y + dy] = hexc("0a0a0b")
-        pj[x, y] = hexc("7f8c8d")
-for x in range(16):
-    pj[x, 0] = hexc("3d4148")
-jack.save(BLOCK / "console_jacks.png")
-cf = base(hexc("1c1e22")); rect(cf, 1, 9, 14, 9, hexc("e8b84a")); cf.save(BLOCK / "console_front.png")
-
+# ---------- 3x2 console (v0.4): top panel 48x32 units at 4 px/unit, cut into six 64x64 tiles
+W_U, D_U = 48, 32
+panel = Image.new("RGBA", (W_U * R, D_U * R), hexc("1e2024"))
+pp = panel.load()
+def pfill(u0, u1, d0, d1, c):
+    for u in range(int(u0 * R), int(u1 * R)):
+        for d in range(int(d0 * R), int(d1 * R)):
+            if 0 <= u < W_U * R and 0 <= d < D_U * R:
+                pp[u, d] = c
+for i in range(10):
+    cu = 2.2 + 3.5 * i
+    pfill(cu - 1.7, cu + 1.7, 0.3, 31.7, hexc("2b2e33") if i % 2 == 0 else hexc("272a2f"))
+    pfill(cu - 1.7, cu + 1.7, 9.9, 10.1, hexc("3d4148"))      # line above the fader section
+    pfill(cu - 1.7, cu + 1.7, 22.5, 22.7, hexc("3d4148"))     # EQ section divider
+    pfill(cu - 1.7, cu + 1.7, 29.1, 29.3, hexc("3d4148"))
+pfill(36.6, 47.8, 0.3, 31.7, hexc("2e261c"))                  # master section
+pfill(36.6, 47.8, 17.8, 18.0, hexc("4a3d2a"))
+pfill(1.0, 35.6, 31.75, 31.95, hexc("e8b84a"))                # gold trim at the back edge
+def tile(col, row):
+    img = Image.new("RGBA", (64, 64))
+    px = img.load()
+    for x in range(64):
+        for y in range(64):
+            # up-face texture x = 16 - u_local (model x), y = depth_local
+            u = col * 16 + (16 - (x + 0.5) / R)
+            d = row * 16 + (y + 0.5) / R
+            px[x, y] = pp[min(W_U * R - 1, int(u * R)), min(D_U * R - 1, int(d * R))]
+    return img
+for c in range(3):
+    for r in range(2):
+        tile(c, r).save(BLOCK / f"console_top_c{c}_r{r}.png")
+cf2 = Image.new("RGBA", (16, 16), hexc("17181b"))
+rect(cf2, 0, 0, 15, 0, hexc("3d4148"))
+rect(cf2, 0, 7, 15, 7, hexc("e8b84a"))
+cf2.save(BLOCK / "console_front.png")
 # amplifier front: live switch, knob and LED are drawn by the renderer
 a2 = base(hexc("1f2124"))
 rect(a2, 1, 1, 1, 14, hexc("7f8c8d")); rect(a2, 14, 1, 14, 14, hexc("7f8c8d"))     # rack ears

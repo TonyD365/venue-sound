@@ -62,16 +62,23 @@ public final class PortLayout {
                 }
             }
             case "mixer" -> {
-                // on the raised rear panel, facing the operator, above each channel strip
-                for (int i = 0; i < 8; i++) {
+                // on the front side, below each channel strip (ST1 is the built-in USB player: no socket)
+                for (int i = 0; i < MixerLayout.STRIPS; i++) {
+                    if (i == MixerLayout.USB_STRIP) {
+                        continue;
+                    }
                     double u = MixerLayout.stripU(i);
-                    p.add(new Port("IN " + (i + 1), Dir.IN, Face.FRONT, i, u - 0.9, u + 0.9, 7.6, 9.6, MixerLayout.BACK_DEPTH));
+                    p.add(new Port(i < MixerLayout.MONO ? "IN " + (i + 1) : "ST2", Dir.IN, Face.FRONT, i, u - 1.1, u + 1.1, 2.4, 5.6, 0.0));
                 }
-                p.add(new Port("MAIN OUT 1", Dir.OUT, Face.FRONT, 0, 26.0, 27.8, 7.6, 9.6, MixerLayout.BACK_DEPTH));
-                p.add(new Port("MAIN OUT 2", Dir.OUT, Face.FRONT, 1, 29.2, 31.0, 7.6, 9.6, MixerLayout.BACK_DEPTH));
+                String[] outs = {"MAIN L", "MAIN R", "AUX 1", "AUX 2"};
+                double[] us = {44.9, 47.0, 38.3, 40.6};
+                for (int b = 0; b < 4; b++) {
+                    p.add(new Port(outs[b], Dir.OUT, Face.FRONT, b, us[b] - 0.9, us[b] + 0.9, 2.4, 5.6, 0.0));
+                }
             }
             case "amplifier" -> {
-                p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 2.0, 5.0, 9.0, 12.0, 16.0));
+                p.add(new Port("INPUT A", Dir.IN, Face.BACK, 0, 2.0, 4.6, 9.5, 12.5, 16.0));
+                p.add(new Port("INPUT B", Dir.IN, Face.BACK, 1, 5.2, 7.8, 9.5, 12.5, 16.0));
                 for (int i = 0; i < 4; i++) {
                     double u = 6.5 + i * 2.3;
                     p.add(new Port("SPK " + (i + 1), Dir.OUT, Face.BACK, i, u, u + 1.9, 3.0, 6.0, 16.0));

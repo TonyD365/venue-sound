@@ -42,7 +42,7 @@ public class ReceiverBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    protected RouterState.Node snapshot(ServerLevel level, List<DimPos> outs) {
+    protected RouterState.Node snapshot(ServerLevel level, List<RouterState.Out> outs) {
         return new RouterState.Node(dimPos(), kind(), outs, channel, null, 0F, 0, 0.5D);
     }
 

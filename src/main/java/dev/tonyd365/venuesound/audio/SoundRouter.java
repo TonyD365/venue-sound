@@ -21,10 +21,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The cable graph: sources -> (outlets) -> mixer -> (outlets) -> amplifier -> (outlets) -> speakers.
- *
- * Block entities publish immutable {@link RouterState.Node} snapshots from the server thread.
- * Audio from voice chat and media decks is routed on other threads using only those snapshots.
+ * Holds the snapshots of every device and feeds audio from voice chat and media players through
+ * the {@link SignalEngine} to the speakers' voice chat channels.
  */
 public final class SoundRouter {
 
@@ -32,8 +30,6 @@ public final class SoundRouter {
     public static final double WIRELESS_RANGE = 128.0D;
     /** How close a player must stand to a stand mic to be picked up, in blocks. */
     public static final double STAND_MIC_RANGE = 3.0D;
-    /** Longest chain of outlets followed before giving up (also stops cable loops). */
-    private static final int MAX_HOPS = 32;
 
     private static final SoundRouter INSTANCE = new SoundRouter();
 
@@ -44,6 +40,52 @@ public final class SoundRouter {
     private final Map<DimPos, RouterState.Node> nodes = new ConcurrentHashMap<>();
     private final Map<DimPos, SpeakerOutput> outputs = new ConcurrentHashMap<>();
     private final Map<UUID, OpusDecoder> decoders = new ConcurrentHashMap<>();
+    private final SignalEngine<RouterState.Node> engine = new SignalEngine<>();
+
+    /** The engine's view of the snapshots. */
+    private final SignalEngine.Graph<RouterState.Node> graph = new SignalEngine.Graph<>() {
+        @Override
+        public NodeKind kind(RouterState.Node node) {
+            return node.kind();
+        }
+
+        @Override
+        public List<SignalEngine.Edge<RouterState.Node>> outputs(RouterState.Node node) {
+            List<SignalEngine.Edge<RouterState.Node>> edges = new ArrayList<>(node.outputs().size());
+            for (RouterState.Out o : node.outputs()) {
+                RouterState.Node target = nodes.get(o.target());
+                if (target != null) {
+                    edges.add(new SignalEngine.Edge<>(target, o.fromPort(), o.toPort()));
+                }
+            }
+            return edges;
+        }
+
+        @Override
+        public float param(RouterState.Node console, String key) {
+            return console.mixer() == null ? 0F : console.mixer().get(key);
+        }
+
+        @Override
+        public int inputSlot(RouterState.Node console, RouterState.Node upstream) {
+            return console.mixer() == null ? -1 : console.mixer().slotOf(upstream.pos());
+        }
+
+        @Override
+        public float ampLevel(RouterState.Node amp) {
+            return amp.ampLevel();
+        }
+
+        @Override
+        public boolean speakerOn(RouterState.Node speaker) {
+            return speaker.range() > 0;
+        }
+
+        @Override
+        public Object id(RouterState.Node node) {
+            return node.pos();
+        }
+    };
 
     private SoundRouter() {
     }
@@ -81,34 +123,7 @@ public final class SoundRouter {
         outputs.clear();
         decoders.values().forEach(OpusDecoder::close);
         decoders.clear();
-    }
-
-    /** Speakers that the given mixer can currently reach. */
-    public int countSpeakers(DimPos mixer) {
-        RouterState.Node node = nodes.get(mixer);
-        if (node == null) {
-            return 0;
-        }
-        Set<DimPos> speakers = new HashSet<>();
-        collectSpeakers(node, speakers, new HashSet<>(), 0);
-        return speakers.size();
-    }
-
-    private void collectSpeakers(RouterState.Node from, Set<DimPos> found, Set<DimPos> visited, int depth) {
-        if (depth > MAX_HOPS || !visited.add(from.pos())) {
-            return;
-        }
-        for (DimPos out : from.outputs()) {
-            RouterState.Node next = nodes.get(out);
-            if (next == null) {
-                continue;
-            }
-            if (next.kind() == NodeKind.SPEAKER) {
-                found.add(next.pos());
-            } else if (next.kind() == NodeKind.OUTLET || next.kind() == NodeKind.AMPLIFIER) {
-                collectSpeakers(next, found, visited, depth + 1);
-            }
-        }
+        engine.clear();
     }
 
     // ------------------------------------------------------------------ voice chat (voice thread)
@@ -137,7 +152,6 @@ public final class SoundRouter {
             decoder.resetState();
             return;
         }
-
         int micChannel = WirelessMicItem.activeChannel(player);
         List<RouterState.Node> sources = new ArrayList<>();
         double wirelessSqr = WIRELESS_RANGE * WIRELESS_RANGE;
@@ -157,78 +171,80 @@ public final class SoundRouter {
             return;
         }
         short[] pcm = decoder.decode(opus);
-        Map<DimPos, List<short[]>> perSpeaker = new HashMap<>();
+        Map<DimPos, List<float[]>> perSpeaker = new HashMap<>();
         for (RouterState.Node source : sources) {
-            routeFrom(source, pcm, perSpeaker);
+            engine.route(graph, source, talker, pcm, collect(perSpeaker));
         }
         deliver(talker, perSpeaker);
     }
 
-    // ------------------------------------------------------------------ media decks (media thread)
+    // ------------------------------------------------------------------ media (media thread)
 
     public void routeMedia(DimPos deck, UUID stream, short[] pcm) {
         RouterState.Node node = nodes.get(deck);
         if (node == null) {
             return;
         }
-        Map<DimPos, List<short[]>> perSpeaker = new HashMap<>();
-        routeFrom(node, pcm, perSpeaker);
+        Map<DimPos, List<float[]>> perSpeaker = new HashMap<>();
+        engine.route(graph, node, stream, pcm, collect(perSpeaker));
         deliver(stream, perSpeaker);
     }
 
-    // ------------------------------------------------------------------ graph walk
-
-    /** Follows a source's cables to every mixer, applies that input's fader, then continues to the speakers. */
-    private void routeFrom(RouterState.Node source, short[] pcm, Map<DimPos, List<short[]>> perSpeaker) {
-        walk(source, 1F, pcm, perSpeaker, new HashSet<>(), 0, false);
-    }
-
-    /**
-     * @param from  device whose outputs we follow; a mixer input is matched against this device
-     * @param mixed whether the signal has already passed a mixer
-     */
-    private void walk(RouterState.Node from, float gain, short[] pcm,
-                      Map<DimPos, List<short[]>> perSpeaker, Set<DimPos> visited, int depth, boolean mixed) {
-        if (depth > MAX_HOPS || !visited.add(from.pos())) {
+    public void routeIntoConsole(DimPos console, int slot, UUID stream, short[] pcm) {
+        RouterState.Node node = nodes.get(console);
+        if (node == null || node.kind() != NodeKind.MIXER) {
             return;
         }
-        for (DimPos outPos : from.outputs()) {
-            RouterState.Node next = nodes.get(outPos);
+        Map<DimPos, List<float[]>> perSpeaker = new HashMap<>();
+        engine.routeIntoConsole(graph, node, slot, stream, pcm, collect(perSpeaker));
+        deliver(stream, perSpeaker);
+    }
+
+    private static SignalEngine.Sink<RouterState.Node> collect(Map<DimPos, List<float[]>> perSpeaker) {
+        return (speaker, frame) -> perSpeaker.computeIfAbsent(speaker.pos(), k -> new ArrayList<>()).add(frame);
+    }
+
+    private void deliver(UUID stream, Map<DimPos, List<float[]>> perSpeaker) {
+        for (Map.Entry<DimPos, List<float[]>> e : perSpeaker.entrySet()) {
+            SpeakerOutput output = outputs.get(e.getKey());
+            if (output == null) {
+                continue;
+            }
+            List<float[]> frames = e.getValue();
+            float[] sum = new float[frames.get(0).length];
+            for (float[] f : frames) {
+                for (int i = 0; i < sum.length && i < f.length; i++) {
+                    sum[i] += f[i];
+                }
+            }
+            output.push(stream, ConsoleDsp.toPcm(sum));
+        }
+    }
+
+    /** Speakers a device currently reaches, for display. */
+    public int countSpeakers(DimPos from) {
+        RouterState.Node node = nodes.get(from);
+        if (node == null) {
+            return 0;
+        }
+        Set<DimPos> found = new HashSet<>();
+        countSpeakers(node, found, new HashSet<>(), 0);
+        return found.size();
+    }
+
+    private void countSpeakers(RouterState.Node from, Set<DimPos> found, Set<DimPos> visited, int depth) {
+        if (depth > 32 || !visited.add(from.pos())) {
+            return;
+        }
+        for (RouterState.Out o : from.outputs()) {
+            RouterState.Node next = nodes.get(o.target());
             if (next == null) {
                 continue;
             }
-            switch (next.kind()) {
-                case OUTLET -> walk(next, gain, pcm, perSpeaker, visited, depth + 1, mixed);
-                case MIXER -> {
-                    if (mixed || next.mixer() == null) {
-                        continue;
-                    }
-                    float g = next.mixer().gainFor(from.pos());
-                    if (g > 0F) {
-                        walk(next, gain * g, pcm, perSpeaker, visited, depth + 1, true);
-                    }
-                }
-                case AMPLIFIER -> {
-                    if (mixed && next.ampLevel() > 0F) {
-                        walk(next, gain * next.ampLevel(), pcm, perSpeaker, visited, depth + 1, true);
-                    }
-                }
-                case SPEAKER -> {
-                    if (mixed && gain > 0F && next.range() > 0) {
-                        perSpeaker.computeIfAbsent(next.pos(), k -> new ArrayList<>()).add(AudioMath.applyGain(pcm, gain));
-                    }
-                }
-                default -> {
-                }
-            }
-        }
-    }
-
-    private void deliver(UUID stream, Map<DimPos, List<short[]>> perSpeaker) {
-        for (Map.Entry<DimPos, List<short[]>> e : perSpeaker.entrySet()) {
-            SpeakerOutput output = outputs.get(e.getKey());
-            if (output != null) {
-                output.push(stream, AudioMath.mix(e.getValue()));
+            if (next.kind() == NodeKind.SPEAKER) {
+                found.add(next.pos());
+            } else {
+                countSpeakers(next, found, visited, depth + 1);
             }
         }
     }

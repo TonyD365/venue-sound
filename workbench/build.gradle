@@ -32,6 +32,8 @@ sourceSets {
             include 'dev/tonyd365/venuesound/audio/NodeKind.java'
             include 'dev/tonyd365/venuesound/audio/AudioMath.java'
             include 'dev/tonyd365/venuesound/audio/MediaDecoder.java'
+            include 'dev/tonyd365/venuesound/audio/SignalEngine.java'
+            include 'dev/tonyd365/venuesound/audio/ConsoleDsp.java'
             include 'dev/tonyd365/venuesound/block/MixerLayout.java'
             include 'dev/tonyd365/venuesound/block/PanelLayout.java'
             include 'dev/tonyd365/venuesound/block/PortLayout.java'

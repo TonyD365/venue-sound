@@ -12,7 +12,8 @@
               "condition": "minecraft:block_state_property",
               "block": "venuesound:mixer",
               "properties": {
-                "part": "left"
+                "col": "0",
+                "row": "0"
               }
             }
           ]

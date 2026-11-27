@@ -35,14 +35,13 @@ public final class Inspector extends JPanel {
     private final AudioEngine audio;
     private final Runnable changed;
     private Device device;
-    private int draggingStrip = -1;
 
     public Inspector(Scene scene, AudioEngine audio, Runnable changed) {
         this.scene = scene;
         this.audio = audio;
         this.changed = changed;
         setBackground(BG);
-        setPreferredSize(new Dimension(700, 520));
+        setPreferredSize(new Dimension(720, 560));
         MouseAdapter mouse = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -56,7 +55,7 @@ public final class Inspector extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                draggingStrip = -1;
+                dragging = null;
             }
         };
         addMouseListener(mouse);
@@ -70,8 +69,8 @@ public final class Inspector extends JPanel {
 
     // ------------------------------------------------------------------ geometry
 
-    private static final double MS = 20.5;   // console: pixels per panel unit
-    private static final int MX = 14, MY = 70;
+    private static final double MS = 14.2;   // console: pixels per panel unit
+    private static final int MX = 12, MY = 66;
     private static final double FS = 24;     // front panels: pixels per panel unit
     private static final int FX = 60, FY = 70;
 
@@ -80,7 +79,7 @@ public final class Inspector extends JPanel {
     }
 
     private double cy(double depth) {
-        return MY + (12.2 - depth) * MS;
+        return MY + (MixerLayout.DEPTH - depth) * MS;
     }
 
     private double fx(double u) {
@@ -144,38 +143,23 @@ public final class Inspector extends JPanel {
         repaint();
     }
 
+    private MixerLayout.Control dragging;
+
     private void clickMixer(int x, int y, boolean press) {
         double u = (x - MX) / MS;
-        double depth = 12.2 - (y - MY) / MS;
-        int strip = press ? MixerLayout.stripAt(u) : draggingStrip;
-        if (strip < 0) {
+        double depth = MixerLayout.DEPTH - (y - MY) / MS;
+        MixerLayout.Control c = press ? MixerLayout.at(u, depth) : dragging;
+        if (press) {
+            dragging = c != null && c.kind() == MixerLayout.Kind.FADER ? c : null;
+        }
+        if (c == null || (!press && c.kind() != MixerLayout.Kind.FADER)) {
             return;
         }
-        boolean onFader = depth >= MixerLayout.FADER_MIN - 0.6 && depth <= MixerLayout.FADER_MAX + 0.6;
-        if (press && onFader) {
-            draggingStrip = strip;
-        }
-        if (draggingStrip == strip) {
-            double v = MixerLayout.faderValue(depth);
-            if (Math.abs(v - 0.5) < 0.04) {
-                v = 0.5;
-            }
-            float gain = (float) (v * Device.MAX_GAIN);
-            if (strip == 8) {
-                device.master = gain;
-            } else {
-                device.gains[strip] = gain;
-            }
+        if (c.kind() == MixerLayout.Kind.BUTTON && c.param().startsWith("usb.")) {
+            audio.pressUsb(device, c.param().substring(4));
             return;
         }
-        if (!press || strip == 8) {
-            return;
-        }
-        if (depth >= MixerLayout.MUTE_MIN && depth <= MixerLayout.MUTE_MAX) {
-            device.mutes[strip] = !device.mutes[strip];
-        } else if (Math.abs(depth - MixerLayout.KNOB_DEPTH) <= MixerLayout.KNOB_RADIUS + 0.3) {
-            device.stepTrim(strip, u < MixerLayout.stripU(strip) ? -1 : 1);
-        }
+        device.params.put(c.param(), MixerLayout.apply(c, device.get(c.param()), u, depth));
     }
 
     // ------------------------------------------------------------------ drawing
@@ -213,7 +197,7 @@ public final class Inspector extends JPanel {
 
     private String hint() {
         return switch (device.type) {
-            case MIXER -> "Drag faders · click M to mute · click the left/right half of a knob to turn the trim";
+            case MIXER -> "Drag faders · click buttons · left/right half of a knob turns it down/up · USB player in the master section";
             case AMPLIFIER -> "Click the rocker for power · left/right half of the knob for level";
             case MEDIA_DECK -> "Buttons: previous, play, stop, next, loop · files from " + scene.mediaFolder.getFileName();
             case RECEIVER -> "Picks up the wireless mic on this channel (set yours in the toolbar)";
@@ -225,59 +209,95 @@ public final class Inspector extends JPanel {
 
     private void drawMixer(Graphics2D g) {
         g.setColor(new Color(0x23262B));
-        g.fill(new RoundRectangle2D.Double(cx(0), cy(12.2), 32 * MS, 12.2 * MS, 12, 12));
-        for (int s = 0; s <= 8; s++) {
-            double u = s == 8 ? MixerLayout.MASTER_U : MixerLayout.stripU(s);
-            g.setColor(s == 8 ? new Color(0x2E261C) : (s % 2 == 0 ? PANEL : new Color(0x272A2F)));
-            g.fill(new RoundRectangle2D.Double(cx(u - 1.45), cy(11.95), 2.9 * MS, 11.65 * MS, 6, 6));
-            // fader slot and scale
-            g.setColor(Color.BLACK);
-            g.fill(new RoundRectangle2D.Double(cx(u - 0.12), cy(7.4), 0.24 * MS, 6.4 * MS, 3, 3));
-            g.setColor(new Color(0x6B7178));
-            for (int k = 0; k <= 6; k++) {
-                double dd = MixerLayout.FADER_MIN + k;
-                g.draw(new Line2D.Double(cx(u - 0.95), cy(dd), cx(u - 0.45), cy(dd)));
+        g.fill(new RoundRectangle2D.Double(cx(0), cy(MixerLayout.DEPTH), MixerLayout.WIDTH * MS, MixerLayout.DEPTH * MS, 14, 14));
+        for (int i = 0; i < MixerLayout.STRIPS; i++) {
+            double u = MixerLayout.stripU(i);
+            g.setColor(i % 2 == 0 ? PANEL : new Color(0x272A2F));
+            g.fill(new RoundRectangle2D.Double(cx(u - 1.7), cy(31.7), 3.4 * MS, 31.4 * MS, 6, 6));
+            g.setColor(device.inputs[i] != null || (i == MixerLayout.USB_STRIP && device.usbPlaying) ? GREEN : DIM);
+            g.setFont(getFont().deriveFont(Font.BOLD, 10f));
+            String src = i == MixerLayout.USB_STRIP ? "USB" : Scene.sourceLabel(device.inputs[i]);
+            g.drawString(MixerLayout.stripName(i).replace(" USB", ""), (float) cx(u - 1.5), (float) cy(31.85) - 1);
+            g.drawString(src, (float) cx(u - 1.5), (float) cy(0.05) + 10);
+        }
+        g.setColor(new Color(0x2E261C));
+        g.fill(new RoundRectangle2D.Double(cx(36.6), cy(31.7), 11.2 * MS, 31.4 * MS, 6, 6));
+        boolean active = device.usbPlaying;
+        for (Device d : device.inputs) {
+            active |= d != null;
+        }
+        for (MixerLayout.Control c : MixerLayout.controls()) {
+            double u = c.u(), dd = c.depth();
+            switch (c.kind()) {
+                case KNOB -> {
+                    float v = device.get(c.param());
+                    double r = MixerLayout.KNOB_R;
+                    g.setColor(new Color(0x141518));
+                    g.fill(new Ellipse2D.Double(cx(u - r), cy(dd + r), 2 * r * MS, 2 * r * MS));
+                    g.setColor(new Color(c.color()));
+                    g.fill(new Ellipse2D.Double(cx(u - r * 0.68), cy(dd + r * 0.68), 1.36 * r * MS, 1.36 * r * MS));
+                    double a = MixerLayout.knobAngle(c, v);
+                    g.setColor(Color.WHITE);
+                    g.setStroke(new BasicStroke(2f));
+                    g.draw(new Line2D.Double(cx(u), cy(dd), cx(u + Math.sin(a) * r * 0.8), cy(dd + Math.cos(a) * r * 0.8)));
+                    g.setStroke(new BasicStroke(1f));
+                    if (c.param().endsWith(".0") || !c.param().matches(".*\\.\\d+")) {
+                        g.setColor(DIM);
+                        g.setFont(getFont().deriveFont(8.5f));
+                        g.drawString(c.label(), (float) cx(u - 1.0), (float) cy(dd + 1.05));
+                    }
+                }
+                case FADER -> {
+                    float v = device.get(c.param());
+                    g.setColor(Color.BLACK);
+                    g.fill(new RoundRectangle2D.Double(cx(u - 0.14), cy(MixerLayout.FADER_MAX + 0.4), 0.28 * MS, (MixerLayout.FADER_MAX - MixerLayout.FADER_MIN + 0.8) * MS, 3, 3));
+                    for (int k = 0; k <= 8; k++) {
+                        double t = MixerLayout.faderDepth(k / 8.0);
+                        g.setColor(k == 4 ? GOLD : new Color(0x6B7178));
+                        g.draw(new Line2D.Double(cx(u - 0.8), cy(t), cx(u - 0.4), cy(t)));
+                    }
+                    double fd = MixerLayout.faderDepth(v / 2.0);
+                    g.setColor(new Color(c.color()));
+                    g.fill(new RoundRectangle2D.Double(cx(u - 0.62), cy(fd + 0.45), 1.24 * MS, 0.9 * MS, 4, 4));
+                    g.setColor(Color.DARK_GRAY);
+                    g.draw(new Line2D.Double(cx(u - 0.62), cy(fd), cx(u + 0.62), cy(fd)));
+                    if (c.param().contains(".m") || c.param().startsWith("main")) {
+                        g.setColor(TEXT);
+                        g.setFont(getFont().deriveFont(Font.BOLD, 9f));
+                        g.drawString(c.label(), (float) cx(u - 0.6), (float) cy(0.6) + 2);
+                    }
+                }
+                case BUTTON -> {
+                    boolean on = c.param().startsWith("usb.") ? c.param().equals("usb.play") && device.usbPlaying : device.get(c.param()) > 0.5F;
+                    g.setColor(on ? new Color(c.color()) : new Color(0x3A3D42));
+                    g.fill(new RoundRectangle2D.Double(cx(u - c.w() / 2), cy(dd + c.d() / 2), c.w() * MS, c.d() * MS, 4, 4));
+                    g.setColor(on ? Color.BLACK : TEXT);
+                    g.setFont(getFont().deriveFont(Font.BOLD, 8.5f));
+                    g.drawString(c.label(), (float) cx(u - c.w() / 2 + 0.15), (float) cy(dd - 0.25));
+                }
+                case LED -> {
+                    boolean on;
+                    if (c.param().startsWith("peak.")) {
+                        int st = Integer.parseInt(c.param().substring(5));
+                        on = device.get("gain." + st) * device.get("fader." + st) > 1.6F && device.get("mute." + st) < 0.5F;
+                    } else {
+                        int step = Integer.parseInt(c.param().substring(c.param().lastIndexOf('.') + 1));
+                        float lvl = c.param().startsWith("meter.l") ? device.get("main.l") : device.get("main.r");
+                        on = active && step < Math.round(audio.meter(device) * 8 + lvl);
+                    }
+                    g.setColor(on ? new Color(c.color()) : new Color(0x2A2C30));
+                    g.fill(new Ellipse2D.Double(cx(u - 0.25), cy(dd + 0.25), 0.5 * MS, 0.5 * MS));
+                }
+                case DISPLAY -> {
+                    g.setColor(new Color(0x0B2A12));
+                    g.fill(new RoundRectangle2D.Double(cx(u - c.w() / 2), cy(dd + c.d() / 2), c.w() * MS, c.d() * MS, 6, 6));
+                    g.setColor(GREEN);
+                    g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+                    g.drawString("USB PLAYER " + (device.usbPlaying ? "▶" : "■"), (float) cx(u - c.w() / 2 + 0.4), (float) cy(dd + 1.2));
+                    String t = device.usbTrack.isEmpty() ? "NO TRACK" : device.usbTrack;
+                    g.drawString(t.length() > 20 ? t.substring(0, 19) + "~" : t, (float) cx(u - c.w() / 2 + 0.4), (float) cy(dd - 0.6));
+                }
             }
-            g.setColor(GOLD);
-            g.draw(new Line2D.Double(cx(u + 0.45), cy(4.2), cx(u + 1.1), cy(4.2)));
-            float gain = s == 8 ? device.master : device.gains[s];
-            double fd = MixerLayout.faderDepth(gain / Device.MAX_GAIN);
-            g.setColor(s == 8 ? new Color(0xD0312B) : new Color(0xD9DCE0));
-            g.fill(new RoundRectangle2D.Double(cx(u - 0.8), cy(fd + 0.45), 1.6 * MS, 0.9 * MS, 5, 5));
-            g.setColor(Color.DARK_GRAY);
-            g.draw(new Line2D.Double(cx(u - 0.8), cy(fd), cx(u + 0.8), cy(fd)));
-            g.setFont(getFont().deriveFont(Font.BOLD, 11f));
-            g.setColor(TEXT);
-            String pct = Math.round(gain * 100) + "%";
-            g.drawString(pct, (float) (cx(u) - g.getFontMetrics().stringWidth(pct) / 2.0), (float) cy(0.1) + 2);
-            if (s == 8) {
-                g.setColor(GOLD);
-                g.drawString("MASTER", (float) cx(u - 1.3), (float) cy(11.4));
-                continue;
-            }
-            // mute
-            boolean muted = device.mutes[s];
-            g.setColor(muted ? new Color(0xFF3030) : new Color(0x3A3D42));
-            g.fill(new RoundRectangle2D.Double(cx(u - 0.6), cy(MixerLayout.MUTE_MAX - 0.1), 1.2 * MS, 0.9 * MS, 4, 4));
-            g.setColor(muted ? Color.WHITE : DIM);
-            g.drawString("M", (float) cx(u - 0.25), (float) cy(MixerLayout.MUTE_MIN + 0.3));
-            // trim knob with pointer
-            double k = MixerLayout.KNOB_DEPTH;
-            g.setColor(new Color(0x1A1B1E));
-            g.fill(new Ellipse2D.Double(cx(u - 0.85), cy(k + 0.85), 1.7 * MS, 1.7 * MS));
-            g.setColor(new Color(0x9AA0A6));
-            g.fill(new Ellipse2D.Double(cx(u - 0.55), cy(k + 0.55), 1.1 * MS, 1.1 * MS));
-            double a = Math.toRadians(-135 + device.trims[s] / Device.MAX_GAIN * 270);
-            g.setColor(Color.WHITE);
-            g.setStroke(new BasicStroke(2f));
-            g.draw(new Line2D.Double(cx(u), cy(k), cx(u + Math.sin(a) * 0.75), cy(k + Math.cos(a) * 0.75)));
-            g.setStroke(new BasicStroke(1f));
-            // signal LED and label
-            boolean patched = device.inputs[s] != null;
-            g.setColor(patched ? GREEN : new Color(0x444444));
-            g.fill(new Ellipse2D.Double(cx(u - 1.2), cy(11.75), 0.4 * MS, 0.4 * MS));
-            g.setColor(patched ? GREEN : DIM);
-            g.drawString((s + 1) + " " + Scene.sourceLabel(device.inputs[s]), (float) cx(u - 0.7), (float) cy(11.35));
         }
     }
 

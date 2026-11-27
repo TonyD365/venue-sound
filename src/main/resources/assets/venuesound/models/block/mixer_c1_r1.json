@@ -2,10 +2,9 @@
   "parent": "block/block",
   "textures": {
     "particle": "venuesound:block/console_front",
-    "top": "venuesound:block/console_top_left",
+    "top": "venuesound:block/console_top_c1_r1",
     "front": "venuesound:block/console_front",
-    "side": "venuesound:block/mixer_side",
-    "jacks": "venuesound:block/console_jacks"
+    "side": "venuesound:block/mixer_side"
   },
   "elements": [
     {
@@ -16,28 +15,10 @@
       ],
       "to": [
         16,
-        7,
+        8,
         16
       ],
       "faces": {
-        "north": {
-          "uv": [
-            0,
-            9,
-            16,
-            16
-          ],
-          "texture": "#front"
-        },
-        "south": {
-          "texture": "#side"
-        },
-        "east": {
-          "texture": "#side"
-        },
-        "west": {
-          "texture": "#side"
-        },
         "up": {
           "uv": [
             0,
@@ -49,40 +30,41 @@
         },
         "down": {
           "texture": "#side"
-        }
-      }
-    },
-    {
-      "from": [
-        0,
-        7,
-        12
-      ],
-      "to": [
-        16,
-        10,
-        16
-      ],
-      "faces": {
+        },
         "north": {
           "uv": [
             0,
-            3,
+            8,
             16,
-            13
+            16
           ],
-          "texture": "#jacks"
+          "texture": "#side"
         },
         "south": {
+          "uv": [
+            0,
+            8,
+            16,
+            16
+          ],
           "texture": "#side"
         },
         "east": {
+          "uv": [
+            0,
+            8,
+            16,
+            16
+          ],
           "texture": "#side"
         },
         "west": {
-          "texture": "#side"
-        },
-        "up": {
+          "uv": [
+            0,
+            8,
+            16,
+            16
+          ],
           "texture": "#side"
         }
       }

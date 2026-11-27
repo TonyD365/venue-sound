@@ -65,6 +65,16 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
         return false;
     }
 
+    /** Whether a cable already runs from us into socket {@code toPort} of {@code target}. */
+    public boolean hasLink(BlockPos target, int toPort) {
+        for (Link l : links) {
+            if (l.target().equals(target) && l.toPort() == toPort) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** Whether one of our sockets already has a cable going out. */
     public boolean portInUse(int fromPort) {
         for (Link l : links) {
@@ -80,7 +90,7 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
     }
 
     public void addLink(BlockPos target, int fromPort, int toPort) {
-        if (!hasOutput(target) && canAddOutput()) {
+        if (!hasLink(target, toPort) && !portInUse(fromPort) && canAddOutput()) {
             links.add(new Link(target.immutable(), fromPort, toPort));
             changed();
         }
@@ -124,15 +134,15 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
 
     public final void syncToRouter() {
         if (level instanceof ServerLevel serverLevel && !isRemoved()) {
-            List<DimPos> outs = new ArrayList<>(links.size());
+            List<RouterState.Out> outs = new ArrayList<>(links.size());
             for (Link l : links) {
-                outs.add(new DimPos(serverLevel.dimension(), l.target()));
+                outs.add(new RouterState.Out(new DimPos(serverLevel.dimension(), l.target()), l.fromPort(), l.toPort()));
             }
             SoundRouter.get().put(serverLevel, snapshot(serverLevel, List.copyOf(outs)));
         }
     }
 
-    protected RouterState.Node snapshot(ServerLevel level, List<DimPos> outs) {
+    protected RouterState.Node snapshot(ServerLevel level, List<RouterState.Out> outs) {
         return new RouterState.Node(dimPos(), kind(), outs, 0, null, 0F, 0, 0.5D);
     }
 

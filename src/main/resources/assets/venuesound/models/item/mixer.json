@@ -1,3 +1,17 @@
 {
-  "parent": "venuesound:block/mixer_left"
+  "parent": "venuesound:block/mixer_c1_r0",
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  }
 }

@@ -74,6 +74,15 @@ public final class MediaPlayback {
         return sessions.containsKey(deck);
     }
 
+    /** Plays a track from a console's USB player straight into strip {@code slot}. */
+    public void playIntoConsole(DimPos console, String track, int slot) {
+        play(console, track, false);
+        Session s = sessions.get(console);
+        if (s != null) {
+            s.consoleSlot = slot;
+        }
+    }
+
     public void play(DimPos deck, String track, boolean loop) {
         stop(deck);
         Path folder = mediaFolder();
@@ -129,7 +138,11 @@ public final class MediaPlayback {
                 int n = Math.min(FRAME, pcm.length - s.position);
                 System.arraycopy(pcm, s.position, frame, 0, n);
                 s.position += n;
-                SoundRouter.get().routeMedia(e.getKey(), s.stream, frame);
+                if (s.consoleSlot >= 0) {
+                    SoundRouter.get().routeIntoConsole(e.getKey(), s.consoleSlot, s.stream, frame);
+                } else {
+                    SoundRouter.get().routeMedia(e.getKey(), s.stream, frame);
+                }
             }
         } catch (Exception ex) {
             VenueSound.LOGGER.error("Media playback tick failed", ex);
@@ -140,6 +153,7 @@ public final class MediaPlayback {
         final UUID stream;
         volatile boolean loop;
         volatile short[] pcm;
+        volatile int consoleSlot = -1;
         int position;
 
         Session(UUID stream, boolean loop) {

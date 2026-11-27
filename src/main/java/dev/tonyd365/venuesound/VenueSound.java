@@ -4,7 +4,6 @@ import dev.tonyd365.venuesound.audio.SoundRouter;
 import dev.tonyd365.venuesound.audio.MediaPlayback;
 import dev.tonyd365.venuesound.block.AudioNodeBlockEntity;
 import dev.tonyd365.venuesound.net.DeckPackets;
-import dev.tonyd365.venuesound.net.MixerPackets;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -24,7 +23,6 @@ public class VenueSound implements ModInitializer {
     @Override
     public void onInitialize() {
         Registration.register();
-        MixerPackets.registerServer();
         DeckPackets.registerServer();
 
         ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {

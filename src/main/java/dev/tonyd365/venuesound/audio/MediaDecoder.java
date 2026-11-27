@@ -85,8 +85,10 @@ public final class MediaDecoder {
                 byte[] chunk = new byte[8192];
                 int r;
                 long limit = (long) src.getSampleRate() * MAX_SECONDS * channels * 2;
-                while ((r = pcm.read(chunk)) > 0 && bytes.size() < limit) {
+                long total = 0;
+                while (total < limit && (r = pcm.read(chunk)) > 0) {
                     bytes.write(chunk, 0, r);
+                    total += r;
                 }
                 byte[] b = bytes.toByteArray();
                 int frames = b.length / (channels * 2);

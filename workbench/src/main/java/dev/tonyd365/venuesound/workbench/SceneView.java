@@ -280,8 +280,8 @@ public final class SceneView extends JPanel {
         for (Device d : list) {
             for (int[] c : d.cells()) {
                 String model = d.type.model;
-                if (d.type == Device.Type.MIXER && c != d.cells().get(0)) {
-                    model = "mixer_right";
+                if (d.type == Device.Type.MIXER) {
+                    model = "mixer_c" + c[3] + "_r" + c[4];
                 } else if (d.type == Device.Type.PA_SPEAKER && c[1] == 1) {
                     model = "pa_speaker_upper";
                 }
@@ -450,16 +450,22 @@ public final class SceneView extends JPanel {
         switch (d.type) {
             case MIXER -> {
                 double top = MixerLayout.TOP;
-                for (int i = 0; i < Device.INPUTS; i++) {
-                    double u = MixerLayout.stripU(i);
-                    double fd = MixerLayout.faderDepth(d.gains[i] / Device.MAX_GAIN);
-                    panelBox(g, d, u - 0.75, u + 0.75, fd - 0.45, fd + 0.45, top, top + 0.9, 0xD9DCE0);
-                    panelBox(g, d, u - 0.6, u + 0.6, MixerLayout.MUTE_MIN + 0.1, MixerLayout.MUTE_MAX - 0.1, top, top + 0.4, d.mutes[i] ? 0xFF3030 : 0x3A3D42);
-                    panelBox(g, d, u - 0.8, u + 0.8, MixerLayout.KNOB_DEPTH - 0.8, MixerLayout.KNOB_DEPTH + 0.8, top, top + 0.8, 0x1A1B1E);
-                    panelBox(g, d, u - 0.25, u + 0.25, 11.4, 11.8, top, top + 0.15, d.inputs[i] != null ? 0x3DDC84 : 0x2A2C30);
+                for (MixerLayout.Control c : MixerLayout.controls()) {
+                    double u = c.u(), dd = c.depth();
+                    switch (c.kind()) {
+                        case KNOB -> panelBox(g, d, u - 0.6, u + 0.6, dd - 0.6, dd + 0.6, top, top + 1.0, c.color());
+                        case FADER -> {
+                            double fd = MixerLayout.faderDepth(d.get(c.param()) / 2.0);
+                            panelBox(g, d, u - 0.6, u + 0.6, fd - 0.45, fd + 0.45, top, top + 1.1, c.color());
+                        }
+                        case BUTTON -> panelBox(g, d, u - c.w() / 2, u + c.w() / 2, dd - c.d() / 2, dd + c.d() / 2, top, top + 0.45,
+                                d.get(c.param()) > 0.5F ? c.color() : 0x3A3D42);
+                        case DISPLAY -> panelBox(g, d, u - c.w() / 2, u + c.w() / 2, dd - c.d() / 2, dd + c.d() / 2, top, top + 0.15,
+                                d.usbPlaying ? 0x1F7A45 : 0x0B2A12);
+                        default -> {
+                        }
+                    }
                 }
-                double md = MixerLayout.faderDepth(d.master / Device.MAX_GAIN);
-                panelBox(g, d, MixerLayout.MASTER_U - 0.85, MixerLayout.MASTER_U + 0.85, md - 0.5, md + 0.5, top, top + 0.95, 0xD0312B);
             }
             case AMPLIFIER -> {
                 panelBox(g, d, PanelLayout.Amp.SWITCH_U0, PanelLayout.Amp.SWITCH_U1, -0.4, 0, PanelLayout.Amp.SWITCH_H0, PanelLayout.Amp.SWITCH_H1, d.ampOn ? 0xE74C3C : 0x3A3D42);

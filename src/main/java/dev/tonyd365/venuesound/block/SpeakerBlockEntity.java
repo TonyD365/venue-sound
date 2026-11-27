@@ -74,7 +74,7 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    protected RouterState.Node snapshot(ServerLevel level, List<DimPos> outs) {
+    protected RouterState.Node snapshot(ServerLevel level, List<RouterState.Out> outs) {
         double height = getBlockState().getBlock() instanceof PaSpeakerBlock ? 1.0D : 0.5D;
         return new RouterState.Node(dimPos(), kind(), outs, 0, null, 0F, on ? range : 0, height);
     }
