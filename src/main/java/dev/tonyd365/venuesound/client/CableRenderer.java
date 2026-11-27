@@ -38,11 +38,24 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
         BlockPos origin = be.getBlockPos();
         VertexConsumer vc = buffers.getBuffer(RenderType.debugQuads());
         Matrix4f m = pose.last().pose();
+        Vec3 base = Vec3.atLowerCornerOf(origin);
         for (AudioNodeBlockEntity.Link link : be.getLinks()) {
-            Vec3 start = socket(level, origin, be.deviceKey(), PortLayout.Dir.OUT, link.fromPort()).subtract(Vec3.atLowerCornerOf(origin));
+            java.util.List<Vec3> points = new java.util.ArrayList<>();
+            points.add(socket(level, origin, be.deviceKey(), PortLayout.Dir.OUT, link.fromPort()));
+            for (BlockPos clip : link.via()) {
+                BlockState cs = level.getBlockState(clip);
+                if (cs.getBlock() instanceof dev.tonyd365.venuesound.block.CableClipBlock) {
+                    points.add(dev.tonyd365.venuesound.block.CableClipBlock.anchor(cs, clip));
+                }
+            }
             String targetKey = level.getBlockEntity(link.target()) instanceof AudioNodeBlockEntity t ? t.deviceKey() : "";
-            Vec3 end = socket(level, link.target(), targetKey, PortLayout.Dir.IN, link.toPort()).subtract(Vec3.atLowerCornerOf(origin));
-            drawCable(vc, m, start, end);
+            points.add(socket(level, link.target(), targetKey, PortLayout.Dir.IN, link.toPort()));
+            for (int i = 0; i + 1 < points.size(); i++) {
+                Vec3 a = points.get(i), b = points.get(i + 1);
+                double wanted = Math.min(2.5D, 0.12D * a.distanceTo(b) + 0.15D);
+                double sag = dev.tonyd365.venuesound.block.CableRoute.sag(level, a, b, wanted, java.util.Set.of());
+                drawCable(vc, m, a.subtract(base), b.subtract(base), sag);
+            }
         }
     }
 
@@ -56,10 +69,9 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
         return new Vec3(pos.getX() + a.x(), pos.getY() + a.y(), pos.getZ() + a.z());
     }
 
-    private static void drawCable(VertexConsumer vc, Matrix4f m, Vec3 a, Vec3 b) {
+    private static void drawCable(VertexConsumer vc, Matrix4f m, Vec3 a, Vec3 b, double sag) {
         Vec3 d = b.subtract(a);
         double horizontal = Math.sqrt(d.x * d.x + d.z * d.z);
-        double sag = Math.min(2.5D, 0.12D * d.length() + 0.15D);
         // Two crossed ribbons so the cable looks round from every angle.
         Vec3 side = horizontal < 1.0E-4 ? new Vec3(1, 0, 0) : new Vec3(-d.z / horizontal, 0, d.x / horizontal);
         Vec3[] offsets = {side.scale(HALF_WIDTH), new Vec3(0, HALF_WIDTH, 0)};

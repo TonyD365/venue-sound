@@ -159,24 +159,8 @@ public final class PanelDraw {
      * Where a cable attaches to a socket, in the block-local space of the device's own position.
      */
     public static org.joml.Vector3f anchor(net.minecraft.core.Direction facing, dev.tonyd365.venuesound.block.PortLayout.Port port) {
-        double u, h, d;
-        if (port == null) {
-            u = 8;
-            h = 4;
-            d = 8;
-        } else if (port.face() == dev.tonyd365.venuesound.block.PortLayout.Face.ANY) {
-            u = 8;
-            h = 0.6;
-            d = 8;
-        } else {
-            u = port.u();
-            h = port.h();
-            d = port.face() == dev.tonyd365.venuesound.block.PortLayout.Face.FRONT ? port.depth() - 0.5 : port.depth() + 0.5;
-        }
-        org.joml.Matrix4f m = new org.joml.Matrix4f().translate(0.5F, 0, 0.5F)
-                .rotateY((float) Math.toRadians(PanelMath.modelRotation(facing))).translate(-0.5F, 0, -0.5F);
-        org.joml.Vector3f v = new org.joml.Vector3f((float) ((16 - u) / 16), (float) (h / 16), (float) (d / 16));
-        return m.transformPosition(v);
+        net.minecraft.world.phys.Vec3 v = PanelMath.socket(facing, port);
+        return new org.joml.Vector3f((float) v.x, (float) v.y, (float) v.z);
     }
 
     public PoseStack pose() {

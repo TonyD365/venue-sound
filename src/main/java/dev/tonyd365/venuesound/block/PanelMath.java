@@ -46,6 +46,39 @@ public final class PanelMath {
         return new Point(u * 16, d * 16, y * 16);
     }
 
+    /** Clockwise blockstate rotation of a device facing {@code facing} (north 0, east 90, south 180, west 270). */
+    public static int stateRotation(Direction facing) {
+        return switch (facing) {
+            case EAST -> 90;
+            case SOUTH -> 180;
+            case WEST -> 270;
+            default -> 0;
+        };
+    }
+
+    /** Block-local position of panel point (u, height, depth) of a device facing {@code facing}. */
+    public static Vec3 toBlock(Direction facing, double u, double height, double depth) {
+        double dx = (16 - u) / 16 - 0.5, dz = depth / 16 - 0.5;
+        for (int r = 0; r < stateRotation(facing) / 90; r++) {
+            double nx = -dz;
+            dz = dx;
+            dx = nx;
+        }
+        return new Vec3(0.5 + dx, height / 16, 0.5 + dz);
+    }
+
+    /** Block-local point where a cable leaves or enters a socket. */
+    public static Vec3 socket(Direction facing, PortLayout.Port port) {
+        if (port == null) {
+            return toBlock(facing, 8, 4, 8);
+        }
+        if (port.face() == PortLayout.Face.ANY) {
+            return toBlock(facing, 8, 0.6, 8);
+        }
+        double d = port.face() == PortLayout.Face.FRONT ? port.depth() - 0.5 : port.depth() + 0.5;
+        return toBlock(facing, port.u(), port.h(), d);
+    }
+
     /** Rotation (degrees about +Y) that turns the north-facing model frame to {@code facing}. */
     public static float modelRotation(Direction facing) {
         return 180F - facing.toYRot();

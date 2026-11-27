@@ -53,5 +53,9 @@
   "message.venuesound.cable_end_in": "%s is an output. End the cable at an IN socket.",
   "message.venuesound.cable_connected_ports": "Connected %s → %s.",
   "message.venuesound.speaker_on": "Speaker on",
-  "message.venuesound.speaker_off": "Speaker off"
+  "message.venuesound.speaker_off": "Speaker off",
+  "block.venuesound.cable_clip": "Cable Clip",
+  "message.venuesound.clip_need_cable": "Plug a cable into an OUT socket first, then click clips to run it along them.",
+  "message.venuesound.clip_added": "Cable runs through %s clip(s). Click more clips, or an IN socket to finish.",
+  "message.venuesound.cable_blocked": "The cable would go through a wall. Add a cable clip to route around it."
 }

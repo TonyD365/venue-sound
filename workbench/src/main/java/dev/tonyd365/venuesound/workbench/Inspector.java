@@ -203,6 +203,7 @@ public final class Inspector extends JPanel {
             case RECEIVER -> "Picks up the wireless mic on this channel (set yours in the toolbar)";
             case STAND_MIC -> "Picks up your voice when you stand within 3 blocks";
             case OUTLET -> "Patch point: chain cables or split one signal into up to 8";
+            case CABLE_CLIP -> "Holds cables to the floor or a wall";
             default -> "Rear panel: INPUT socket, power switch and coverage knob";
         };
     }
@@ -400,6 +401,11 @@ public final class Inspector extends JPanel {
     private void drawRouting(Graphics2D g) {
         g.setFont(getFont().deriveFont(13f));
         int y = getHeight() - 70;
+        if (device.kind() == null) {
+            g.setColor(DIM);
+            g.drawString("Cable clip: in Cable mode, click clips after the OUT socket to run the cable along them.", 16, y);
+            return;
+        }
         g.setColor(DIM);
         if (device.kind().isSource()) {
             Map<Device, Float> routes = scene.routes(device);

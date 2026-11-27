@@ -56,7 +56,7 @@ public final class Scene {
     public void remove(Device d) {
         devices.remove(d);
         for (Device other : devices) {
-            other.links.removeIf(l -> l.target() == d);
+            other.links.removeIf(l -> l.target() == d || l.via().contains(d));
             for (int i = 0; i < Device.INPUTS; i++) {
                 if (other.inputs[i] == d) {
                     other.inputs[i] = null;
@@ -67,6 +67,13 @@ public final class Scene {
 
     /** Connects a cable from socket {@code fromPort} of {@code a} into socket {@code toPort} of {@code b}. Null on success, else why not. */
     public String connect(Device a, int fromPort, Device b, int toPort) {
+        return connect(a, fromPort, b, toPort, List.of());
+    }
+
+    public String connect(Device a, int fromPort, Device b, int toPort, List<Device> via) {
+        if (a.kind() == null || b.kind() == null) {
+            return "Cable clips hold cables; plug into a device's socket.";
+        }
         if (a == b) {
             return "That's the same device.";
         }
@@ -96,7 +103,7 @@ public final class Scene {
             }
             b.inputs[toPort] = a;
         }
-        a.links.add(new Device.Link(b, fromPort, toPort));
+        a.links.add(new Device.Link(b, fromPort, toPort, List.copyOf(via)));
         return null;
     }
 
@@ -141,7 +148,7 @@ public final class Scene {
     public final dev.tonyd365.venuesound.audio.SignalEngine.Graph<Device> graph = new dev.tonyd365.venuesound.audio.SignalEngine.Graph<>() {
         @Override
         public NodeKind kind(Device d) {
-            return d.kind();
+            return d.kind() == null ? NodeKind.OUTLET : d.kind();
         }
 
         @Override
@@ -248,8 +255,16 @@ public final class Scene {
         connect(deck, 0, console, 2);
         connect(console, dev.tonyd365.venuesound.block.MixerLayout.BUS_MAIN_L, amp, 0);
         connect(console, dev.tonyd365.venuesound.block.MixerLayout.BUS_MAIN_R, amp, 1);
+        Device clipA = add(Device.Type.CABLE_CLIP, 11, 9, Device.Facing.NORTH);
+        Device clipB = add(Device.Type.CABLE_CLIP, 11, 4, Device.Facing.NORTH);
         connect(amp, 0, paLeft, 0);
         connect(amp, 2, paRight, 0);
+        // run the deck's cable along the floor through two clips
+        for (Device.Link l : new ArrayList<>(deck.links)) {
+            deck.links.remove(l);
+            deck.links.add(new Device.Link(l.target(), l.fromPort(), l.toPort(), List.of(clipA)));
+        }
+        devices.remove(clipB);
         listenerX = 13.5;
         listenerZ = 11.5;
     }

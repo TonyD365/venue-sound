@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "venuesound:block/cable_clip"
+    },
+    "facing=down": {
+      "model": "venuesound:block/cable_clip",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "venuesound:block/cable_clip",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "venuesound:block/cable_clip",
+      "x": 90,
+      "y": 90
+    },
+    "facing=south": {
+      "model": "venuesound:block/cable_clip",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west": {
+      "model": "venuesound:block/cable_clip",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

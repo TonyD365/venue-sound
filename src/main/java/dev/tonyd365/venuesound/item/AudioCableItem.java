@@ -1,6 +1,8 @@
 package dev.tonyd365.venuesound.item;
 
 import dev.tonyd365.venuesound.block.AudioNodeBlockEntity;
+import dev.tonyd365.venuesound.block.CableClipBlock;
+import dev.tonyd365.venuesound.block.CableRoute;
 import dev.tonyd365.venuesound.block.DeviceBlock;
 import dev.tonyd365.venuesound.block.MixerBlock;
 import dev.tonyd365.venuesound.block.MixerBlockEntity;
@@ -72,10 +74,70 @@ public class AudioCableItem extends Item {
         return PortLayout.at(key, face, p.u(), p.height());
     }
 
+    /** World position of a socket on the device at {@code device}. */
+    public static net.minecraft.world.phys.Vec3 socketWorld(Level level, BlockPos device, String key, PortLayout.Dir dir, int index) {
+        BlockState state = level.getBlockState(device);
+        if (!state.hasProperty(DeviceBlock.FACING)) {
+            return net.minecraft.world.phys.Vec3.atCenterOf(device);
+        }
+        return PanelMath.socket(state.getValue(DeviceBlock.FACING), PortLayout.byIndex(key, dir, index)).add(device.getX(), device.getY(), device.getZ());
+    }
+
+    /** Where the held cable currently ends: the last clip it runs through, or the socket it is plugged into. */
+    @Nullable
+    private static net.minecraft.world.phys.Vec3 heldEnd(Level level, CompoundTag tag) {
+        long[] via = tag.getLongArray("Via");
+        if (via.length > 0) {
+            BlockPos clip = BlockPos.of(via[via.length - 1]);
+            BlockState cs = level.getBlockState(clip);
+            return cs.getBlock() instanceof CableClipBlock ? CableClipBlock.anchor(cs, clip) : null;
+        }
+        BlockPos from = BlockPos.of(tag.getLong("From"));
+        if (!(level.getBlockEntity(from) instanceof AudioNodeBlockEntity src)) {
+            return null;
+        }
+        return socketWorld(level, from, src.deviceKey(), PortLayout.Dir.OUT, tag.getInt("FromPort"));
+    }
+
+    /** Runs the held cable through a clip. */
+    private static InteractionResult useClip(Level level, Player player, ItemStack stack, BlockPos clip) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.contains("From")) {
+            say(player, Component.translatable("message.venuesound.clip_need_cable").withStyle(ChatFormatting.YELLOW));
+            return InteractionResult.SUCCESS;
+        }
+        net.minecraft.world.phys.Vec3 end = heldEnd(level, tag);
+        net.minecraft.world.phys.Vec3 here = CableClipBlock.anchor(level.getBlockState(clip), clip);
+        if (end == null) {
+            clearHeld(stack);
+            say(player, Component.translatable("message.venuesound.cable_source_gone").withStyle(ChatFormatting.RED));
+            return InteractionResult.SUCCESS;
+        }
+        if (end.distanceTo(here) > MAX_LENGTH) {
+            say(player, Component.translatable("message.venuesound.cable_too_far", MAX_LENGTH).withStyle(ChatFormatting.RED));
+            return InteractionResult.SUCCESS;
+        }
+        if (!CableRoute.clear(level, end, here, java.util.Set.of())) {
+            say(player, Component.translatable("message.venuesound.cable_blocked").withStyle(ChatFormatting.RED));
+            return InteractionResult.SUCCESS;
+        }
+        long[] via = tag.getLongArray("Via");
+        long[] more = java.util.Arrays.copyOf(via, via.length + 1);
+        more[via.length] = clip.asLong();
+        tag.putLongArray("Via", more);
+        click(level, clip);
+        say(player, Component.translatable("message.venuesound.clip_added", more.length));
+        return InteractionResult.SUCCESS;
+    }
+
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         Player player = context.getPlayer();
+        if (level.getBlockState(context.getClickedPos()).getBlock() instanceof CableClipBlock) {
+            return level.isClientSide || player == null ? InteractionResult.SUCCESS
+                    : useClip(level, player, context.getItemInHand(), context.getClickedPos());
+        }
         BlockPos clicked = devicePos(level, context.getClickedPos());
         if (!(level.getBlockEntity(clicked) instanceof AudioNodeBlockEntity target)) {
             return InteractionResult.PASS;
@@ -134,6 +196,16 @@ public class AudioCableItem extends Item {
         // Second click: plug the other end into an IN socket.
         BlockPos from = BlockPos.of(tag.getLong("From"));
         int fromPort = tag.getInt("FromPort");
+        java.util.List<BlockPos> via = new java.util.ArrayList<>();
+        for (long v : tag.getLongArray("Via")) {
+            via.add(BlockPos.of(v));
+        }
+        net.minecraft.world.phys.Vec3 end = heldEnd(level, tag);
+        net.minecraft.world.phys.Vec3 into = socketWorld(level, clicked, target.deviceKey(), PortLayout.Dir.IN, port.index());
+        if (end != null && end.distanceTo(into) <= MAX_LENGTH && !CableRoute.clear(level, end, into, java.util.Set.of())) {
+            say(player, Component.translatable("message.venuesound.cable_blocked").withStyle(ChatFormatting.RED));
+            return InteractionResult.SUCCESS;
+        }
         clearHeld(stack);
         if (from.equals(clicked)) {
             say(player, Component.translatable("message.venuesound.cable_cleared"));
@@ -147,7 +219,7 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_end_in", port.label()).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        if (!from.closerThan(clicked, MAX_LENGTH)) {
+        if (end == null || end.distanceTo(into) > MAX_LENGTH) {
             say(player, Component.translatable("message.venuesound.cable_too_far", MAX_LENGTH).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
@@ -167,7 +239,7 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_port_busy", port.label()).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        source.addLink(clicked, fromPort, port.index());
+        source.addLink(clicked, fromPort, port.index(), via);
         click(level, clicked);
         say(player, Component.translatable("message.venuesound.cable_connected_ports", tag.getString("FromLabel"), port.label()).withStyle(ChatFormatting.GREEN));
         return InteractionResult.SUCCESS;
@@ -184,6 +256,7 @@ public class AudioCableItem extends Item {
             tag.remove("FromDim");
             tag.remove("FromPort");
             tag.remove("FromLabel");
+            tag.remove("Via");
         }
     }
 

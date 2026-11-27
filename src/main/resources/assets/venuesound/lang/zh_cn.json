@@ -53,5 +53,9 @@
   "message.venuesound.cable_end_in": "%s 是输出口，请把线的另一头插到 IN 插孔。",
   "message.venuesound.cable_connected_ports": "已连接 %s → %s。",
   "message.venuesound.speaker_on": "音箱已开启",
-  "message.venuesound.speaker_off": "音箱已关闭"
+  "message.venuesound.speaker_off": "音箱已关闭",
+  "block.venuesound.cable_clip": "线卡",
+  "message.venuesound.clip_need_cable": "先把线插到 OUT 插孔，再依次点线卡让线沿着走。",
+  "message.venuesound.clip_added": "线已经过 %s 个线卡。继续点线卡，或点 IN 插孔完成。",
+  "message.venuesound.cable_blocked": "这根线会穿过墙。请加一个线卡绕过去。"
 }

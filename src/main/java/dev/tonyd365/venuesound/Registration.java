@@ -51,6 +51,8 @@ public final class Registration {
     public static final AmplifierBlock AMPLIFIER = new AmplifierBlock(deviceProps());
     public static final SpeakerBlock SPEAKER = new SpeakerBlock(deviceProps());
     public static final PaSpeakerBlock PA_SPEAKER = new PaSpeakerBlock(deviceProps());
+    public static final dev.tonyd365.venuesound.block.CableClipBlock CABLE_CLIP = new dev.tonyd365.venuesound.block.CableClipBlock(
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.3F).sound(SoundType.METAL).noOcclusion().noCollission());
 
     public static final WirelessMicItem WIRELESS_MIC = new WirelessMicItem(new Item.Properties().stacksTo(1));
     public static final AudioCableItem AUDIO_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
@@ -71,6 +73,7 @@ public final class Registration {
         block("amplifier", AMPLIFIER);
         block("speaker", SPEAKER);
         block("pa_speaker", PA_SPEAKER);
+        block("cable_clip", CABLE_CLIP);
 
         Registry.register(BuiltInRegistries.ITEM, VenueSound.id("wireless_mic"), WIRELESS_MIC);
         Registry.register(BuiltInRegistries.ITEM, VenueSound.id("audio_cable"), AUDIO_CABLE);
@@ -92,6 +95,7 @@ public final class Registration {
                             output.accept(STAND_MIC);
                             output.accept(MEDIA_DECK);
                             output.accept(AUDIO_CABLE);
+                            output.accept(CABLE_CLIP);
                             output.accept(OUTLET);
                             output.accept(MIXER);
                             output.accept(AMPLIFIER);

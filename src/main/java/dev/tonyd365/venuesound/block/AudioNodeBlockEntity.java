@@ -30,7 +30,10 @@ import java.util.List;
 public abstract class AudioNodeBlockEntity extends BlockEntity {
 
     /** A cable this device sends out: to which device, from which of our sockets, into which of theirs. */
-    public record Link(BlockPos target, int fromPort, int toPort) {
+    public record Link(BlockPos target, int fromPort, int toPort, List<BlockPos> via) {
+        public Link(BlockPos target, int fromPort, int toPort) {
+            this(target, fromPort, toPort, List.of());
+        }
     }
 
     private final List<Link> links = new ArrayList<>();
@@ -90,8 +93,13 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
     }
 
     public void addLink(BlockPos target, int fromPort, int toPort) {
+        addLink(target, fromPort, toPort, List.of());
+    }
+
+    /** Adds a cable that runs through the cable clips at {@code via} on its way. */
+    public void addLink(BlockPos target, int fromPort, int toPort, List<BlockPos> via) {
         if (!hasLink(target, toPort) && !portInUse(fromPort) && canAddOutput()) {
-            links.add(new Link(target.immutable(), fromPort, toPort));
+            links.add(new Link(target.immutable(), fromPort, toPort, List.copyOf(via)));
             changed();
         }
     }
@@ -184,6 +192,9 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
             c.putLong("Pos", l.target().asLong());
             c.putInt("From", l.fromPort());
             c.putInt("To", l.toPort());
+            if (!l.via().isEmpty()) {
+                c.putLongArray("Via", l.via().stream().mapToLong(BlockPos::asLong).toArray());
+            }
             list.add(c);
         }
         tag.put("Links", list);
@@ -195,7 +206,11 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
         links.clear();
         for (Tag t : tag.getList("Links", Tag.TAG_COMPOUND)) {
             CompoundTag c = (CompoundTag) t;
-            links.add(new Link(BlockPos.of(c.getLong("Pos")), c.getInt("From"), c.getInt("To")));
+            List<BlockPos> via = new ArrayList<>();
+            for (long v : c.getLongArray("Via")) {
+                via.add(BlockPos.of(v));
+            }
+            links.add(new Link(BlockPos.of(c.getLong("Pos")), c.getInt("From"), c.getInt("To"), List.copyOf(via)));
         }
         // worlds from 0.2.0 stored plain positions
         for (Tag t : tag.getList("Outputs", Tag.TAG_LONG)) {

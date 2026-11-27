@@ -35,6 +35,7 @@ public final class SceneView extends JPanel {
     private Device selected;
     private Device cableFrom;
     private int cableFromPort;
+    private final java.util.List<Device> cableVia = new java.util.ArrayList<>();
     private boolean draggingListener;
     private int hoverX = -1, hoverZ = -1;
     private final Consumer<Device> onSelect;
@@ -158,6 +159,9 @@ public final class SceneView extends JPanel {
             return;
         }
         Device hit = pick(e.getX(), e.getY());
+        if (mode != Mode.CABLE) {
+            cableVia.clear();
+        }
         switch (mode) {
             case SELECT -> select(hit);
             case CABLE -> {
@@ -167,6 +171,13 @@ public final class SceneView extends JPanel {
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     scene.unplug(hit);
                     status.accept("Unplugged every cable of " + hit.type.label + ".");
+                } else if (hit.type == Device.Type.CABLE_CLIP) {
+                    if (cableFrom == null) {
+                        status.accept("Plug a cable into an OUT socket first, then click clips to run it along them.");
+                    } else {
+                        cableVia.add(hit);
+                        status.accept("Cable runs through " + cableVia.size() + " clip(s). Click more clips, or a device to plug it in.");
+                    }
                 } else {
                     socketMenu(hit, e.getX(), e.getY());
                 }
@@ -214,9 +225,11 @@ public final class SceneView extends JPanel {
                 if (start) {
                     cableFrom = d;
                     cableFromPort = port.index();
+                    cableVia.clear();
                     status.accept("Plugged into " + port.label() + " of " + d.type.label + ". Now click where the signal goes.");
                 } else {
-                    String error = scene.connect(cableFrom, cableFromPort, d, port.index());
+                    String error = scene.connect(cableFrom, cableFromPort, d, port.index(), cableVia);
+                    cableVia.clear();
                     status.accept(error == null ? "Connected " + cableFrom.type.label + " → " + d.type.label + " " + port.label() + "." : error);
                     cableFrom = null;
                 }
@@ -299,8 +312,15 @@ public final class SceneView extends JPanel {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         for (Device d : list) {
             for (Device.Link l : d.links) {
-                drawCable(g, socket(d, PortLayout.byIndex(d.type.key, PortLayout.Dir.OUT, l.fromPort())),
-                        socket(l.target(), PortLayout.byIndex(l.target().type.key, PortLayout.Dir.IN, l.toPort())));
+                java.util.List<double[]> pts = new java.util.ArrayList<>();
+                pts.add(socket(d, PortLayout.byIndex(d.type.key, PortLayout.Dir.OUT, l.fromPort())));
+                for (Device clip : l.via()) {
+                    pts.add(new double[] {clip.x + 0.5, 0.16, clip.z + 0.5});
+                }
+                pts.add(socket(l.target(), PortLayout.byIndex(l.target().type.key, PortLayout.Dir.IN, l.toPort())));
+                for (int i = 0; i + 1 < pts.size(); i++) {
+                    drawCable(g, pts.get(i), pts.get(i + 1));
+                }
             }
         }
         drawListener(g);

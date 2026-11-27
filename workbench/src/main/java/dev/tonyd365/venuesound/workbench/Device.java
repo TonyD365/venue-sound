@@ -44,7 +44,8 @@ public final class Device {
         MIXER("Mixing Console", NodeKind.MIXER, "mixer_c0_r0", "mixer"),
         AMPLIFIER("Power Amplifier", NodeKind.AMPLIFIER, "amplifier", "amplifier"),
         PA_SPEAKER("PA Speaker", NodeKind.SPEAKER, "pa_speaker_lower", "pa_speaker"),
-        LINE_ARRAY("Line Array Module", NodeKind.SPEAKER, "speaker", "speaker");
+        LINE_ARRAY("Line Array Module", NodeKind.SPEAKER, "speaker", "speaker"),
+        CABLE_CLIP("Cable Clip", null, "cable_clip", "cable_clip");
 
         public final String label;
         public final NodeKind kind;
@@ -74,7 +75,7 @@ public final class Device {
     public int z;
     public Facing facing;
     /** A cable from one of our sockets into a socket of {@code target}. */
-    public record Link(Device target, int fromPort, int toPort) {
+    public record Link(Device target, int fromPort, int toPort, List<Device> via) {
     }
 
     public final List<Link> links = new ArrayList<>();
@@ -140,7 +141,7 @@ public final class Device {
     // ------------------------------------------------------------------ same rules as the mod
 
     public boolean canAddOutput() {
-        return links.size() < kind().maxOutputs();
+        return kind() != null && links.size() < kind().maxOutputs();
     }
 
     public List<Device> outputs() {
