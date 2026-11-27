@@ -75,19 +75,20 @@ public final class PortLayout {
                     }
                 }
             }
-            case "mixer" -> {
+            case "mixer", "mixer24" -> {
+                MixerLayout L = MixerLayout.of(device);
                 // on the front side, below each channel strip (ST1 is the built-in USB player: no socket)
-                for (int i = 0; i < MixerLayout.STRIPS; i++) {
-                    if (i == MixerLayout.USB_STRIP) {
+                for (int i = 0; i < L.strips; i++) {
+                    if (i == L.usbStrip) {
                         continue;
                     }
                     double u = MixerLayout.stripU(i);
-                    p.add(new Port(i < MixerLayout.MONO ? "IN " + (i + 1) : "IN 11/12", Dir.IN, Face.FRONT, i, u - 1.1, u + 1.1, 2.4, 5.6, 0.0));
+                    p.add(new Port(i < L.mono ? "IN " + (i + 1) : "IN " + L.stripName(i), Dir.IN, Face.FRONT, i, u - 1.1, u + 1.1, 2.4, 5.6, 0.0));
                 }
                 String[] outs = {"MAIN L", "MAIN R", "AUX 1", "AUX 2"};
                 double[] us = {45.1, 47.0, 39.3, 41.2};
                 for (int b = 0; b < 4; b++) {
-                    p.add(new Port(outs[b], Dir.OUT, Face.FRONT, b, us[b] - 0.9, us[b] + 0.9, 2.4, 5.6, 0.0));
+                    p.add(new Port(outs[b], Dir.OUT, Face.FRONT, b, L.width - 48 + us[b] - 0.9, L.width - 48 + us[b] + 0.9, 2.4, 5.6, 0.0));
                 }
             }
             case "amplifier", "graphic_eq", "compressor", "di_box", "fx_processor", "crossover" -> {

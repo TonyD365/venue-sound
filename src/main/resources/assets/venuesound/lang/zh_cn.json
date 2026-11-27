@@ -91,5 +91,6 @@
   "message.venuesound.zone_too_big": "区域太大（每边最多 48 格）",
   "message.venuesound.zone_set": "采集区域已保存",
   "message.venuesound.zone_none": "请先选择两个角",
-  "message.venuesound.zone_cleared": "已清除选择"
+  "message.venuesound.zone_cleared": "已清除选择",
+  "block.venuesound.mixer24": "调音台 VS-24（5×2）"
 }

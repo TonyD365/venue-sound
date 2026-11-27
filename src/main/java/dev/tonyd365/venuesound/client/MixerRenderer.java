@@ -16,13 +16,14 @@ public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
     @Override
     protected void renderPanel(MixerBlockEntity m, PanelDraw d, MultiBufferSource buffers, int light) {
         double top = MixerLayout.TOP;
+        MixerLayout layout = m.layout();
         boolean active = m.isUsbPlaying();
         for (int i = 0; i < MixerBlockEntity.INPUTS; i++) {
             active |= m.getInput(i) != null;
         }
         // raised rear jack field
-        d.box(0.4, 35.6, 28.4, 31.9, top, top + 1.2, 0x1C1D20, light);
-        for (MixerLayout.Control c : MixerLayout.controls()) {
+        d.box(0.4, layout.width - 12.4, 28.4, 31.9, top, top + 1.2, 0x1C1D20, light);
+        for (MixerLayout.Control c : layout.controls()) {
             double u = c.u(), dd = c.depth();
             switch (c.kind()) {
                 case KNOB -> {
@@ -33,7 +34,7 @@ public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
                     double a = MixerLayout.knobAngle(c, v);
                     double pu = u + Math.sin(a) * r * 0.55, pd = dd + Math.cos(a) * r * 0.55;
                     d.box(pu - 0.12, pu + 0.12, pd - 0.12, pd + 0.12, top + 1.0, top + 1.08, 0xFFFFFF, light);
-                    if (u > 36) {
+                    if (u > layout.width - 12) {
                         d.topText(buffers, c.label(), u - 1.0, dd - 1.0, top, 0.45, 0xFFB8BEC4); // master: under the knob
                     } else {
                         d.topText(buffers, c.label(), u + 0.9, dd + 0.18, top, 0.34, 0xFFB8BEC4); // strips: right of the knob
@@ -92,10 +93,10 @@ public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
             }
         }
         // strip numbers along the front edge
-        for (int i = 0; i < MixerLayout.STRIPS; i++) {
-            d.topText(buffers, MixerLayout.stripName(i), MixerLayout.stripU(i) - 1.4, 28.9, MixerLayout.TOP + 1.2, 0.5, 0xFFE8B84A);
+        for (int i = 0; i < layout.strips; i++) {
+            d.topText(buffers, layout.stripName(i), MixerLayout.stripU(i) - 1.4, 28.9, MixerLayout.TOP + 1.2, 0.5, 0xFFE8B84A);
         }
-        d.topText(buffers, "VENUESOUND  VS-12", 37.6, 31.2, MixerLayout.TOP, 0.75, 0xFFE8B84A);
+        d.topText(buffers, "VENUESOUND  " + layout.model, layout.width - 10.4, 31.2, MixerLayout.TOP, 0.75, 0xFFE8B84A);
     }
 
     @Override

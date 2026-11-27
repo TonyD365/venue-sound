@@ -16,16 +16,29 @@ import java.util.Map;
  */
 public final class MixerLayout {
 
-    private MixerLayout() {
+    /** VS-12: 8 mono + 2 stereo strips on 3x2 blocks. */
+    public static final MixerLayout VS12 = new MixerLayout("mixer", "VS-12", 8, 2);
+    /** VS-24: 16 mono + 4 stereo strips on 5x2 blocks. */
+    public static final MixerLayout VS24 = new MixerLayout("mixer24", "VS-24", 16, 4);
+    /** Most strips any console has (sizes input arrays). */
+    public static final int MAX_STRIPS = 20;
+
+    public static MixerLayout of(String deviceKey) {
+        return "mixer24".equals(deviceKey) ? VS24 : VS12;
     }
 
-    public static final double WIDTH = 48.0;
+    public final String key;
+    public final String model;
+    public final double width;
+    public final int mono;
+    public final int strips;
+    /** The first stereo strip is fed by the console's own USB player. */
+    public final int usbStrip;
+    /** Blocks across. */
+    public final int cols;
+
     public static final double DEPTH = 32.0;
     public static final double TOP = 8.0;
-    public static final int MONO = 8;
-    public static final int STRIPS = 10;
-    /** Strip 8 (ST1) is fed by the console's own USB player. */
-    public static final int USB_STRIP = 8;
 
     public static final double FADER_MIN = 1.5;
     public static final double FADER_MAX = 10.5;
@@ -57,8 +70,12 @@ public final class MixerLayout {
         return 2.2 + 3.5 * i;
     }
 
-    public static String stripName(int i) {
-        return i < MONO ? String.valueOf(i + 1) : i == USB_STRIP ? "9/10 USB" : "11/12";
+    public String stripName(int i) {
+        if (i < mono) {
+            return String.valueOf(i + 1);
+        }
+        int ch = mono + 2 * (i - mono) + 1;
+        return ch + "/" + (ch + 1) + (i == usbStrip ? " USB" : "");
     }
 
     public static double faderDepth(double value01) {
@@ -69,31 +86,41 @@ public final class MixerLayout {
         return Math.max(0, Math.min(1, (depth - FADER_MIN) / (FADER_MAX - FADER_MIN)));
     }
 
-    private static final List<Control> CONTROLS = new ArrayList<>();
-    private static final Map<String, Float> DEFAULTS = new LinkedHashMap<>();
+    private final List<Control> CONTROLS = new ArrayList<>();
+    private final Map<String, Float> DEFAULTS = new LinkedHashMap<>();
 
-    private static void knob(String param, String label, double u, double depth, double min, double max, double step, double def, int color) {
+    private void knob(String param, String label, double u, double depth, double min, double max, double step, double def, int color) {
         CONTROLS.add(new Control(param, Kind.KNOB, label, u, depth, KNOB_R * 2, KNOB_R * 2, min, max, step, color));
         DEFAULTS.put(param, (float) def);
     }
 
-    private static void fader(String param, String label, double u, double def, int color) {
+    private void fader(String param, String label, double u, double def, int color) {
         CONTROLS.add(new Control(param, Kind.FADER, label, u, FADER_MIN, 1.6, FADER_MAX - FADER_MIN, 0, 2, 0, color));
         DEFAULTS.put(param, (float) def);
     }
 
-    private static void button(String param, String label, double u, double depth, int color, boolean toggle) {
+    private void button(String param, String label, double u, double depth, int color, boolean toggle) {
         CONTROLS.add(new Control(param, Kind.BUTTON, label, u, depth, 1.5, 1.0, 0, 1, 0, color));
         if (toggle) {
             DEFAULTS.put(param, 0F);
         }
     }
 
-    static {
+    private MixerLayout(String key, String model, int mono, int stereo) {
+        this.key = key;
+        this.model = model;
+        this.mono = mono;
+        this.strips = mono + stereo;
+        this.usbStrip = mono;
+        this.cols = mono == 8 ? 3 : 5;
+        this.width = cols * 16.0;
+        double m = width - 48.0; // master section sits at the right end
+        DEFAULTS.put("layout.usb", (float) usbStrip);
+        DEFAULTS.put("layout.strips", (float) strips);
         // TH-014 style: raised rear jack field (XLR over 6.35), then GAIN, EQ, sends, PEAK, buttons, fader
-        for (int i = 0; i < STRIPS; i++) {
+        for (int i = 0; i < strips; i++) {
             double u = stripU(i);
-            if (i < MONO) {
+            if (i < mono) {
                 CONTROLS.add(new Control("jack.xlr." + i, Kind.JACK, "XLR", u, 31.0, 1.6, 1.6, 0, 0, 0, 0x2B2D31));
             }
             CONTROLS.add(new Control("jack.trs." + i, Kind.JACK, "LINE", u, 29.4, 1.1, 1.1, 0, 0, 0, 0x2B2D31));
@@ -111,35 +138,35 @@ public final class MixerLayout {
             fader("fader." + i, stripName(i), u, 1, 0xF2F2F2);
         }
         // master section: LCD (USB player) flanked by two knobs, button row, meter column, coloured faders
-        CONTROLS.add(new Control("display", Kind.DISPLAY, "USB PLAYER", 42.5, 27.6, 7.0, 4.4, 0, 0, 0, 0x0B2A12));
-        knob("efx.time", "DELAY", 37.6, 27.6, 0, 1, 0.1, 0.4, 0x8E44AD);
-        knob("phones", "PHONES", 47.4, 27.6, 0, 1, 0.1, 0.5, 0xECF0F1);
-        button("usb.prev", "|<", 38.6, 23.8, 0x3A3D42, false);
-        button("usb.play", ">", 41.2, 23.8, 0x2ECC71, false);
-        button("usb.stop", "[]", 43.8, 23.8, 0x3A3D42, false);
-        button("usb.next", ">|", 46.4, 23.8, 0x3A3D42, false);
+        CONTROLS.add(new Control("display", Kind.DISPLAY, "USB PLAYER", m + 42.5, 27.6, 7.0, 4.4, 0, 0, 0, 0x0B2A12));
+        knob("efx.time", "DELAY", m + 37.6, 27.6, 0, 1, 0.1, 0.4, 0x8E44AD);
+        knob("phones", "PHONES", m + 47.4, 27.6, 0, 1, 0.1, 0.5, 0xECF0F1);
+        button("usb.prev", "|<", m + 38.6, 23.8, 0x3A3D42, false);
+        button("usb.play", ">", m + 41.2, 23.8, 0x2ECC71, false);
+        button("usb.stop", "[]", m + 43.8, 23.8, 0x3A3D42, false);
+        button("usb.next", ">|", m + 46.4, 23.8, 0x3A3D42, false);
         for (int s = 0; s < 8; s++) {
-            CONTROLS.add(new Control("meter.l." + s, Kind.LED, "", 42.75, 11.0 + s * 1.1, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
-            CONTROLS.add(new Control("meter.r." + s, Kind.LED, "", 43.45, 11.0 + s * 1.1, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
+            CONTROLS.add(new Control("meter.l." + s, Kind.LED, "", m + 42.75, 11.0 + s * 1.1, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
+            CONTROLS.add(new Control("meter.r." + s, Kind.LED, "", m + 43.45, 11.0 + s * 1.1, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
         }
-        fader("efx.m", "EFX", 37.4, 0.5, 0xF1C40F);
-        fader("aux1.m", "AUX1", 39.3, 1, 0x2E86C1);
-        fader("aux2.m", "AUX2", 41.2, 1, 0x2E86C1);
-        fader("main.l", "L", 45.1, 1, 0xD0312B);
-        fader("main.r", "R", 47.0, 1, 0xD0312B);
+        fader("efx.m", "EFX", m + 37.4, 0.5, 0xF1C40F);
+        fader("aux1.m", "AUX1", m + 39.3, 1, 0x2E86C1);
+        fader("aux2.m", "AUX2", m + 41.2, 1, 0x2E86C1);
+        fader("main.l", "L", m + 45.1, 1, 0xD0312B);
+        fader("main.r", "R", m + 47.0, 1, 0xD0312B);
     }
 
-    public static List<Control> controls() {
+    public List<Control> controls() {
         return Collections.unmodifiableList(CONTROLS);
     }
 
     /** Default value of every setting. */
-    public static Map<String, Float> defaults() {
+    public Map<String, Float> defaults() {
         return Collections.unmodifiableMap(DEFAULTS);
     }
 
     /** The control under panel point (u, depth) on the top surface, or null. */
-    public static Control at(double u, double depth) {
+    public Control at(double u, double depth) {
         for (Control c : CONTROLS) {
             if (c.hit(u, depth)) {
                 return c;
@@ -148,7 +175,7 @@ public final class MixerLayout {
         return null;
     }
 
-    public static Control byParam(String param) {
+    public Control byParam(String param) {
         for (Control c : CONTROLS) {
             if (c.param().equals(param)) {
                 return c;

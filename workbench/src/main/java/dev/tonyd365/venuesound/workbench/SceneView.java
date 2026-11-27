@@ -295,8 +295,8 @@ public final class SceneView extends JPanel {
             cells.sort(java.util.Comparator.<int[]>comparingInt(c -> c[2]).thenComparingInt(c -> -c[0]).thenComparingInt(c -> c[1]));
             for (int[] c : cells) {
                 String model = d.type.model;
-                if (d.type == Device.Type.MIXER) {
-                    model = "mixer_c" + c[3] + "_r" + c[4];
+                if (d.type.kind == dev.tonyd365.venuesound.audio.NodeKind.MIXER) {
+                    model = d.type.key + "_c" + c[3] + "_r" + c[4];
                 } else if (d.type == Device.Type.CONCERT_SPEAKER) {
                     model = "concert_c" + c[3] + "_l" + c[4] + "_d" + c[5];
                 } else if (d.type == Device.Type.PA_SPEAKER && c[1] == 1) {
@@ -472,9 +472,9 @@ public final class SceneView extends JPanel {
                     port.h() - r, port.h() + r, ring);
         }
         switch (d.type) {
-            case MIXER -> {
+            case MIXER, MIXER24 -> {
                 double top = MixerLayout.TOP;
-                for (MixerLayout.Control c : MixerLayout.controls()) {
+                for (MixerLayout.Control c : d.layout().controls()) {
                     double u = c.u(), dd = c.depth();
                     switch (c.kind()) {
                         case KNOB -> panelBox(g, d, u - 0.6, u + 0.6, dd - 0.6, dd + 0.6, top, top + 1.0, c.color());

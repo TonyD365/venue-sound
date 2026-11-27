@@ -48,6 +48,7 @@ public final class Registration {
     public static final MediaDeckBlock MEDIA_DECK = new MediaDeckBlock(deviceProps());
     public static final OutletBlock OUTLET = new OutletBlock(deviceProps().strength(0.8F));
     public static final MixerBlock MIXER = new MixerBlock(deviceProps());
+    public static final dev.tonyd365.venuesound.block.MixerBlock24 MIXER24 = new dev.tonyd365.venuesound.block.MixerBlock24(deviceProps());
     public static final AmplifierBlock AMPLIFIER = new AmplifierBlock(deviceProps());
     public static final SpeakerBlock SPEAKER = new SpeakerBlock(deviceProps());
     public static final PaSpeakerBlock PA_SPEAKER = new PaSpeakerBlock(deviceProps());
@@ -101,6 +102,7 @@ public final class Registration {
         block("media_deck", MEDIA_DECK);
         block("outlet", OUTLET);
         block("mixer", MIXER);
+        block("mixer24", MIXER24);
         block("amplifier", AMPLIFIER);
         block("speaker", SPEAKER);
         block("pa_speaker", PA_SPEAKER);
@@ -136,7 +138,7 @@ public final class Registration {
         RECEIVER_BE = be("receiver", FabricBlockEntityTypeBuilder.create(ReceiverBlockEntity::new, RECEIVER).build());
         SIMPLE_NODE_BE = be("simple_node", FabricBlockEntityTypeBuilder.create(SimpleNodeBlockEntity::new, OUTLET, STAND_MIC, GOOSENECK_MIC, CHOIR_MIC, STAGE_BOX, STAGE_BOX_16).build());
         MEDIA_DECK_BE = be("media_deck", FabricBlockEntityTypeBuilder.create(MediaDeckBlockEntity::new, MEDIA_DECK).build());
-        MIXER_BE = be("mixer", FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER).build());
+        MIXER_BE = be("mixer", FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER, MIXER24).build());
         AMPLIFIER_BE = be("amplifier", FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX, FX_PROCESSOR, CROSSOVER).build());
         SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER, FLOWN_ARRAY, IEM_TRANSMITTER).build());
 
@@ -173,6 +175,7 @@ public final class Registration {
                             output.accept(CABLE_CLIP);
                             output.accept(OUTLET);
                             output.accept(MIXER);
+                            output.accept(MIXER24);
                             output.accept(DI_BOX);
                             output.accept(GRAPHIC_EQ);
                             output.accept(COMPRESSOR);

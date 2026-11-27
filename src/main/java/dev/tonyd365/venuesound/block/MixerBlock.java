@@ -40,13 +40,27 @@ public class MixerBlock extends DeviceBlock {
 
     public MixerBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(COL, 0).setValue(ROW, 0));
+        registerDefaultState(defaultBlockState().setValue(colProperty(), 0).setValue(ROW, 0));
+    }
+
+    /** Which console this is (the VS-24 overrides). */
+    public MixerLayout layout() {
+        return MixerLayout.VS12;
+    }
+
+    protected IntegerProperty colProperty() {
+        return COL;
+    }
+
+    /** Column of any console part, whichever console it belongs to. */
+    public static int col(BlockState state) {
+        return state.hasProperty(COL) ? state.getValue(COL) : state.getValue(MixerBlock24.COL5);
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(COL, ROW);
+        builder.add(colProperty(), ROW);
     }
 
     private static Direction right(Direction facing) {
@@ -56,7 +70,7 @@ public class MixerBlock extends DeviceBlock {
     /** The front-left block, which holds the block entity. */
     public static BlockPos mainPos(BlockState state, BlockPos pos) {
         Direction facing = state.getValue(FACING);
-        return pos.relative(right(facing), -state.getValue(COL)).relative(facing.getOpposite(), -state.getValue(ROW));
+        return pos.relative(right(facing), -col(state)).relative(facing.getOpposite(), -state.getValue(ROW));
     }
 
     private static BlockPos partPos(BlockPos main, Direction facing, int col, int row) {
@@ -71,9 +85,9 @@ public class MixerBlock extends DeviceBlock {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState state = super.getStateForPlacement(context).setValue(COL, 0).setValue(ROW, 0);
+        BlockState state = super.getStateForPlacement(context).setValue(colProperty(), 0).setValue(ROW, 0);
         Direction facing = state.getValue(FACING);
-        for (int c = 0; c < COLS; c++) {
+        for (int c = 0; c < layout().cols; c++) {
             for (int r = 0; r < ROWS; r++) {
                 BlockPos p = partPos(context.getClickedPos(), facing, c, r);
                 if (!context.getLevel().getBlockState(p).canBeReplaced(context) || !context.getLevel().getWorldBorder().isWithinBounds(p)) {
@@ -87,10 +101,10 @@ public class MixerBlock extends DeviceBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         Direction facing = state.getValue(FACING);
-        for (int c = 0; c < COLS; c++) {
+        for (int c = 0; c < layout().cols; c++) {
             for (int r = 0; r < ROWS; r++) {
                 if (c != 0 || r != 0) {
-                    level.setBlock(partPos(pos, facing, c, r), state.setValue(COL, c).setValue(ROW, r), 3);
+                    level.setBlock(partPos(pos, facing, c, r), state.setValue(colProperty(), c).setValue(ROW, r), 3);
                 }
             }
         }
@@ -102,7 +116,7 @@ public class MixerBlock extends DeviceBlock {
             // breaking any part removes the whole console (only the main part drops it)
             BlockPos main = mainPos(state, pos);
             Direction facing = state.getValue(FACING);
-            for (int c = 0; c < COLS; c++) {
+            for (int c = 0; c < layout().cols; c++) {
                 for (int r = 0; r < ROWS; r++) {
                     BlockPos p = partPos(main, facing, c, r);
                     if (!p.equals(pos) && level.getBlockState(p).is(this)) {
@@ -117,7 +131,7 @@ public class MixerBlock extends DeviceBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.getValue(COL) == 0 && state.getValue(ROW) == 0 ? new MixerBlockEntity(pos, state) : null;
+        return col(state) == 0 && state.getValue(ROW) == 0 ? new MixerBlockEntity(pos, state) : null;
     }
 
     @Override
@@ -130,7 +144,7 @@ public class MixerBlock extends DeviceBlock {
             return InteractionResult.PASS;
         }
         PanelMath.Point p = PanelMath.local(main, state.getValue(FACING), hit.getLocation());
-        MixerLayout.Control c = MixerLayout.at(p.u(), p.depth());
+        MixerLayout.Control c = layout().at(p.u(), p.depth());
         if (c == null) {
             return InteractionResult.PASS;
         }

@@ -95,7 +95,7 @@ public final class Scene {
             return "That socket already has a cable.";
         }
         if (b.kind() == NodeKind.MIXER) {
-            if (toPort < 0 || toPort >= Device.INPUTS || toPort == dev.tonyd365.venuesound.block.MixerLayout.USB_STRIP) {
+            if (toPort < 0 || toPort >= b.layout().strips || toPort == b.layout().usbStrip) {
                 return "That console input doesn't take a cable.";
             }
             if (b.inputs[toPort] != null && b.inputs[toPort] != a) {
@@ -164,6 +164,9 @@ public final class Scene {
 
         @Override
         public float param(Device console, String key) {
+            if (key.startsWith("layout.")) {
+                return console.layout().defaults().get(key);
+            }
             Float v = console.params.get(key);
             if (v == null) {
                 v = dev.tonyd365.venuesound.block.ProcessorLayout.defaults(console.type.key).get(key);

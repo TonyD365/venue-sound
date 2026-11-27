@@ -280,37 +280,44 @@ def console_top(half):
     fill(25.5, 31.5, 0.4, 0.7, hexc("e8b84a"))                                                     # brand strip
     return img
 
-# ---------- 3x2 console (v0.4): top panel 48x32 units at 4 px/unit, cut into six 64x64 tiles
+# ---------- consoles: top panel W_U x 32 units at 4 px/unit, cut into 64x64 tiles (VS-12 3x2, VS-24 5x2)
+def console_tiles(cols, strips, prefix):
+    W_U, D_U = cols * 16, 32
+    m = W_U - 48
+    panel = Image.new("RGBA", (W_U * R, D_U * R), hexc("1e2024"))
+    pp = panel.load()
+    def pfill(u0, u1, d0, d1, c):
+        for u in range(int(u0 * R), int(u1 * R)):
+            for d in range(int(d0 * R), int(d1 * R)):
+                if 0 <= u < W_U * R and 0 <= d < D_U * R:
+                    pp[u, d] = c
+    for i in range(strips):
+        cu = 2.2 + 3.5 * i
+        pfill(cu - 1.7, cu + 1.7, 0.3, 31.7, hexc("2b2e33") if i % 2 == 0 else hexc("272a2f"))
+        pfill(cu - 1.7, cu + 1.7, 9.9, 10.1, hexc("3d4148"))      # line above the fader section
+        pfill(cu - 1.7, cu + 1.7, 22.5, 22.7, hexc("3d4148"))     # EQ section divider
+        pfill(cu - 1.7, cu + 1.7, 29.1, 29.3, hexc("3d4148"))
+    pfill(m + 36.6, m + 47.8, 0.3, 31.7, hexc("2e261c"))          # master section
+    pfill(m + 36.6, m + 47.8, 17.8, 18.0, hexc("4a3d2a"))
+    pfill(1.0, m + 35.6, 31.75, 31.95, hexc("e8b84a"))            # gold trim at the back edge
+    def tile(col, row):
+        img = Image.new("RGBA", (64, 64))
+        px = img.load()
+        for x in range(64):
+            for y in range(64):
+                # up-face texture x = 16 - u_local (model x), y = depth_local
+                u = col * 16 + (16 - (x + 0.5) / R)
+                d = row * 16 + (y + 0.5) / R
+                px[x, y] = pp[min(W_U * R - 1, int(u * R)), min(D_U * R - 1, int(d * R))]
+        return img
+    for c in range(cols):
+        for r in range(2):
+            tile(c, r).save(BLOCK / f"{prefix}_c{c}_r{r}.png")
+    return panel
+panel = console_tiles(3, 10, "console_top")
+console_tiles(5, 20, "console24_top")
 W_U, D_U = 48, 32
-panel = Image.new("RGBA", (W_U * R, D_U * R), hexc("1e2024"))
 pp = panel.load()
-def pfill(u0, u1, d0, d1, c):
-    for u in range(int(u0 * R), int(u1 * R)):
-        for d in range(int(d0 * R), int(d1 * R)):
-            if 0 <= u < W_U * R and 0 <= d < D_U * R:
-                pp[u, d] = c
-for i in range(10):
-    cu = 2.2 + 3.5 * i
-    pfill(cu - 1.7, cu + 1.7, 0.3, 31.7, hexc("2b2e33") if i % 2 == 0 else hexc("272a2f"))
-    pfill(cu - 1.7, cu + 1.7, 9.9, 10.1, hexc("3d4148"))      # line above the fader section
-    pfill(cu - 1.7, cu + 1.7, 22.5, 22.7, hexc("3d4148"))     # EQ section divider
-    pfill(cu - 1.7, cu + 1.7, 29.1, 29.3, hexc("3d4148"))
-pfill(36.6, 47.8, 0.3, 31.7, hexc("2e261c"))                  # master section
-pfill(36.6, 47.8, 17.8, 18.0, hexc("4a3d2a"))
-pfill(1.0, 35.6, 31.75, 31.95, hexc("e8b84a"))                # gold trim at the back edge
-def tile(col, row):
-    img = Image.new("RGBA", (64, 64))
-    px = img.load()
-    for x in range(64):
-        for y in range(64):
-            # up-face texture x = 16 - u_local (model x), y = depth_local
-            u = col * 16 + (16 - (x + 0.5) / R)
-            d = row * 16 + (y + 0.5) / R
-            px[x, y] = pp[min(W_U * R - 1, int(u * R)), min(D_U * R - 1, int(d * R))]
-    return img
-for c in range(3):
-    for r in range(2):
-        tile(c, r).save(BLOCK / f"console_top_c{c}_r{r}.png")
 cf2 = Image.new("RGBA", (16, 16), hexc("17181b"))
 rect(cf2, 0, 0, 15, 0, hexc("3d4148"))
 rect(cf2, 0, 7, 15, 7, hexc("e8b84a"))

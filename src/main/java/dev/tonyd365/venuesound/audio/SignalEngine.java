@@ -111,11 +111,11 @@ public final class SignalEngine<N> {
                 int slot = g.inputSlot(next, from);
                 if (slot >= 0 && chan > 0) {
                     slot += chan;
-                    if (slot >= MixerLayout.USB_STRIP) {
+                    if (slot >= (int) g.param(next, "layout.usb")) {
                         slot++; // the snake skips the console's own USB strip
                     }
                 }
-                if (slot >= 0 && slot < MixerLayout.STRIPS) {
+                if (slot >= 0 && slot < (int) g.param(next, "layout.strips")) {
                     console(g, next, slot, stream, pcm, sink, visited);
                 }
             }

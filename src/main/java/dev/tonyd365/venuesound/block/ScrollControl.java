@@ -30,7 +30,7 @@ public final class ScrollControl {
             }
             BlockPos main = MixerBlock.mainPos(state, pos);
             PanelMath.Point p = PanelMath.local(main, state.getValue(DeviceBlock.FACING), hit);
-            MixerLayout.Control c = MixerLayout.at(p.u(), p.depth());
+            MixerLayout.Control c = ((MixerBlock) state.getBlock()).layout().at(p.u(), p.depth());
             return c != null && (c.kind() == MixerLayout.Kind.KNOB || c.kind() == MixerLayout.Kind.FADER) ? new Target(main, c.param()) : null;
         }
         if (!state.hasProperty(DeviceBlock.FACING)) {
@@ -56,7 +56,7 @@ public final class ScrollControl {
     public static void apply(Level level, Target t, int dir) {
         var be = level.getBlockEntity(t.device());
         if (be instanceof MixerBlockEntity m) {
-            MixerLayout.Control c = MixerLayout.byParam(t.id());
+            MixerLayout.Control c = m.layout().byParam(t.id());
             if (c == null) {
                 return;
             }

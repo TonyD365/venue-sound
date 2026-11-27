@@ -255,7 +255,7 @@ public final class AudioEngine implements Runnable {
                     if (frame != null) {
                         route(d, frame, left, right, levels);
                     }
-                } else if (d.type == Device.Type.MIXER && d.usbPlaying) {
+                } else if (d.type.kind == dev.tonyd365.venuesound.audio.NodeKind.MIXER && d.usbPlaying) {
                     short[] frame = nextDeckFrame(d);
                     if (frame == null) {
                         d.usbPlaying = false;
@@ -285,7 +285,7 @@ public final class AudioEngine implements Runnable {
 
     private void routeUsb(Device console, short[] pcm, float[] left, float[] right, Map<Device, Double> levels) {
         levels.merge(console, peak(pcm), Math::max);
-        scene.engine.routeIntoConsole(scene.graph, console, dev.tonyd365.venuesound.block.MixerLayout.USB_STRIP, "usb", pcm,
+        scene.engine.routeIntoConsole(scene.graph, console, console.layout().usbStrip, "usb", pcm,
                 (sp, frame) -> hear(sp, frame, left, right, levels));
     }
 

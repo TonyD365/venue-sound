@@ -50,7 +50,8 @@ public final class SelfTest {
             new View(8.5, 5.2, -1.8, 0, 22, "selftest-amp-back.png"),
             new View(13.5, 5.0, 1.7, 180, 35, "selftest-receiver.png"),
             new View(8.0, 6.5, 11.0, 180, 20, "selftest-pro-left.png"),
-            new View(22.0, 6.5, 11.0, 180, 20, "selftest-pro-right.png"));
+            new View(22.0, 6.5, 11.0, 180, 20, "selftest-pro-right.png"),
+            new View(5.5, 9.5, 15.5, 180, 50, "selftest-vs24.png"));
 
     private SelfTest() {
     }
@@ -141,6 +142,7 @@ public final class SelfTest {
         if (level.getBlockEntity(amp) instanceof AudioNodeBlockEntity a) {
             a.addLink(spk, 0, 0);
         }
+        place(level, Registration.MIXER24, new BlockPos(3, y, 10), Direction.SOUTH);
         // pro devices in a row behind the console
         net.minecraft.world.level.block.Block[] pro = {Registration.GRAPHIC_EQ, Registration.COMPRESSOR, Registration.FX_PROCESSOR,
                 Registration.CROSSOVER, Registration.DI_BOX, Registration.POWER_SEQUENCER, Registration.STAGE_BOX, Registration.STAGE_BOX_16,

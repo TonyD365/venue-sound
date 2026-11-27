@@ -18,20 +18,25 @@ import java.util.Map;
 /** Mixing console: 10 input strips, master section and a built-in USB player (on strip ST1). */
 public class MixerBlockEntity extends AudioNodeBlockEntity {
 
-    public static final int INPUTS = MixerLayout.STRIPS;
+    public static final int INPUTS = MixerLayout.MAX_STRIPS;
 
-    private final Map<String, Float> params = new HashMap<>(MixerLayout.defaults());
+    private final Map<String, Float> params = new HashMap<>();
     private final BlockPos[] inputs = new BlockPos[INPUTS];
     private String usbTrack = "";
     private boolean usbPlaying;
 
     public MixerBlockEntity(BlockPos pos, BlockState state) {
         super(Registration.MIXER_BE, pos, state);
+        params.putAll(layout().defaults());
+    }
+
+    public MixerLayout layout() {
+        return getBlockState().getBlock() instanceof MixerBlock b ? b.layout() : MixerLayout.VS12;
     }
 
     @Override
     public String deviceKey() {
-        return "mixer";
+        return layout().key;
     }
 
     @Override
@@ -41,11 +46,11 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
 
     public float get(String param) {
         Float v = params.get(param);
-        return v != null ? v : MixerLayout.defaults().getOrDefault(param, 0F);
+        return v != null ? v : layout().defaults().getOrDefault(param, 0F);
     }
 
     public void set(String param, float value) {
-        if (MixerLayout.defaults().containsKey(param)) {
+        if (layout().defaults().containsKey(param)) {
             params.put(param, value);
             changed();
         }
@@ -72,7 +77,7 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
 
     /** Plugs {@code upstream} into input {@code slot}. False if another device is already plugged in there. */
     public boolean assignInput(BlockPos upstream, int slot) {
-        if (slot < 0 || slot >= INPUTS || slot == MixerLayout.USB_STRIP || (inputs[slot] != null && !inputs[slot].equals(upstream))) {
+        if (slot < 0 || slot >= layout().strips || slot == layout().usbStrip || (inputs[slot] != null && !inputs[slot].equals(upstream))) {
             return false;
         }
         for (int i = 0; i < INPUTS; i++) {
@@ -151,7 +156,7 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
 
     private void startUsb() {
         if (level instanceof ServerLevel) {
-            MediaPlayback.get().playIntoConsole(dimPos(), usbTrack, MixerLayout.USB_STRIP);
+            MediaPlayback.get().playIntoConsole(dimPos(), usbTrack, layout().usbStrip);
         }
     }
 
@@ -193,10 +198,10 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
     public void load(CompoundTag tag) {
         super.load(tag);
         params.clear();
-        params.putAll(MixerLayout.defaults());
+        params.putAll(layout().defaults());
         CompoundTag p = tag.getCompound("Params");
         for (String key : p.getAllKeys()) {
-            if (MixerLayout.defaults().containsKey(key)) {
+            if (layout().defaults().containsKey(key)) {
                 params.put(key, p.getFloat(key));
             }
         }
