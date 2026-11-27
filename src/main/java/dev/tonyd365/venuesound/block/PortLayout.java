@@ -81,7 +81,7 @@ public final class PortLayout {
                 p.add(new Port("INPUT B", Dir.IN, Face.BACK, 1, 5.2, 7.8, 9.5, 12.5, 16.0));
                 for (int i = 0; i < 4; i++) {
                     double u = 6.5 + i * 2.3;
-                    p.add(new Port("SPK " + (i + 1), Dir.OUT, Face.BACK, i, u, u + 1.9, 3.0, 6.0, 16.0));
+                    p.add(new Port("OUT " + (i + 1), Dir.OUT, Face.BACK, i, u, u + 1.9, 3.0, 6.0, 16.0));
                 }
             }
             case "speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 2.5, 5.5, 16.0));
