@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "venuesound:block/floor_wedge"
+    },
+    "facing=east": {
+      "model": "venuesound:block/floor_wedge",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "venuesound:block/floor_wedge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "venuesound:block/floor_wedge",
+      "y": 270
+    }
+  }
+}

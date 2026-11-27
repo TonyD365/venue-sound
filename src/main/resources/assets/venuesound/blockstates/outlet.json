@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "venuesound:block/outlet"
+    },
+    "facing=east": {
+      "model": "venuesound:block/outlet",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "venuesound:block/outlet",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "venuesound:block/outlet",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " M ",
+    " I ",
+    "III"
+  ],
+  "key": {
+    "M": {
+      "item": "venuesound:wireless_mic"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "venuesound:stand_mic",
+    "count": 1
+  }
+}

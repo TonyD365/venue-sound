@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "venuesound:mixer"
+    },
+    {
+      "item": "venuesound:mixer"
+    }
+  ],
+  "result": {
+    "item": "venuesound:mixer24",
+    "count": 1
+  }
+}

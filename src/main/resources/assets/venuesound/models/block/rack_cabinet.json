@@ -1,0 +1,43 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "venuesound:block/amplifier_side",
+    "front": "venuesound:block/rack_cabinet_front",
+    "side": "venuesound:block/amplifier_side",
+    "top": "venuesound:block/amplifier_top"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#side"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "down": {
+          "texture": "#top"
+        }
+      }
+    }
+  ]
+}

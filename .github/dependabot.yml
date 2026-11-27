@@ -1,0 +1,28 @@
+# Weekly dependency updates, each kind grouped into a single pull request.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    labels: [dependencies, ci]
+    groups:
+      actions:
+        patterns: ["*"]
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    labels: [dependencies]
+    # Minecraft, Fabric and Simple Voice Chat versions are pinned to 1.20.1 on purpose.
+    ignore:
+      - dependency-name: "com.mojang:minecraft"
+      - dependency-name: "net.fabricmc.fabric-api:fabric-api"
+      - dependency-name: "de.maxhenkel.voicechat:voicechat-api"
+    groups:
+      gradle:
+        patterns: ["*"]

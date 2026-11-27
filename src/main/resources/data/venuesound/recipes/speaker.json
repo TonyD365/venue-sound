@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "III",
+    "NJN",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "N": {
+      "item": "minecraft:note_block"
+    },
+    "J": {
+      "item": "minecraft:jukebox"
+    }
+  },
+  "result": {
+    "item": "venuesound:speaker",
+    "count": 1
+  }
+}

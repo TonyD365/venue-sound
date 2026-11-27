@@ -1,0 +1,79 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "venuesound:block/speaker_side",
+    "front": "venuesound:block/floor_wedge_front",
+    "side": "venuesound:block/speaker_side",
+    "top": "venuesound:block/speaker_top"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        9,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front",
+          "uv": [
+            0,
+            4,
+            16,
+            13
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            7,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            7,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            7,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#top",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#top",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

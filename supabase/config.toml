@@ -1,0 +1,6 @@
+# The project_id only names the local project; deploy with --project-ref <your project>.
+project_id = "repo-bot"
+
+[functions.repo-bot]
+# GitHub signs its webhooks instead of sending a Supabase JWT; index.ts verifies the signature.
+verify_jwt = false

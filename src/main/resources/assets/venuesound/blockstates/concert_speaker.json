@@ -1,0 +1,724 @@
+{
+  "variants": {
+    "col=0,dep=0,facing=north,lvl=0": {
+      "model": "venuesound:block/concert_c0_l0_d0"
+    },
+    "col=0,dep=1,facing=north,lvl=0": {
+      "model": "venuesound:block/concert_c0_l0_d1"
+    },
+    "col=0,dep=0,facing=north,lvl=1": {
+      "model": "venuesound:block/concert_c0_l1_d0"
+    },
+    "col=0,dep=1,facing=north,lvl=1": {
+      "model": "venuesound:block/concert_c0_l1_d1"
+    },
+    "col=0,dep=0,facing=north,lvl=2": {
+      "model": "venuesound:block/concert_c0_l2_d0"
+    },
+    "col=0,dep=1,facing=north,lvl=2": {
+      "model": "venuesound:block/concert_c0_l2_d1"
+    },
+    "col=0,dep=0,facing=north,lvl=3": {
+      "model": "venuesound:block/concert_c0_l3_d0"
+    },
+    "col=0,dep=1,facing=north,lvl=3": {
+      "model": "venuesound:block/concert_c0_l3_d1"
+    },
+    "col=0,dep=0,facing=north,lvl=4": {
+      "model": "venuesound:block/concert_c0_l4_d0"
+    },
+    "col=0,dep=1,facing=north,lvl=4": {
+      "model": "venuesound:block/concert_c0_l4_d1"
+    },
+    "col=0,dep=0,facing=north,lvl=5": {
+      "model": "venuesound:block/concert_c0_l5_d0"
+    },
+    "col=0,dep=1,facing=north,lvl=5": {
+      "model": "venuesound:block/concert_c0_l5_d1"
+    },
+    "col=1,dep=0,facing=north,lvl=0": {
+      "model": "venuesound:block/concert_c1_l0_d0"
+    },
+    "col=1,dep=1,facing=north,lvl=0": {
+      "model": "venuesound:block/concert_c1_l0_d1"
+    },
+    "col=1,dep=0,facing=north,lvl=1": {
+      "model": "venuesound:block/concert_c1_l1_d0"
+    },
+    "col=1,dep=1,facing=north,lvl=1": {
+      "model": "venuesound:block/concert_c1_l1_d1"
+    },
+    "col=1,dep=0,facing=north,lvl=2": {
+      "model": "venuesound:block/concert_c1_l2_d0"
+    },
+    "col=1,dep=1,facing=north,lvl=2": {
+      "model": "venuesound:block/concert_c1_l2_d1"
+    },
+    "col=1,dep=0,facing=north,lvl=3": {
+      "model": "venuesound:block/concert_c1_l3_d0"
+    },
+    "col=1,dep=1,facing=north,lvl=3": {
+      "model": "venuesound:block/concert_c1_l3_d1"
+    },
+    "col=1,dep=0,facing=north,lvl=4": {
+      "model": "venuesound:block/concert_c1_l4_d0"
+    },
+    "col=1,dep=1,facing=north,lvl=4": {
+      "model": "venuesound:block/concert_c1_l4_d1"
+    },
+    "col=1,dep=0,facing=north,lvl=5": {
+      "model": "venuesound:block/concert_c1_l5_d0"
+    },
+    "col=1,dep=1,facing=north,lvl=5": {
+      "model": "venuesound:block/concert_c1_l5_d1"
+    },
+    "col=2,dep=0,facing=north,lvl=0": {
+      "model": "venuesound:block/concert_c2_l0_d0"
+    },
+    "col=2,dep=1,facing=north,lvl=0": {
+      "model": "venuesound:block/concert_c2_l0_d1"
+    },
+    "col=2,dep=0,facing=north,lvl=1": {
+      "model": "venuesound:block/concert_c2_l1_d0"
+    },
+    "col=2,dep=1,facing=north,lvl=1": {
+      "model": "venuesound:block/concert_c2_l1_d1"
+    },
+    "col=2,dep=0,facing=north,lvl=2": {
+      "model": "venuesound:block/concert_c2_l2_d0"
+    },
+    "col=2,dep=1,facing=north,lvl=2": {
+      "model": "venuesound:block/concert_c2_l2_d1"
+    },
+    "col=2,dep=0,facing=north,lvl=3": {
+      "model": "venuesound:block/concert_c2_l3_d0"
+    },
+    "col=2,dep=1,facing=north,lvl=3": {
+      "model": "venuesound:block/concert_c2_l3_d1"
+    },
+    "col=2,dep=0,facing=north,lvl=4": {
+      "model": "venuesound:block/concert_c2_l4_d0"
+    },
+    "col=2,dep=1,facing=north,lvl=4": {
+      "model": "venuesound:block/concert_c2_l4_d1"
+    },
+    "col=2,dep=0,facing=north,lvl=5": {
+      "model": "venuesound:block/concert_c2_l5_d0"
+    },
+    "col=2,dep=1,facing=north,lvl=5": {
+      "model": "venuesound:block/concert_c2_l5_d1"
+    },
+    "col=3,dep=0,facing=north,lvl=0": {
+      "model": "venuesound:block/concert_c3_l0_d0"
+    },
+    "col=3,dep=1,facing=north,lvl=0": {
+      "model": "venuesound:block/concert_c3_l0_d1"
+    },
+    "col=3,dep=0,facing=north,lvl=1": {
+      "model": "venuesound:block/concert_c3_l1_d0"
+    },
+    "col=3,dep=1,facing=north,lvl=1": {
+      "model": "venuesound:block/concert_c3_l1_d1"
+    },
+    "col=3,dep=0,facing=north,lvl=2": {
+      "model": "venuesound:block/concert_c3_l2_d0"
+    },
+    "col=3,dep=1,facing=north,lvl=2": {
+      "model": "venuesound:block/concert_c3_l2_d1"
+    },
+    "col=3,dep=0,facing=north,lvl=3": {
+      "model": "venuesound:block/concert_c3_l3_d0"
+    },
+    "col=3,dep=1,facing=north,lvl=3": {
+      "model": "venuesound:block/concert_c3_l3_d1"
+    },
+    "col=3,dep=0,facing=north,lvl=4": {
+      "model": "venuesound:block/concert_c3_l4_d0"
+    },
+    "col=3,dep=1,facing=north,lvl=4": {
+      "model": "venuesound:block/concert_c3_l4_d1"
+    },
+    "col=3,dep=0,facing=north,lvl=5": {
+      "model": "venuesound:block/concert_c3_l5_d0"
+    },
+    "col=3,dep=1,facing=north,lvl=5": {
+      "model": "venuesound:block/concert_c3_l5_d1"
+    },
+    "col=0,dep=0,facing=east,lvl=0": {
+      "model": "venuesound:block/concert_c0_l0_d0",
+      "y": 90
+    },
+    "col=0,dep=1,facing=east,lvl=0": {
+      "model": "venuesound:block/concert_c0_l0_d1",
+      "y": 90
+    },
+    "col=0,dep=0,facing=east,lvl=1": {
+      "model": "venuesound:block/concert_c0_l1_d0",
+      "y": 90
+    },
+    "col=0,dep=1,facing=east,lvl=1": {
+      "model": "venuesound:block/concert_c0_l1_d1",
+      "y": 90
+    },
+    "col=0,dep=0,facing=east,lvl=2": {
+      "model": "venuesound:block/concert_c0_l2_d0",
+      "y": 90
+    },
+    "col=0,dep=1,facing=east,lvl=2": {
+      "model": "venuesound:block/concert_c0_l2_d1",
+      "y": 90
+    },
+    "col=0,dep=0,facing=east,lvl=3": {
+      "model": "venuesound:block/concert_c0_l3_d0",
+      "y": 90
+    },
+    "col=0,dep=1,facing=east,lvl=3": {
+      "model": "venuesound:block/concert_c0_l3_d1",
+      "y": 90
+    },
+    "col=0,dep=0,facing=east,lvl=4": {
+      "model": "venuesound:block/concert_c0_l4_d0",
+      "y": 90
+    },
+    "col=0,dep=1,facing=east,lvl=4": {
+      "model": "venuesound:block/concert_c0_l4_d1",
+      "y": 90
+    },
+    "col=0,dep=0,facing=east,lvl=5": {
+      "model": "venuesound:block/concert_c0_l5_d0",
+      "y": 90
+    },
+    "col=0,dep=1,facing=east,lvl=5": {
+      "model": "venuesound:block/concert_c0_l5_d1",
+      "y": 90
+    },
+    "col=1,dep=0,facing=east,lvl=0": {
+      "model": "venuesound:block/concert_c1_l0_d0",
+      "y": 90
+    },
+    "col=1,dep=1,facing=east,lvl=0": {
+      "model": "venuesound:block/concert_c1_l0_d1",
+      "y": 90
+    },
+    "col=1,dep=0,facing=east,lvl=1": {
+      "model": "venuesound:block/concert_c1_l1_d0",
+      "y": 90
+    },
+    "col=1,dep=1,facing=east,lvl=1": {
+      "model": "venuesound:block/concert_c1_l1_d1",
+      "y": 90
+    },
+    "col=1,dep=0,facing=east,lvl=2": {
+      "model": "venuesound:block/concert_c1_l2_d0",
+      "y": 90
+    },
+    "col=1,dep=1,facing=east,lvl=2": {
+      "model": "venuesound:block/concert_c1_l2_d1",
+      "y": 90
+    },
+    "col=1,dep=0,facing=east,lvl=3": {
+      "model": "venuesound:block/concert_c1_l3_d0",
+      "y": 90
+    },
+    "col=1,dep=1,facing=east,lvl=3": {
+      "model": "venuesound:block/concert_c1_l3_d1",
+      "y": 90
+    },
+    "col=1,dep=0,facing=east,lvl=4": {
+      "model": "venuesound:block/concert_c1_l4_d0",
+      "y": 90
+    },
+    "col=1,dep=1,facing=east,lvl=4": {
+      "model": "venuesound:block/concert_c1_l4_d1",
+      "y": 90
+    },
+    "col=1,dep=0,facing=east,lvl=5": {
+      "model": "venuesound:block/concert_c1_l5_d0",
+      "y": 90
+    },
+    "col=1,dep=1,facing=east,lvl=5": {
+      "model": "venuesound:block/concert_c1_l5_d1",
+      "y": 90
+    },
+    "col=2,dep=0,facing=east,lvl=0": {
+      "model": "venuesound:block/concert_c2_l0_d0",
+      "y": 90
+    },
+    "col=2,dep=1,facing=east,lvl=0": {
+      "model": "venuesound:block/concert_c2_l0_d1",
+      "y": 90
+    },
+    "col=2,dep=0,facing=east,lvl=1": {
+      "model": "venuesound:block/concert_c2_l1_d0",
+      "y": 90
+    },
+    "col=2,dep=1,facing=east,lvl=1": {
+      "model": "venuesound:block/concert_c2_l1_d1",
+      "y": 90
+    },
+    "col=2,dep=0,facing=east,lvl=2": {
+      "model": "venuesound:block/concert_c2_l2_d0",
+      "y": 90
+    },
+    "col=2,dep=1,facing=east,lvl=2": {
+      "model": "venuesound:block/concert_c2_l2_d1",
+      "y": 90
+    },
+    "col=2,dep=0,facing=east,lvl=3": {
+      "model": "venuesound:block/concert_c2_l3_d0",
+      "y": 90
+    },
+    "col=2,dep=1,facing=east,lvl=3": {
+      "model": "venuesound:block/concert_c2_l3_d1",
+      "y": 90
+    },
+    "col=2,dep=0,facing=east,lvl=4": {
+      "model": "venuesound:block/concert_c2_l4_d0",
+      "y": 90
+    },
+    "col=2,dep=1,facing=east,lvl=4": {
+      "model": "venuesound:block/concert_c2_l4_d1",
+      "y": 90
+    },
+    "col=2,dep=0,facing=east,lvl=5": {
+      "model": "venuesound:block/concert_c2_l5_d0",
+      "y": 90
+    },
+    "col=2,dep=1,facing=east,lvl=5": {
+      "model": "venuesound:block/concert_c2_l5_d1",
+      "y": 90
+    },
+    "col=3,dep=0,facing=east,lvl=0": {
+      "model": "venuesound:block/concert_c3_l0_d0",
+      "y": 90
+    },
+    "col=3,dep=1,facing=east,lvl=0": {
+      "model": "venuesound:block/concert_c3_l0_d1",
+      "y": 90
+    },
+    "col=3,dep=0,facing=east,lvl=1": {
+      "model": "venuesound:block/concert_c3_l1_d0",
+      "y": 90
+    },
+    "col=3,dep=1,facing=east,lvl=1": {
+      "model": "venuesound:block/concert_c3_l1_d1",
+      "y": 90
+    },
+    "col=3,dep=0,facing=east,lvl=2": {
+      "model": "venuesound:block/concert_c3_l2_d0",
+      "y": 90
+    },
+    "col=3,dep=1,facing=east,lvl=2": {
+      "model": "venuesound:block/concert_c3_l2_d1",
+      "y": 90
+    },
+    "col=3,dep=0,facing=east,lvl=3": {
+      "model": "venuesound:block/concert_c3_l3_d0",
+      "y": 90
+    },
+    "col=3,dep=1,facing=east,lvl=3": {
+      "model": "venuesound:block/concert_c3_l3_d1",
+      "y": 90
+    },
+    "col=3,dep=0,facing=east,lvl=4": {
+      "model": "venuesound:block/concert_c3_l4_d0",
+      "y": 90
+    },
+    "col=3,dep=1,facing=east,lvl=4": {
+      "model": "venuesound:block/concert_c3_l4_d1",
+      "y": 90
+    },
+    "col=3,dep=0,facing=east,lvl=5": {
+      "model": "venuesound:block/concert_c3_l5_d0",
+      "y": 90
+    },
+    "col=3,dep=1,facing=east,lvl=5": {
+      "model": "venuesound:block/concert_c3_l5_d1",
+      "y": 90
+    },
+    "col=0,dep=0,facing=south,lvl=0": {
+      "model": "venuesound:block/concert_c0_l0_d0",
+      "y": 180
+    },
+    "col=0,dep=1,facing=south,lvl=0": {
+      "model": "venuesound:block/concert_c0_l0_d1",
+      "y": 180
+    },
+    "col=0,dep=0,facing=south,lvl=1": {
+      "model": "venuesound:block/concert_c0_l1_d0",
+      "y": 180
+    },
+    "col=0,dep=1,facing=south,lvl=1": {
+      "model": "venuesound:block/concert_c0_l1_d1",
+      "y": 180
+    },
+    "col=0,dep=0,facing=south,lvl=2": {
+      "model": "venuesound:block/concert_c0_l2_d0",
+      "y": 180
+    },
+    "col=0,dep=1,facing=south,lvl=2": {
+      "model": "venuesound:block/concert_c0_l2_d1",
+      "y": 180
+    },
+    "col=0,dep=0,facing=south,lvl=3": {
+      "model": "venuesound:block/concert_c0_l3_d0",
+      "y": 180
+    },
+    "col=0,dep=1,facing=south,lvl=3": {
+      "model": "venuesound:block/concert_c0_l3_d1",
+      "y": 180
+    },
+    "col=0,dep=0,facing=south,lvl=4": {
+      "model": "venuesound:block/concert_c0_l4_d0",
+      "y": 180
+    },
+    "col=0,dep=1,facing=south,lvl=4": {
+      "model": "venuesound:block/concert_c0_l4_d1",
+      "y": 180
+    },
+    "col=0,dep=0,facing=south,lvl=5": {
+      "model": "venuesound:block/concert_c0_l5_d0",
+      "y": 180
+    },
+    "col=0,dep=1,facing=south,lvl=5": {
+      "model": "venuesound:block/concert_c0_l5_d1",
+      "y": 180
+    },
+    "col=1,dep=0,facing=south,lvl=0": {
+      "model": "venuesound:block/concert_c1_l0_d0",
+      "y": 180
+    },
+    "col=1,dep=1,facing=south,lvl=0": {
+      "model": "venuesound:block/concert_c1_l0_d1",
+      "y": 180
+    },
+    "col=1,dep=0,facing=south,lvl=1": {
+      "model": "venuesound:block/concert_c1_l1_d0",
+      "y": 180
+    },
+    "col=1,dep=1,facing=south,lvl=1": {
+      "model": "venuesound:block/concert_c1_l1_d1",
+      "y": 180
+    },
+    "col=1,dep=0,facing=south,lvl=2": {
+      "model": "venuesound:block/concert_c1_l2_d0",
+      "y": 180
+    },
+    "col=1,dep=1,facing=south,lvl=2": {
+      "model": "venuesound:block/concert_c1_l2_d1",
+      "y": 180
+    },
+    "col=1,dep=0,facing=south,lvl=3": {
+      "model": "venuesound:block/concert_c1_l3_d0",
+      "y": 180
+    },
+    "col=1,dep=1,facing=south,lvl=3": {
+      "model": "venuesound:block/concert_c1_l3_d1",
+      "y": 180
+    },
+    "col=1,dep=0,facing=south,lvl=4": {
+      "model": "venuesound:block/concert_c1_l4_d0",
+      "y": 180
+    },
+    "col=1,dep=1,facing=south,lvl=4": {
+      "model": "venuesound:block/concert_c1_l4_d1",
+      "y": 180
+    },
+    "col=1,dep=0,facing=south,lvl=5": {
+      "model": "venuesound:block/concert_c1_l5_d0",
+      "y": 180
+    },
+    "col=1,dep=1,facing=south,lvl=5": {
+      "model": "venuesound:block/concert_c1_l5_d1",
+      "y": 180
+    },
+    "col=2,dep=0,facing=south,lvl=0": {
+      "model": "venuesound:block/concert_c2_l0_d0",
+      "y": 180
+    },
+    "col=2,dep=1,facing=south,lvl=0": {
+      "model": "venuesound:block/concert_c2_l0_d1",
+      "y": 180
+    },
+    "col=2,dep=0,facing=south,lvl=1": {
+      "model": "venuesound:block/concert_c2_l1_d0",
+      "y": 180
+    },
+    "col=2,dep=1,facing=south,lvl=1": {
+      "model": "venuesound:block/concert_c2_l1_d1",
+      "y": 180
+    },
+    "col=2,dep=0,facing=south,lvl=2": {
+      "model": "venuesound:block/concert_c2_l2_d0",
+      "y": 180
+    },
+    "col=2,dep=1,facing=south,lvl=2": {
+      "model": "venuesound:block/concert_c2_l2_d1",
+      "y": 180
+    },
+    "col=2,dep=0,facing=south,lvl=3": {
+      "model": "venuesound:block/concert_c2_l3_d0",
+      "y": 180
+    },
+    "col=2,dep=1,facing=south,lvl=3": {
+      "model": "venuesound:block/concert_c2_l3_d1",
+      "y": 180
+    },
+    "col=2,dep=0,facing=south,lvl=4": {
+      "model": "venuesound:block/concert_c2_l4_d0",
+      "y": 180
+    },
+    "col=2,dep=1,facing=south,lvl=4": {
+      "model": "venuesound:block/concert_c2_l4_d1",
+      "y": 180
+    },
+    "col=2,dep=0,facing=south,lvl=5": {
+      "model": "venuesound:block/concert_c2_l5_d0",
+      "y": 180
+    },
+    "col=2,dep=1,facing=south,lvl=5": {
+      "model": "venuesound:block/concert_c2_l5_d1",
+      "y": 180
+    },
+    "col=3,dep=0,facing=south,lvl=0": {
+      "model": "venuesound:block/concert_c3_l0_d0",
+      "y": 180
+    },
+    "col=3,dep=1,facing=south,lvl=0": {
+      "model": "venuesound:block/concert_c3_l0_d1",
+      "y": 180
+    },
+    "col=3,dep=0,facing=south,lvl=1": {
+      "model": "venuesound:block/concert_c3_l1_d0",
+      "y": 180
+    },
+    "col=3,dep=1,facing=south,lvl=1": {
+      "model": "venuesound:block/concert_c3_l1_d1",
+      "y": 180
+    },
+    "col=3,dep=0,facing=south,lvl=2": {
+      "model": "venuesound:block/concert_c3_l2_d0",
+      "y": 180
+    },
+    "col=3,dep=1,facing=south,lvl=2": {
+      "model": "venuesound:block/concert_c3_l2_d1",
+      "y": 180
+    },
+    "col=3,dep=0,facing=south,lvl=3": {
+      "model": "venuesound:block/concert_c3_l3_d0",
+      "y": 180
+    },
+    "col=3,dep=1,facing=south,lvl=3": {
+      "model": "venuesound:block/concert_c3_l3_d1",
+      "y": 180
+    },
+    "col=3,dep=0,facing=south,lvl=4": {
+      "model": "venuesound:block/concert_c3_l4_d0",
+      "y": 180
+    },
+    "col=3,dep=1,facing=south,lvl=4": {
+      "model": "venuesound:block/concert_c3_l4_d1",
+      "y": 180
+    },
+    "col=3,dep=0,facing=south,lvl=5": {
+      "model": "venuesound:block/concert_c3_l5_d0",
+      "y": 180
+    },
+    "col=3,dep=1,facing=south,lvl=5": {
+      "model": "venuesound:block/concert_c3_l5_d1",
+      "y": 180
+    },
+    "col=0,dep=0,facing=west,lvl=0": {
+      "model": "venuesound:block/concert_c0_l0_d0",
+      "y": 270
+    },
+    "col=0,dep=1,facing=west,lvl=0": {
+      "model": "venuesound:block/concert_c0_l0_d1",
+      "y": 270
+    },
+    "col=0,dep=0,facing=west,lvl=1": {
+      "model": "venuesound:block/concert_c0_l1_d0",
+      "y": 270
+    },
+    "col=0,dep=1,facing=west,lvl=1": {
+      "model": "venuesound:block/concert_c0_l1_d1",
+      "y": 270
+    },
+    "col=0,dep=0,facing=west,lvl=2": {
+      "model": "venuesound:block/concert_c0_l2_d0",
+      "y": 270
+    },
+    "col=0,dep=1,facing=west,lvl=2": {
+      "model": "venuesound:block/concert_c0_l2_d1",
+      "y": 270
+    },
+    "col=0,dep=0,facing=west,lvl=3": {
+      "model": "venuesound:block/concert_c0_l3_d0",
+      "y": 270
+    },
+    "col=0,dep=1,facing=west,lvl=3": {
+      "model": "venuesound:block/concert_c0_l3_d1",
+      "y": 270
+    },
+    "col=0,dep=0,facing=west,lvl=4": {
+      "model": "venuesound:block/concert_c0_l4_d0",
+      "y": 270
+    },
+    "col=0,dep=1,facing=west,lvl=4": {
+      "model": "venuesound:block/concert_c0_l4_d1",
+      "y": 270
+    },
+    "col=0,dep=0,facing=west,lvl=5": {
+      "model": "venuesound:block/concert_c0_l5_d0",
+      "y": 270
+    },
+    "col=0,dep=1,facing=west,lvl=5": {
+      "model": "venuesound:block/concert_c0_l5_d1",
+      "y": 270
+    },
+    "col=1,dep=0,facing=west,lvl=0": {
+      "model": "venuesound:block/concert_c1_l0_d0",
+      "y": 270
+    },
+    "col=1,dep=1,facing=west,lvl=0": {
+      "model": "venuesound:block/concert_c1_l0_d1",
+      "y": 270
+    },
+    "col=1,dep=0,facing=west,lvl=1": {
+      "model": "venuesound:block/concert_c1_l1_d0",
+      "y": 270
+    },
+    "col=1,dep=1,facing=west,lvl=1": {
+      "model": "venuesound:block/concert_c1_l1_d1",
+      "y": 270
+    },
+    "col=1,dep=0,facing=west,lvl=2": {
+      "model": "venuesound:block/concert_c1_l2_d0",
+      "y": 270
+    },
+    "col=1,dep=1,facing=west,lvl=2": {
+      "model": "venuesound:block/concert_c1_l2_d1",
+      "y": 270
+    },
+    "col=1,dep=0,facing=west,lvl=3": {
+      "model": "venuesound:block/concert_c1_l3_d0",
+      "y": 270
+    },
+    "col=1,dep=1,facing=west,lvl=3": {
+      "model": "venuesound:block/concert_c1_l3_d1",
+      "y": 270
+    },
+    "col=1,dep=0,facing=west,lvl=4": {
+      "model": "venuesound:block/concert_c1_l4_d0",
+      "y": 270
+    },
+    "col=1,dep=1,facing=west,lvl=4": {
+      "model": "venuesound:block/concert_c1_l4_d1",
+      "y": 270
+    },
+    "col=1,dep=0,facing=west,lvl=5": {
+      "model": "venuesound:block/concert_c1_l5_d0",
+      "y": 270
+    },
+    "col=1,dep=1,facing=west,lvl=5": {
+      "model": "venuesound:block/concert_c1_l5_d1",
+      "y": 270
+    },
+    "col=2,dep=0,facing=west,lvl=0": {
+      "model": "venuesound:block/concert_c2_l0_d0",
+      "y": 270
+    },
+    "col=2,dep=1,facing=west,lvl=0": {
+      "model": "venuesound:block/concert_c2_l0_d1",
+      "y": 270
+    },
+    "col=2,dep=0,facing=west,lvl=1": {
+      "model": "venuesound:block/concert_c2_l1_d0",
+      "y": 270
+    },
+    "col=2,dep=1,facing=west,lvl=1": {
+      "model": "venuesound:block/concert_c2_l1_d1",
+      "y": 270
+    },
+    "col=2,dep=0,facing=west,lvl=2": {
+      "model": "venuesound:block/concert_c2_l2_d0",
+      "y": 270
+    },
+    "col=2,dep=1,facing=west,lvl=2": {
+      "model": "venuesound:block/concert_c2_l2_d1",
+      "y": 270
+    },
+    "col=2,dep=0,facing=west,lvl=3": {
+      "model": "venuesound:block/concert_c2_l3_d0",
+      "y": 270
+    },
+    "col=2,dep=1,facing=west,lvl=3": {
+      "model": "venuesound:block/concert_c2_l3_d1",
+      "y": 270
+    },
+    "col=2,dep=0,facing=west,lvl=4": {
+      "model": "venuesound:block/concert_c2_l4_d0",
+      "y": 270
+    },
+    "col=2,dep=1,facing=west,lvl=4": {
+      "model": "venuesound:block/concert_c2_l4_d1",
+      "y": 270
+    },
+    "col=2,dep=0,facing=west,lvl=5": {
+      "model": "venuesound:block/concert_c2_l5_d0",
+      "y": 270
+    },
+    "col=2,dep=1,facing=west,lvl=5": {
+      "model": "venuesound:block/concert_c2_l5_d1",
+      "y": 270
+    },
+    "col=3,dep=0,facing=west,lvl=0": {
+      "model": "venuesound:block/concert_c3_l0_d0",
+      "y": 270
+    },
+    "col=3,dep=1,facing=west,lvl=0": {
+      "model": "venuesound:block/concert_c3_l0_d1",
+      "y": 270
+    },
+    "col=3,dep=0,facing=west,lvl=1": {
+      "model": "venuesound:block/concert_c3_l1_d0",
+      "y": 270
+    },
+    "col=3,dep=1,facing=west,lvl=1": {
+      "model": "venuesound:block/concert_c3_l1_d1",
+      "y": 270
+    },
+    "col=3,dep=0,facing=west,lvl=2": {
+      "model": "venuesound:block/concert_c3_l2_d0",
+      "y": 270
+    },
+    "col=3,dep=1,facing=west,lvl=2": {
+      "model": "venuesound:block/concert_c3_l2_d1",
+      "y": 270
+    },
+    "col=3,dep=0,facing=west,lvl=3": {
+      "model": "venuesound:block/concert_c3_l3_d0",
+      "y": 270
+    },
+    "col=3,dep=1,facing=west,lvl=3": {
+      "model": "venuesound:block/concert_c3_l3_d1",
+      "y": 270
+    },
+    "col=3,dep=0,facing=west,lvl=4": {
+      "model": "venuesound:block/concert_c3_l4_d0",
+      "y": 270
+    },
+    "col=3,dep=1,facing=west,lvl=4": {
+      "model": "venuesound:block/concert_c3_l4_d1",
+      "y": 270
+    },
+    "col=3,dep=0,facing=west,lvl=5": {
+      "model": "venuesound:block/concert_c3_l5_d0",
+      "y": 270
+    },
+    "col=3,dep=1,facing=west,lvl=5": {
+      "model": "venuesound:block/concert_c3_l5_d1",
+      "y": 270
+    }
+  }
+}

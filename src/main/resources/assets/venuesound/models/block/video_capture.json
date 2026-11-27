@@ -1,0 +1,6 @@
+{
+  "parent": "venuesound:block/media_deck",
+  "textures": {
+    "front": "venuesound:block/video_capture_front"
+  }
+}

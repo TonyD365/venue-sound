@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "venuesound:block/subwoofer"
+    },
+    "facing=east": {
+      "model": "venuesound:block/subwoofer",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "venuesound:block/subwoofer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "venuesound:block/subwoofer",
+      "y": 270
+    }
+  }
+}

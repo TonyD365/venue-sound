@@ -1,0 +1,66 @@
+// VenueSound Workbench: a standalone app to build and test a sound system without Minecraft.
+// It shares the mod's models, textures, panel layouts and signal-chain rules.
+plugins {
+    id 'java'
+}
+
+version = rootProject.property('mod_version')
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'javazoom:jlayer:1.0.1'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+def shared = "${rootDir}/src/main/java/dev/tonyd365/venuesound"
+
+sourceSets {
+    main {
+        java {
+            srcDir "${rootDir}/src/main/java"
+            // Only the parts of the mod with no Minecraft types.
+            include 'dev/tonyd365/venuesound/workbench/**'
+            include 'dev/tonyd365/venuesound/audio/NodeKind.java'
+            include 'dev/tonyd365/venuesound/audio/AudioMath.java'
+            include 'dev/tonyd365/venuesound/audio/MediaDecoder.java'
+            include 'dev/tonyd365/venuesound/audio/SignalEngine.java'
+            include 'dev/tonyd365/venuesound/audio/ConsoleDsp.java'
+            include 'dev/tonyd365/venuesound/block/MixerLayout.java'
+            include 'dev/tonyd365/venuesound/block/PanelLayout.java'
+            include 'dev/tonyd365/venuesound/block/PortLayout.java'
+            include 'dev/tonyd365/venuesound/block/ProcessorLayout.java'
+        }
+        resources {
+            srcDir "${rootDir}/src/main/resources"
+            include 'assets/venuesound/models/**'
+            include 'assets/venuesound/textures/**'
+            include 'assets/venuesound/icon.png'
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+jar {
+    archiveBaseName = 'venuesound-workbench'
+    manifest {
+        attributes 'Main-Class': 'dev.tonyd365.venuesound.workbench.Workbench'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+}

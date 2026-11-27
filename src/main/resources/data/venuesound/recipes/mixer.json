@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "LCL",
+    "RQR",
+    "III"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "venuesound:mixer",
+    "count": 1
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "venuesound:block/receiver_side",
+    "front": "venuesound:block/receiver_front",
+    "side": "venuesound:block/receiver_side",
+    "top": "venuesound:block/receiver_top",
+    "antenna": "venuesound:block/antenna"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        3
+      ],
+      "to": [
+        14,
+        5,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2,
+            4,
+            14,
+            9
+          ],
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "west": {
+          "texture": "#side"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "down": {
+          "texture": "#side"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        5,
+        11
+      ],
+      "to": [
+        4,
+        13,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#antenna"
+        },
+        "south": {
+          "texture": "#antenna"
+        },
+        "east": {
+          "texture": "#antenna"
+        },
+        "west": {
+          "texture": "#antenna"
+        },
+        "up": {
+          "texture": "#antenna"
+        }
+      }
+    },
+    {
+      "from": [
+        12,
+        5,
+        11
+      ],
+      "to": [
+        13,
+        13,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#antenna"
+        },
+        "south": {
+          "texture": "#antenna"
+        },
+        "east": {
+          "texture": "#antenna"
+        },
+        "west": {
+          "texture": "#antenna"
+        },
+        "up": {
+          "texture": "#antenna"
+        }
+      }
+    }
+  ]
+}

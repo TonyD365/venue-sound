@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "PPP",
+    "PAP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "venuesound:pa_speaker"
+    },
+    "A": {
+      "item": "venuesound:amplifier"
+    }
+  },
+  "result": {
+    "item": "venuesound:concert_speaker",
+    "count": 1
+  }
+}

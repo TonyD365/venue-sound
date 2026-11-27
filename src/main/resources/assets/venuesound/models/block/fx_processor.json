@@ -1,0 +1,6 @@
+{
+  "parent": "venuesound:block/amplifier",
+  "textures": {
+    "front": "venuesound:block/fx_processor_front"
+  }
+}
