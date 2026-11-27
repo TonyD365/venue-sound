@@ -91,8 +91,8 @@ public final class PortLayout {
                 }
             }
             case "amplifier", "graphic_eq", "compressor", "di_box", "fx_processor", "crossover" -> {
-                p.add(new Port("INPUT A", Dir.IN, Face.BACK, 0, 2.0, 4.6, 9.5, 12.5, 16.0));
-                p.add(new Port("INPUT B", Dir.IN, Face.BACK, 1, 5.2, 7.8, 9.5, 12.5, 16.0));
+                p.add(new Port("IN A", Dir.IN, Face.BACK, 0, 2.0, 4.6, 9.5, 12.5, 16.0));
+                p.add(new Port("IN B", Dir.IN, Face.BACK, 1, 5.2, 7.8, 9.5, 12.5, 16.0));
                 for (int i = 0; i < 4; i++) {
                     double u = 6.5 + i * 2.3;
                     p.add(new Port("OUT " + (i + 1), Dir.OUT, Face.BACK, i, u, u + 1.9, 3.0, 6.0, 16.0));

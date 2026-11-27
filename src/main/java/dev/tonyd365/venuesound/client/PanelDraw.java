@@ -25,12 +25,12 @@ public final class PanelDraw {
     public static final int FULL_BRIGHT = LightTexture.FULL_BRIGHT;
 
     private final PoseStack pose;
-    private final VertexConsumer vc;
+    private final MultiBufferSource buffers;
+    private VertexConsumer vc;
 
     private PanelDraw(PoseStack pose, MultiBufferSource buffers) {
         this.pose = pose;
-        // plain coloured quads, the same way the cables are drawn (textured entity quads did not show up)
-        this.vc = buffers.getBuffer(RenderType.debugQuads());
+        this.buffers = buffers;
     }
 
     /** Pushes a pose turned to the device's facing; call {@link #end()} when done. */
@@ -53,6 +53,9 @@ public final class PanelDraw {
         float y0 = (float) (h0 / 16), y1 = (float) (h1 / 16);
         float z0 = (float) (d0 / 16), z1 = (float) (d1 / 16);
         int r = (rgb >> 16) & 0xFF, g = (rgb >> 8) & 0xFF, b = rgb & 0xFF;
+        // fetch the buffer for every box: drawing text in between switches the shared buffer,
+        // and a buffer kept from before would then be wrong (parts vanished or the game crashed)
+        vc = buffers.getBuffer(RenderType.entityCutoutNoCull(WHITE));
         Matrix4f m = pose.last().pose();
         Matrix3f n = pose.last().normal();
         // up
@@ -81,10 +84,8 @@ public final class PanelDraw {
 
     private void v(Matrix4f m, Matrix3f n, int light, int r, int g, int b, float nx, float ny, float nz,
                    float x, float y, float z, float u, float vv) {
-        // no lighting in this render type: darken by the block light level so parts are not glowing at night
-        float k = light == FULL_BRIGHT ? 1F : 0.35F + 0.65F * (LightTexture.block(light) / 15F > LightTexture.sky(light) / 15F
-                ? LightTexture.block(light) / 15F : LightTexture.sky(light) / 15F);
-        vc.vertex(m, x, y, z).color((int) (r * k), (int) (g * k), (int) (b * k), 255).endVertex();
+        vc.vertex(m, x, y, z).color(r, g, b, 255).uv(u, vv).overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(light).normal(n, nx, ny, nz).endVertex();
     }
 
     /**

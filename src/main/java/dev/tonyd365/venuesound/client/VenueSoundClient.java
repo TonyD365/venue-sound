@@ -14,6 +14,7 @@ public class VenueSoundClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        SelfTest.register();
         net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.AFTER_ENTITIES.register(HeldCableRenderer::render);
         BlockEntityRenderers.register(Registration.RECEIVER_BE, ctx -> new DeviceRenderers.Receiver());
         BlockEntityRenderers.register(Registration.SIMPLE_NODE_BE, ctx -> new CableRenderer<>());
