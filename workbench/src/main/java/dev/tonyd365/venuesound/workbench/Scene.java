@@ -168,6 +168,11 @@ public final class Scene {
         }
 
         @Override
+        public boolean multichannel(Device d) {
+            return d.type == Device.Type.STAGE_BOX;
+        }
+
+        @Override
         public int inputSlot(Device console, Device upstream) {
             for (int i = 0; i < Device.INPUTS; i++) {
                 if (console.inputs[i] == upstream) {

@@ -13,8 +13,18 @@ public class StandMicBlock extends DeviceBlock {
 
     private static final VoxelShape SHAPE = box(4, 0, 4, 12, 16, 12);
 
+    public final String key;
+    /** Pickup range in blocks. */
+    public final int range;
+
     public StandMicBlock(Properties properties) {
+        this("stand_mic", 3, properties);
+    }
+
+    public StandMicBlock(String key, int range, Properties properties) {
         super(properties);
+        this.key = key;
+        this.range = range;
     }
 
     @Override

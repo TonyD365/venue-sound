@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "  I",
+    "SI ",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "item": "venuesound:gooseneck_mic",
+    "count": 1
+  }
+}

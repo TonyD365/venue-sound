@@ -49,7 +49,14 @@ public final class PortLayout {
         List<Port> p = new ArrayList<>();
         switch (device) {
             case "receiver" -> p.add(new Port("OUT", Dir.OUT, Face.BACK, 0, 7.0, 9.0, 1.2, 3.4, 13.0));
-            case "stand_mic" -> p.add(new Port("OUT", Dir.OUT, Face.ANY, 0, 0, 16, 0, 16, 8.0));
+            case "stage_box" -> {
+                for (int i = 0; i < 8; i++) {
+                    double u = 1.5 + (i % 4) * 3.4, h = i < 4 ? 10.0 : 5.5;
+                    p.add(new Port("CH " + (i + 1), Dir.IN, Face.FRONT, i, u, u + 2.4, h, h + 2.4, 14.0));
+                }
+                p.add(new Port("SNAKE", Dir.OUT, Face.FRONT, 0, 6.0, 10.0, 1.0, 4.0, 14.0));
+            }
+            case "stand_mic", "gooseneck_mic", "choir_mic" -> p.add(new Port("OUT", Dir.OUT, Face.ANY, 0, 0, 16, 0, 16, 8.0));
             case "media_deck" -> p.add(new Port("OUT", Dir.OUT, Face.BACK, 0, 6.5, 9.5, 2.0, 5.0, 16.0));
             case "outlet" -> {
                 // four sockets on the plate; each can take a cable in or send one on
@@ -76,7 +83,7 @@ public final class PortLayout {
                     p.add(new Port(outs[b], Dir.OUT, Face.FRONT, b, us[b] - 0.9, us[b] + 0.9, 2.4, 5.6, 0.0));
                 }
             }
-            case "amplifier", "graphic_eq", "compressor", "di_box" -> {
+            case "amplifier", "graphic_eq", "compressor", "di_box", "fx_processor", "crossover" -> {
                 p.add(new Port("INPUT A", Dir.IN, Face.BACK, 0, 2.0, 4.6, 9.5, 12.5, 16.0));
                 p.add(new Port("INPUT B", Dir.IN, Face.BACK, 1, 5.2, 7.8, 9.5, 12.5, 16.0));
                 for (int i = 0; i < 4; i++) {
@@ -84,7 +91,7 @@ public final class PortLayout {
                     p.add(new Port("OUT " + (i + 1), Dir.OUT, Face.BACK, i, u, u + 1.9, 3.0, 6.0, 16.0));
                 }
             }
-            case "speaker", "floor_wedge", "subwoofer" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 2.5, 5.5, 16.0));
+            case "speaker", "floor_wedge", "subwoofer", "flown_array", "iem_transmitter" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 2.5, 5.5, 16.0));
             case "pa_speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.0, 10.0, 2.0, 6.0, 15.0));
             case "concert_speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.0, 10.0, 2.0, 6.0, 32.0));
             default -> {

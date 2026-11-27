@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "venuesound:block/crossover"
+    },
+    "facing=east": {
+      "model": "venuesound:block/crossover",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "venuesound:block/crossover",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "venuesound:block/crossover",
+      "y": 270
+    }
+  }
+}

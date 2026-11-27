@@ -23,6 +23,9 @@ import java.util.function.Supplier;
  */
 public final class SpeakerOutput implements Supplier<short[]> {
 
+    /** Sound height at or below this marks an in-ear monitor transmitter. */
+    public static final double IEM = -50D;
+
     /** Frames to buffer before playback starts, to absorb network jitter (20 ms each). */
     private static final int PREBUFFER = 3;
     /** Upper bound per talker, so a stalled player cannot grow memory without limit. */
@@ -80,7 +83,14 @@ public final class SpeakerOutput implements Supplier<short[]> {
             return;
         }
         channel.setCategory(VenueSoundVoicechatPlugin.CATEGORY);
-        channel.setDistance(range);
+        if (heightOff <= IEM) {
+            // in-ear monitor transmitter: only players wearing an earpiece hear it
+            channel.setFilter(p -> p.getPlayer() instanceof net.minecraft.world.entity.player.Player pl
+                    && pl.getInventory().contains(new net.minecraft.world.item.ItemStack(dev.tonyd365.venuesound.Registration.IEM_EARPIECE)));
+            channel.setDistance(Math.max(range, 128));
+        } else {
+            channel.setDistance(range);
+        }
         player = api.createAudioPlayer(channel, api.createEncoder(), this);
         player.startPlaying();
     }

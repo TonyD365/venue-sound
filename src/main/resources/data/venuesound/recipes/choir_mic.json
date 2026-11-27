@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "H",
+    "I",
+    "R"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "H": {
+      "item": "minecraft:chain"
+    }
+  },
+  "result": {
+    "item": "venuesound:choir_mic",
+    "count": 1
+  }
+}

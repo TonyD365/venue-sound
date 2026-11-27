@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "venuesound:block/power_sequencer"
+    },
+    "facing=east": {
+      "model": "venuesound:block/power_sequencer",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "venuesound:block/power_sequencer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "venuesound:block/power_sequencer",
+      "y": 270
+    }
+  }
+}

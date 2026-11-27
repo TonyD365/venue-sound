@@ -491,7 +491,7 @@ public final class SceneView extends JPanel {
                     }
                 }
             }
-            case AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX -> {
+            case AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX, FX_PROCESSOR, CROSSOVER -> {
                 panelBox(g, d, PanelLayout.Amp.SWITCH_U0, PanelLayout.Amp.SWITCH_U1, -0.4, 0, PanelLayout.Amp.SWITCH_H0, PanelLayout.Amp.SWITCH_H1, d.ampOn ? 0xE74C3C : 0x3A3D42);
                 double r = PanelLayout.Amp.KNOB_R;
                 panelBox(g, d, PanelLayout.Amp.KNOB_U - r, PanelLayout.Amp.KNOB_U + r, -0.9, 0, PanelLayout.Amp.KNOB_H - r, PanelLayout.Amp.KNOB_H + r, 0x9AA0A6);

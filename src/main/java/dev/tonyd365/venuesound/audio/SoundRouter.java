@@ -67,6 +67,11 @@ public final class SoundRouter {
         }
 
         @Override
+        public boolean multichannel(RouterState.Node node) {
+            return node.kind() == NodeKind.OUTLET && node.channel() == 1;
+        }
+
+        @Override
         public int inputSlot(RouterState.Node console, RouterState.Node upstream) {
             return console.mixer() == null ? -1 : console.mixer().slotOf(upstream.pos());
         }
@@ -163,7 +168,7 @@ public final class SoundRouter {
             double distSqr = node.pos().distanceSqrTo(player.getX(), player.getY(), player.getZ());
             if (node.kind() == NodeKind.RECEIVER && micChannel > 0 && node.channel() == micChannel && distSqr <= wirelessSqr) {
                 sources.add(node);
-            } else if (node.kind() == NodeKind.STAND_MIC && distSqr <= standSqr) {
+            } else if (node.kind() == NodeKind.STAND_MIC && distSqr <= (node.range() > 0 ? node.range() * (double) node.range() : standSqr)) {
                 sources.add(node);
             }
         }

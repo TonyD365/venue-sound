@@ -59,10 +59,29 @@ public final class Registration {
             Block.box(0, 0, 0, 16, 9, 16), deviceProps());
     public static final dev.tonyd365.venuesound.block.ProSpeakerBlock SUBWOOFER = new dev.tonyd365.venuesound.block.ProSpeakerBlock("subwoofer", 0.5D,
             Block.box(0, 0, 0, 16, 16, 16), deviceProps());
+    public static final StandMicBlock GOOSENECK_MIC = new StandMicBlock("gooseneck_mic", 2, deviceProps());
+    public static final StandMicBlock CHOIR_MIC = new StandMicBlock("choir_mic", 8, deviceProps().noCollission());
+    public static final dev.tonyd365.venuesound.block.ProcessorBlock FX_PROCESSOR = new dev.tonyd365.venuesound.block.ProcessorBlock("fx_processor", deviceProps());
+    public static final dev.tonyd365.venuesound.block.ProcessorBlock CROSSOVER = new dev.tonyd365.venuesound.block.ProcessorBlock("crossover", deviceProps());
+    public static final dev.tonyd365.venuesound.block.ProSpeakerBlock FLOWN_ARRAY = new dev.tonyd365.venuesound.block.ProSpeakerBlock("flown_array", 0.5D,
+            Block.box(0, 0, 0, 16, 16, 16), deviceProps());
+    public static final dev.tonyd365.venuesound.block.ProSpeakerBlock IEM_TRANSMITTER = new dev.tonyd365.venuesound.block.ProSpeakerBlock("iem_transmitter",
+            dev.tonyd365.venuesound.audio.SpeakerOutput.IEM - 1, Block.box(1, 0, 3, 15, 5, 13), deviceProps());
+    public static final dev.tonyd365.venuesound.block.StageBoxBlock STAGE_BOX = new dev.tonyd365.venuesound.block.StageBoxBlock(deviceProps());
+    public static final dev.tonyd365.venuesound.block.SequencerBlock POWER_SEQUENCER = new dev.tonyd365.venuesound.block.SequencerBlock(deviceProps());
+    public static final dev.tonyd365.venuesound.block.RackBlock RACK_CABINET = new dev.tonyd365.venuesound.block.RackBlock(deviceProps());
+    public static final dev.tonyd365.venuesound.block.RackBlock TRUSS_POINT = new dev.tonyd365.venuesound.block.RackBlock(deviceProps());
     public static final dev.tonyd365.venuesound.block.CableClipBlock CABLE_CLIP = new dev.tonyd365.venuesound.block.CableClipBlock(
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.3F).sound(SoundType.METAL).noOcclusion().noCollission());
 
     public static final WirelessMicItem WIRELESS_MIC = new WirelessMicItem(new Item.Properties().stacksTo(1));
+    public static final dev.tonyd365.venuesound.item.BodyPackMicItem HEADSET_MIC = new dev.tonyd365.venuesound.item.BodyPackMicItem(new Item.Properties().stacksTo(1));
+    public static final dev.tonyd365.venuesound.item.BodyPackMicItem LAVALIER_MIC = new dev.tonyd365.venuesound.item.BodyPackMicItem(new Item.Properties().stacksTo(1));
+    public static final Item IEM_EARPIECE = new Item(new Item.Properties().stacksTo(1));
+    public static final AudioCableItem XLR_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
+    public static final AudioCableItem SPEAKER_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
+    public static final AudioCableItem SNAKE_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
+    public static final AudioCableItem CABLE_REEL = new AudioCableItem(new Item.Properties().stacksTo(1));
     public static final AudioCableItem AUDIO_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
 
     public static BlockEntityType<ReceiverBlockEntity> RECEIVER_BE;
@@ -84,6 +103,20 @@ public final class Registration {
         block("concert_speaker", CONCERT_SPEAKER);
         block("cable_clip", CABLE_CLIP);
         block("graphic_eq", GRAPHIC_EQ);
+        block("gooseneck_mic", GOOSENECK_MIC);
+        block("choir_mic", CHOIR_MIC);
+        block("fx_processor", FX_PROCESSOR);
+        block("crossover", CROSSOVER);
+        block("flown_array", FLOWN_ARRAY);
+        block("iem_transmitter", IEM_TRANSMITTER);
+        block("stage_box", STAGE_BOX);
+        block("power_sequencer", POWER_SEQUENCER);
+        block("rack_cabinet", RACK_CABINET);
+        block("truss_point", TRUSS_POINT);
+        for (var e : java.util.Map.of("headset_mic", HEADSET_MIC, "lavalier_mic", LAVALIER_MIC, "iem_earpiece", IEM_EARPIECE,
+                "xlr_cable", XLR_CABLE, "speaker_cable", SPEAKER_CABLE, "snake_cable", SNAKE_CABLE, "cable_reel", CABLE_REEL).entrySet()) {
+            Registry.register(BuiltInRegistries.ITEM, VenueSound.id(e.getKey()), e.getValue());
+        }
         block("compressor", COMPRESSOR);
         block("di_box", DI_BOX);
         block("floor_wedge", FLOOR_WEDGE);
@@ -93,11 +126,11 @@ public final class Registration {
         Registry.register(BuiltInRegistries.ITEM, VenueSound.id("audio_cable"), AUDIO_CABLE);
 
         RECEIVER_BE = be("receiver", FabricBlockEntityTypeBuilder.create(ReceiverBlockEntity::new, RECEIVER).build());
-        SIMPLE_NODE_BE = be("simple_node", FabricBlockEntityTypeBuilder.create(SimpleNodeBlockEntity::new, OUTLET, STAND_MIC).build());
+        SIMPLE_NODE_BE = be("simple_node", FabricBlockEntityTypeBuilder.create(SimpleNodeBlockEntity::new, OUTLET, STAND_MIC, GOOSENECK_MIC, CHOIR_MIC, STAGE_BOX).build());
         MEDIA_DECK_BE = be("media_deck", FabricBlockEntityTypeBuilder.create(MediaDeckBlockEntity::new, MEDIA_DECK).build());
         MIXER_BE = be("mixer", FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER).build());
-        AMPLIFIER_BE = be("amplifier", FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX).build());
-        SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER).build());
+        AMPLIFIER_BE = be("amplifier", FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX, FX_PROCESSOR, CROSSOVER).build());
+        SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER, FLOWN_ARRAY, IEM_TRANSMITTER).build());
 
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VenueSound.id("main"),
                 FabricItemGroup.builder()
@@ -108,7 +141,24 @@ public final class Registration {
                             output.accept(RECEIVER);
                             output.accept(STAND_MIC);
                             output.accept(MEDIA_DECK);
+                            output.accept(HEADSET_MIC);
+                            output.accept(LAVALIER_MIC);
+                            output.accept(GOOSENECK_MIC);
+                            output.accept(CHOIR_MIC);
                             output.accept(AUDIO_CABLE);
+                            output.accept(XLR_CABLE);
+                            output.accept(SPEAKER_CABLE);
+                            output.accept(SNAKE_CABLE);
+                            output.accept(CABLE_REEL);
+                            output.accept(STAGE_BOX);
+                            output.accept(FX_PROCESSOR);
+                            output.accept(CROSSOVER);
+                            output.accept(POWER_SEQUENCER);
+                            output.accept(RACK_CABINET);
+                            output.accept(IEM_TRANSMITTER);
+                            output.accept(IEM_EARPIECE);
+                            output.accept(FLOWN_ARRAY);
+                            output.accept(TRUSS_POINT);
                             output.accept(CABLE_CLIP);
                             output.accept(OUTLET);
                             output.accept(MIXER);

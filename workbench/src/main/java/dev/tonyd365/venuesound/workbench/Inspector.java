@@ -98,7 +98,7 @@ public final class Inspector extends JPanel {
         }
         switch (device.type) {
             case MIXER -> clickMixer(x, y, press);
-            case AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX -> {
+            case AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX, FX_PROCESSOR, CROSSOVER -> {
                 if (!press) {
                     return;
                 }
@@ -129,7 +129,7 @@ public final class Inspector extends JPanel {
                     device.channel = Math.floorMod(device.channel - 1 + b, 8) + 1;
                 }
             }
-            case PA_SPEAKER, LINE_ARRAY, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER -> {
+            case PA_SPEAKER, LINE_ARRAY, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER, FLOWN_ARRAY, IEM_TRANSMITTER -> {
                 if (press && y > 300 && y < 340) {
                     device.stepRange(x < 200);
                 } else if (press && y > 360 && y < 400 && x >= 40 && x <= 360) {
@@ -185,10 +185,10 @@ public final class Inspector extends JPanel {
         g.drawString(hint(), 16, 52);
         switch (device.type) {
             case MIXER -> drawMixer(g);
-            case AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX -> drawAmp(g);
+            case AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX, FX_PROCESSOR, CROSSOVER -> drawAmp(g);
             case MEDIA_DECK -> drawDeck(g);
             case RECEIVER -> drawReceiver(g);
-            case PA_SPEAKER, LINE_ARRAY, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER -> drawSpeaker(g);
+            case PA_SPEAKER, LINE_ARRAY, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER, FLOWN_ARRAY, IEM_TRANSMITTER -> drawSpeaker(g);
             default -> {
             }
         }
@@ -198,7 +198,7 @@ public final class Inspector extends JPanel {
     private String hint() {
         return switch (device.type) {
             case MIXER -> "Drag faders · click buttons · left/right half of a knob turns it down/up · USB player in the master section";
-            case AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX -> "Click the rocker for power · left/right half of the knob for level";
+            case AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX, FX_PROCESSOR, CROSSOVER -> "Click the rocker for power · left/right half of the knob for level";
             case MEDIA_DECK -> "Buttons: previous, play, stop, next, loop · files from " + scene.mediaFolder.getFileName();
             case RECEIVER -> "Picks up the wireless mic on this channel (set yours in the toolbar)";
             case STAND_MIC -> "Picks up your voice when you stand within 3 blocks";

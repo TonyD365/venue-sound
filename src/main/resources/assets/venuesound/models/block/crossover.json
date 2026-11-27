@@ -1,0 +1,6 @@
+{
+  "parent": "venuesound:block/amplifier",
+  "textures": {
+    "front": "venuesound:block/crossover_front"
+  }
+}

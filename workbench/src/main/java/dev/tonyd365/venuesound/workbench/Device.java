@@ -51,6 +51,13 @@ public final class Device {
         DI_BOX("DI Box", NodeKind.PROCESSOR, "di_box", "di_box"),
         FLOOR_WEDGE("Floor Wedge Monitor", NodeKind.SPEAKER, "floor_wedge", "floor_wedge"),
         SUBWOOFER("Subwoofer", NodeKind.SPEAKER, "subwoofer", "subwoofer"),
+        GOOSENECK_MIC("Gooseneck Podium Mic", NodeKind.STAND_MIC, "gooseneck_mic", "gooseneck_mic"),
+        CHOIR_MIC("Hanging Choir Mic", NodeKind.STAND_MIC, "choir_mic", "choir_mic"),
+        STAGE_BOX("Stage Box (8 ch snake)", NodeKind.OUTLET, "stage_box", "stage_box"),
+        FX_PROCESSOR("Effects Processor", NodeKind.PROCESSOR, "fx_processor", "fx_processor"),
+        CROSSOVER("Crossover / Speaker Processor", NodeKind.PROCESSOR, "crossover", "crossover"),
+        FLOWN_ARRAY("Flown Line Array", NodeKind.SPEAKER, "flown_array", "flown_array"),
+        IEM_TRANSMITTER("In-Ear Monitor Transmitter", NodeKind.SPEAKER, "iem_transmitter", "iem_transmitter"),
         CABLE_CLIP("Cable Clip", null, "cable_clip", "cable_clip");
 
         public final String label;

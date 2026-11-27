@@ -39,6 +39,11 @@ public final class SignalEngine<N> {
         /** Whether a speaker is switched on. */
         boolean speakerOn(N speaker);
 
+        /** Stage box: input socket N reaches console input (slot + N) through its snake. */
+        default boolean multichannel(N node) {
+            return false;
+        }
+
         /** Identity used to keep EQ and effects memory per console. */
         Object id(N node);
     }
@@ -71,7 +76,7 @@ public final class SignalEngine<N> {
     public void route(Graph<N> g, N source, Object stream, short[] pcm, Sink<N> sink) {
         Set<Object> visited = new HashSet<>();
         visited.add(g.id(source));
-        beforeConsole(g, source, stream, pcm, sink, visited, 0);
+        beforeConsole(g, source, stream, pcm, sink, visited, 0, 0);
     }
 
     /** Routes a frame straight into a console strip (the console's own USB player). */
@@ -81,7 +86,7 @@ public final class SignalEngine<N> {
         console(g, console, slot, stream, pcm, sink, visited);
     }
 
-    private void beforeConsole(Graph<N> g, N from, Object stream, short[] pcm, Sink<N> sink, Set<Object> visited, int depth) {
+    private void beforeConsole(Graph<N> g, N from, Object stream, short[] pcm, Sink<N> sink, Set<Object> visited, int depth, int chan) {
         if (depth > MAX_HOPS) {
             return;
         }
@@ -89,7 +94,7 @@ public final class SignalEngine<N> {
             N next = e.target();
             NodeKind kind = g.kind(next);
             if (kind == NodeKind.OUTLET && visited.add(g.id(next))) {
-                beforeConsole(g, next, stream, pcm, sink, visited, depth + 1);
+                beforeConsole(g, next, stream, pcm, sink, visited, depth + 1, g.multichannel(next) ? e.toPort() : chan);
             } else if (kind == NodeKind.PROCESSOR && visited.add(g.id(next))) {
                 float k = g.ampLevel(next);
                 if (k > 0F) {
@@ -97,11 +102,17 @@ public final class SignalEngine<N> {
                     for (int i = 0; i < pcm.length; i++) {
                         out[i] = (short) Math.max(Short.MIN_VALUE, Math.min(Short.MAX_VALUE, pcm[i] * k));
                     }
-                    beforeConsole(g, next, stream, out, sink, visited, depth + 1);
+                    beforeConsole(g, next, stream, out, sink, visited, depth + 1, chan);
                 }
             } else if (kind == NodeKind.MIXER && visited.add(g.id(next))) {
                 int slot = g.inputSlot(next, from);
-                if (slot >= 0) {
+                if (slot >= 0 && chan > 0) {
+                    slot += chan;
+                    if (slot >= MixerLayout.USB_STRIP) {
+                        slot++; // the snake skips the console's own USB strip
+                    }
+                }
+                if (slot >= 0 && slot < MixerLayout.STRIPS) {
                     console(g, next, slot, stream, pcm, sink, visited);
                 }
             }
