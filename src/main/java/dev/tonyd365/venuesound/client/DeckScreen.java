@@ -1,7 +1,7 @@
 package dev.tonyd365.venuesound.client;
 
 import dev.tonyd365.venuesound.net.DeckPackets;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.tonyd365.venuesound.compat.ClientNet;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -78,12 +78,26 @@ public class DeckScreen extends Screen {
         buf.writeBlockPos(pos);
         buf.writeVarInt(action);
         buf.writeUtf(value, 256);
-        ClientPlayNetworking.send(DeckPackets.ACTION, buf);
+        ClientNet.send(DeckPackets.ACTION, buf);
     }
 
+    //? if >=1.20.2 {
+    /*@Override
+    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(g, mouseX, mouseY, partialTick);
+        drawPanel(g);
+    }
+    *///?} else {
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         renderBackground(g);
+        drawPanel(g);
+        super.render(g, mouseX, mouseY, partialTick);
+    }
+    //?}
+
+    /** The deck's panel behind the buttons: title, play state and the selected track. */
+    private void drawPanel(GuiGraphics g) {
         int l = (width - W) / 2;
         int t = (height - H) / 2;
         g.fill(l, t, l + W, t + H, 0xF0202226);
@@ -96,7 +110,6 @@ public class DeckScreen extends Screen {
         Component shown = tracks.isEmpty() ? Component.translatable("screen.venuesound.no_tracks") : Component.literal(name);
         g.drawCenteredString(font, font.substrByWidth(shown, W - 76).getString(), l + W / 2, t + 40, 0xFF3DDC84);
         g.drawCenteredString(font, Component.translatable("screen.venuesound.deck_help"), l + W / 2, t + 98, 0xFF9AA0A6);
-        super.render(g, mouseX, mouseY, partialTick);
     }
 
     @Override

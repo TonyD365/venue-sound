@@ -6,6 +6,7 @@ import dev.tonyd365.venuesound.audio.MediaPlayback;
 import dev.tonyd365.venuesound.audio.NodeKind;
 import dev.tonyd365.venuesound.audio.RouterState;
 import net.minecraft.core.BlockPos;
+import dev.tonyd365.venuesound.compat.Nbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -180,8 +181,8 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void write(CompoundTag tag) {
+        super.write(tag);
         CompoundTag p = new CompoundTag();
         params.forEach(p::putFloat);
         tag.put("Params", p);
@@ -195,20 +196,20 @@ public class MixerBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void read(CompoundTag tag) {
+        super.read(tag);
         params.clear();
         params.putAll(layout().defaults());
-        CompoundTag p = tag.getCompound("Params");
-        for (String key : p.getAllKeys()) {
+        CompoundTag p = Nbt.getCompound(tag, "Params");
+        for (String key : Nbt.keys(p)) {
             if (layout().defaults().containsKey(key)) {
-                params.put(key, p.getFloat(key));
+                params.put(key, Nbt.getFloat(p, key));
             }
         }
         for (int i = 0; i < INPUTS; i++) {
-            inputs[i] = tag.contains("Input" + i) ? BlockPos.of(tag.getLong("Input" + i)) : null;
+            inputs[i] = tag.contains("Input" + i) ? BlockPos.of(Nbt.getLong(tag, "Input" + i)) : null;
         }
-        usbTrack = tag.getString("UsbTrack");
-        usbPlaying = tag.getBoolean("UsbPlaying");
+        usbTrack = Nbt.getString(tag, "UsbTrack");
+        usbPlaying = Nbt.getBoolean(tag, "UsbPlaying");
     }
 }

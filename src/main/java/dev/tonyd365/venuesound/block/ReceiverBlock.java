@@ -43,7 +43,7 @@ public class ReceiverBlock extends DeviceBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.getItemInHand(hand).getItem() instanceof AudioCableItem) {
             return InteractionResult.PASS;
         }
@@ -56,6 +56,6 @@ public class ReceiverBlock extends DeviceBlock {
             receiver.cycleChannel(button < 0);
             level.playSound(null, pos, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 1.8F);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return dev.tonyd365.venuesound.compat.Use.sided(level);
     }
 }

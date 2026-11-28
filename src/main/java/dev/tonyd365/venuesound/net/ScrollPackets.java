@@ -2,7 +2,7 @@ package dev.tonyd365.venuesound.net;
 
 import dev.tonyd365.venuesound.VenueSound;
 import dev.tonyd365.venuesound.block.ScrollControl;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import dev.tonyd365.venuesound.compat.Net;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +18,8 @@ public final class ScrollPackets {
     }
 
     public static void registerServer() {
-        ServerPlayNetworking.registerGlobalReceiver(SCROLL, (server, player, handler, buf, responseSender) -> {
+        Net.toServer(SCROLL);
+        Net.receive(SCROLL, (server, player, buf) -> {
             BlockPos pos = buf.readBlockPos();
             Direction face = buf.readEnum(Direction.class);
             Vec3 hit = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());

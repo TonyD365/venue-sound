@@ -77,6 +77,9 @@ public final class SelfTest {
                     true, new GameRules(), WorldDataConfiguration.DEFAULT);
             mc.createWorldOpenFlows().createFreshLevel("venuesound-selftest-" + System.currentTimeMillis(), settings,
                     new WorldOptions(1L, false, false),
+                    //? if >=1.20.5 {
+                    /*reg -> reg.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value().createWorldDimensions(), mc.screen);
+                    *///?} else
                     reg -> reg.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value().createWorldDimensions());
             return;
         }

@@ -4,7 +4,7 @@ import dev.tonyd365.venuesound.VenueSound;
 import dev.tonyd365.venuesound.audio.MediaPlayback;
 import dev.tonyd365.venuesound.block.MediaDeckBlockEntity;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import dev.tonyd365.venuesound.compat.Net;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -39,11 +39,13 @@ public final class DeckPackets {
         buf.writeUtf(deck.getTrack());
         buf.writeBoolean(deck.isLoop());
         buf.writeBoolean(MediaPlayback.get().isPlaying(deck.dimPos()));
-        ServerPlayNetworking.send(player, OPEN, buf);
+        Net.send(player, OPEN, buf);
     }
 
     public static void registerServer() {
-        ServerPlayNetworking.registerGlobalReceiver(ACTION, (server, player, handler, buf, responseSender) -> {
+        Net.toClient(OPEN);
+        Net.toServer(ACTION);
+        Net.receive(ACTION, (server, player, buf) -> {
             BlockPos pos = buf.readBlockPos();
             int action = buf.readVarInt();
             String value = buf.readUtf(256);

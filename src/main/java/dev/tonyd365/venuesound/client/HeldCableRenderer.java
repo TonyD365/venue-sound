@@ -12,6 +12,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import dev.tonyd365.venuesound.compat.Nbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -40,24 +41,27 @@ public final class HeldCableRenderer {
         }
         for (InteractionHand hand : InteractionHand.values()) {
             ItemStack stack = player.getItemInHand(hand);
-            CompoundTag tag = stack.getTag();
-            if (!(stack.getItem() instanceof AudioCableItem) || tag == null || !tag.contains("From")
-                    || !level.dimension().location().toString().equals(tag.getString("FromDim"))) {
+            CompoundTag tag = dev.tonyd365.venuesound.compat.StackData.read(stack);
+            if (!(stack.getItem() instanceof AudioCableItem) || !tag.contains("From")
+                    || !level.dimension().location().toString().equals(Nbt.getString(tag, "FromDim"))) {
                 continue;
             }
-            BlockPos from = BlockPos.of(tag.getLong("From"));
+            BlockPos from = BlockPos.of(Nbt.getLong(tag, "From"));
             if (!(level.getBlockEntity(from) instanceof AudioNodeBlockEntity src)) {
                 continue;
             }
             List<Vec3> points = new ArrayList<>();
-            points.add(AudioCableItem.socketWorld(level, from, src.deviceKey(), PortLayout.Dir.OUT, tag.getInt("FromPort")));
-            for (long v : tag.getLongArray("Via")) {
+            points.add(AudioCableItem.socketWorld(level, from, src.deviceKey(), PortLayout.Dir.OUT, Nbt.getInt(tag, "FromPort")));
+            for (long v : Nbt.getLongArray(tag, "Via")) {
                 BlockPos clip = BlockPos.of(v);
                 BlockState cs = level.getBlockState(clip);
                 if (cs.getBlock() instanceof CableClipBlock) {
                     points.add(CableClipBlock.anchor(cs, clip));
                 }
             }
+            //? if >=1.21 {
+            /*points.add(handPosition(player, hand, ctx.tickCounter().getGameTimeDeltaPartialTick(false)));
+            *///?} else
             points.add(handPosition(player, hand, ctx.tickDelta()));
             PoseStack pose = ctx.matrixStack();
             Vec3 cam = ctx.camera().getPosition();

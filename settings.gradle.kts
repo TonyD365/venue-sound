@@ -20,7 +20,7 @@ plugins {
 stonecutter {
     create(rootProject) {
         // Each version has its own settings in versions/<version>/gradle.properties.
-        versions("1.20.1", "1.21.1", "26.3")
+        versions("1.20.1", "1.21.1")
         // src/ is committed in this version's form; the others are generated from it at build time.
         vcsVersion = "1.20.1"
     }

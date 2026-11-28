@@ -9,6 +9,8 @@ import dev.tonyd365.venuesound.block.MixerBlockEntity;
 import dev.tonyd365.venuesound.block.PaSpeakerBlock;
 import dev.tonyd365.venuesound.block.PanelMath;
 import dev.tonyd365.venuesound.block.PortLayout;
+import dev.tonyd365.venuesound.compat.Nbt;
+import dev.tonyd365.venuesound.compat.StackData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,7 +37,7 @@ import java.util.List;
  * socket. Sneak + right-click a socket to unplug the cable leaving it; sneak + right-click the
  * air to drop the held end.
  */
-public class AudioCableItem extends Item {
+public class AudioCableItem extends dev.tonyd365.venuesound.compat.ModItem {
 
     /** Longest single cable run, in blocks. Use outlets to go further. */
     public static final int MAX_LENGTH = dev.tonyd365.venuesound.block.CableType.AUDIO.maxLength;
@@ -98,23 +100,23 @@ public class AudioCableItem extends Item {
     /** Where the held cable currently ends: the last clip it runs through, or the socket it is plugged into. */
     @Nullable
     private static net.minecraft.world.phys.Vec3 heldEnd(Level level, CompoundTag tag) {
-        long[] via = tag.getLongArray("Via");
+        long[] via = Nbt.getLongArray(tag, "Via");
         if (via.length > 0) {
             BlockPos clip = BlockPos.of(via[via.length - 1]);
             BlockState cs = level.getBlockState(clip);
             return cs.getBlock() instanceof CableClipBlock ? CableClipBlock.anchor(cs, clip) : null;
         }
-        BlockPos from = BlockPos.of(tag.getLong("From"));
+        BlockPos from = BlockPos.of(Nbt.getLong(tag, "From"));
         if (!(level.getBlockEntity(from) instanceof AudioNodeBlockEntity src)) {
             return null;
         }
-        return socketWorld(level, from, src.deviceKey(), PortLayout.Dir.OUT, tag.getInt("FromPort"));
+        return socketWorld(level, from, src.deviceKey(), PortLayout.Dir.OUT, Nbt.getInt(tag, "FromPort"));
     }
 
     /** Runs the held cable through a clip. */
     private static InteractionResult useClip(Level level, Player player, ItemStack stack, BlockPos clip) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains("From")) {
+        CompoundTag tag = StackData.read(stack);
+        if (!tag.contains("From")) {
             say(player, Component.translatable("message.venuesound.clip_need_cable").withStyle(ChatFormatting.YELLOW));
             return InteractionResult.SUCCESS;
         }
@@ -134,10 +136,10 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_blocked").withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        long[] via = tag.getLongArray("Via");
+        long[] via = Nbt.getLongArray(tag, "Via");
         long[] more = java.util.Arrays.copyOf(via, via.length + 1);
         more[via.length] = clip.asLong();
-        tag.putLongArray("Via", more);
+        StackData.edit(stack, t -> t.putLongArray("Via", more));
         click(level, clip);
         say(player, Component.translatable("message.venuesound.clip_added", more.length));
         return InteractionResult.SUCCESS;
@@ -185,9 +187,9 @@ public class AudioCableItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
-        CompoundTag tag = stack.getTag();
-        boolean holding = tag != null && tag.contains("From")
-                && level.dimension().location().toString().equals(tag.getString("FromDim"));
+        CompoundTag tag = StackData.read(stack);
+        boolean holding = tag.contains("From")
+                && level.dimension().location().toString().equals(Nbt.getString(tag, "FromDim"));
         if (!holding) {
             // First click: plug one end into an OUT socket.
             if (!port.givesOut()) {
@@ -197,11 +199,12 @@ public class AudioCableItem extends Item {
             } else if (!typeOf(stack).fits(PortLayout.connector(target.deviceKey(), port))) {
                 say(player, wrongPlug(port, PortLayout.connector(target.deviceKey(), port), typeOf(stack)));
             } else {
-                CompoundTag t = stack.getOrCreateTag();
-                t.putLong("From", clicked.asLong());
-                t.putString("FromDim", level.dimension().location().toString());
-                t.putInt("FromPort", port.index());
-                t.putString("FromLabel", port.label());
+                StackData.edit(stack, t -> {
+                    t.putLong("From", clicked.asLong());
+                    t.putString("FromDim", level.dimension().location().toString());
+                    t.putInt("FromPort", port.index());
+                    t.putString("FromLabel", port.label());
+                });
                 say(player, Component.translatable("message.venuesound.cable_from_port", port.label()));
                 click(level, clicked);
             }
@@ -209,10 +212,10 @@ public class AudioCableItem extends Item {
         }
 
         // Second click: plug the other end into an IN socket.
-        BlockPos from = BlockPos.of(tag.getLong("From"));
-        int fromPort = tag.getInt("FromPort");
+        BlockPos from = BlockPos.of(Nbt.getLong(tag, "From"));
+        int fromPort = Nbt.getInt(tag, "FromPort");
         java.util.List<BlockPos> via = new java.util.ArrayList<>();
-        for (long v : tag.getLongArray("Via")) {
+        for (long v : Nbt.getLongArray(tag, "Via")) {
             via.add(BlockPos.of(v));
         }
         net.minecraft.world.phys.Vec3 end = heldEnd(level, tag);
@@ -267,7 +270,7 @@ public class AudioCableItem extends Item {
         }
         source.addLink(clicked, fromPort, port.index(), via, type);
         click(level, clicked);
-        say(player, Component.translatable("message.venuesound.cable_connected_ports", tag.getString("FromLabel"), port.label()).withStyle(ChatFormatting.GREEN));
+        say(player, Component.translatable("message.venuesound.cable_connected_ports", Nbt.getString(tag, "FromLabel"), port.label()).withStyle(ChatFormatting.GREEN));
         return InteractionResult.SUCCESS;
     }
 
@@ -290,13 +293,14 @@ public class AudioCableItem extends Item {
     }
 
     private static void clearHeld(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            tag.remove("From");
-            tag.remove("FromDim");
-            tag.remove("FromPort");
-            tag.remove("FromLabel");
-            tag.remove("Via");
+        if (StackData.has(stack)) {
+            StackData.edit(stack, tag -> {
+                tag.remove("From");
+                tag.remove("FromDim");
+                tag.remove("FromPort");
+                tag.remove("FromLabel");
+                tag.remove("Via");
+            });
         }
     }
 
@@ -307,7 +311,7 @@ public class AudioCableItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown() && stack.getTag() != null && stack.getTag().contains("From")) {
+        if (player.isShiftKeyDown() && StackData.read(stack).contains("From")) {
             if (!level.isClientSide) {
                 clearHeld(stack);
                 say(player, Component.translatable("message.venuesound.cable_cleared"));
@@ -319,11 +323,11 @@ public class AudioCableItem extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().contains("From");
+        return StackData.read(stack).contains("From");
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    protected void addTooltip(ItemStack stack, List<Component> tooltip) {
         dev.tonyd365.venuesound.block.CableType type = cableType();
         tooltip.add(Component.translatable("tooltip.venuesound.cable." + type.id, type.maxLength).withStyle(ChatFormatting.AQUA));
         tooltip.add(Component.translatable("tooltip.venuesound.cable_help").withStyle(ChatFormatting.GRAY));

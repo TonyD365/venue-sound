@@ -3,6 +3,7 @@ package dev.tonyd365.venuesound.block;
 import dev.tonyd365.venuesound.Registration;
 import dev.tonyd365.venuesound.audio.NodeKind;
 import net.minecraft.core.BlockPos;
+import dev.tonyd365.venuesound.compat.Nbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,8 +62,8 @@ public class VideoCaptureBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void write(CompoundTag tag) {
+        super.write(tag);
         if (a != null && b != null) {
             tag.putLong("ZoneA", a.asLong());
             tag.putLong("ZoneB", b.asLong());
@@ -70,9 +71,9 @@ public class VideoCaptureBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        a = tag.contains("ZoneA") ? BlockPos.of(tag.getLong("ZoneA")) : null;
-        b = tag.contains("ZoneB") ? BlockPos.of(tag.getLong("ZoneB")) : null;
+    protected void read(CompoundTag tag) {
+        super.read(tag);
+        a = tag.contains("ZoneA") ? BlockPos.of(Nbt.getLong(tag, "ZoneA")) : null;
+        b = tag.contains("ZoneB") ? BlockPos.of(Nbt.getLong(tag, "ZoneB")) : null;
     }
 }

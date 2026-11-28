@@ -17,6 +17,9 @@ public class VenueSound implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("VenueSound");
 
     public static ResourceLocation id(String path) {
+        //? if >=1.21 {
+        /*return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+        *///?} else
         return new ResourceLocation(MOD_ID, path);
     }
 

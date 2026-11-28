@@ -6,7 +6,7 @@ import dev.tonyd365.venuesound.block.MixerLayout;
 import dev.tonyd365.venuesound.block.OscTarget;
 import dev.tonyd365.venuesound.net.ParamPackets;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.tonyd365.venuesound.compat.ClientNet;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
@@ -211,7 +211,7 @@ public final class OscBridge {
             buf.writeBlockPos(pos);
             buf.writeUtf(e.getKey());
             buf.writeFloat(e.getValue());
-            ClientPlayNetworking.send(ParamPackets.SET, buf);
+            ClientNet.send(ParamPackets.SET, buf);
         }
         if (m != null && remote != null && tick % 4 == 0) {
             feedback(m, table);

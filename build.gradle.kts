@@ -37,6 +37,15 @@ dependencies {
     include("javazoom:jlayer:1.0.1")
 }
 
+// The photo and film modes (they shoot the docs images and the demo video) are only on 1.20.1
+if (mc != "1.20.1") {
+    sourceSets.main {
+        java {
+            exclude("dev/tonyd365/venuesound/client/PhotoShoot.java", "dev/tonyd365/venuesound/client/FilmMode.java")
+        }
+    }
+}
+
 tasks.processResources {
     val props = mapOf(
         "version" to project.version.toString(),

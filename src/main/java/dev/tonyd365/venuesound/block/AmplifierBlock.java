@@ -31,7 +31,7 @@ public class AmplifierBlock extends DeviceBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.getItemInHand(hand).getItem() instanceof AudioCableItem) {
             return InteractionResult.PASS;
         }
@@ -53,6 +53,6 @@ public class AmplifierBlock extends DeviceBlock {
                 amp.cycleLevel(p.u() < KNOB_U);
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return dev.tonyd365.venuesound.compat.Use.sided(level);
     }
 }

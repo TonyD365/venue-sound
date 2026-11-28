@@ -5,6 +5,7 @@ import dev.tonyd365.venuesound.audio.DimPos;
 import dev.tonyd365.venuesound.audio.NodeKind;
 import dev.tonyd365.venuesound.audio.RouterState;
 import net.minecraft.core.BlockPos;
+import dev.tonyd365.venuesound.compat.Nbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -100,18 +101,18 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void write(CompoundTag tag) {
+        super.write(tag);
         tag.putInt("Range", range);
         tag.putBoolean("On", on);
         tag.putInt("Channel", channel);
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        range = tag.contains("Range") ? tag.getInt("Range") : 64;
-        on = !tag.contains("On") || tag.getBoolean("On");
-        channel = tag.contains("Channel") ? Math.max(1, Math.min(16, tag.getInt("Channel"))) : 1;
+    protected void read(CompoundTag tag) {
+        super.read(tag);
+        range = tag.contains("Range") ? Nbt.getInt(tag, "Range") : 64;
+        on = !tag.contains("On") || Nbt.getBoolean(tag, "On");
+        channel = tag.contains("Channel") ? Math.max(1, Math.min(16, Nbt.getInt(tag, "Channel"))) : 1;
     }
 }

@@ -50,7 +50,7 @@ public class MediaDeckBlock extends DeviceBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.getItemInHand(hand).getItem() instanceof AudioCableItem) {
             return InteractionResult.PASS;
         }
@@ -61,7 +61,7 @@ public class MediaDeckBlock extends DeviceBlock {
             if (player instanceof ServerPlayer sp) {
                 DeckPackets.openScreen(sp, deck);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return dev.tonyd365.venuesound.compat.Use.sided(level);
         }
         if (hit.getDirection() != state.getValue(FACING)) {
             return InteractionResult.PASS;
@@ -72,6 +72,6 @@ public class MediaDeckBlock extends DeviceBlock {
             deck.press(button);
             level.playSound(null, pos, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 1.8F);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return dev.tonyd365.venuesound.compat.Use.sided(level);
     }
 }

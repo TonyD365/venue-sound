@@ -1,5 +1,7 @@
 package dev.tonyd365.venuesound.item;
 
+import dev.tonyd365.venuesound.compat.Nbt;
+import dev.tonyd365.venuesound.compat.StackData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +21,7 @@ import java.util.List;
  * your voice goes to everyone on your channel near a powered base station. The audience never
  * hears it. Right-click: switch A / B. Sneak + right-click: TALK on / off.
  */
-public class IntercomBeltpackItem extends Item {
+public class IntercomBeltpackItem extends dev.tonyd365.venuesound.compat.ModItem {
 
     public IntercomBeltpackItem(Properties properties) {
         super(properties);
@@ -27,11 +29,11 @@ public class IntercomBeltpackItem extends Item {
 
     /** 1 = A, 2 = B. */
     public static int getChannel(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().getInt("Channel") == 2 ? 2 : 1;
+        return Nbt.getInt(StackData.read(stack), "Channel") == 2 ? 2 : 1;
     }
 
     public static boolean isTalking(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().getBoolean("Talk");
+        return Nbt.getBoolean(StackData.read(stack), "Talk");
     }
 
     public static String channelName(int channel) {
@@ -55,15 +57,14 @@ public class IntercomBeltpackItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            var tag = stack.getOrCreateTag();
             if (player.isShiftKeyDown()) {
                 boolean talk = !isTalking(stack);
-                tag.putBoolean("Talk", talk);
+                StackData.edit(stack, tag -> tag.putBoolean("Talk", talk));
                 player.displayClientMessage(Component.translatable(talk ? "message.venuesound.intercom_talk_on" : "message.venuesound.intercom_talk_off",
                         channelName(getChannel(stack))).withStyle(talk ? ChatFormatting.GREEN : ChatFormatting.GRAY), true);
             } else {
                 int ch = getChannel(stack) == 1 ? 2 : 1;
-                tag.putInt("Channel", ch);
+                StackData.edit(stack, tag -> tag.putInt("Channel", ch));
                 player.displayClientMessage(Component.translatable("message.venuesound.intercom_channel", channelName(ch)), true);
             }
         }
@@ -71,7 +72,7 @@ public class IntercomBeltpackItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    protected void addTooltip(ItemStack stack, List<Component> tooltip) {
         tooltip.add(Component.translatable("tooltip.venuesound.intercom_channel", channelName(getChannel(stack))).withStyle(ChatFormatting.AQUA));
         tooltip.add(isTalking(stack)
                 ? Component.translatable("tooltip.venuesound.intercom_talk_on").withStyle(ChatFormatting.GREEN)

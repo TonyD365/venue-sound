@@ -112,12 +112,12 @@ public class ConcertSpeakerBlock extends DeviceBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.getItemInHand(hand).getItem() instanceof AudioCableItem) {
             return InteractionResult.PASS;
         }
         if (SpeakerBlock.useRearPanel(level, mainPos(state, pos), state.getValue(FACING), player, hit)) {
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return dev.tonyd365.venuesound.compat.Use.sided(level);
         }
         return InteractionResult.PASS;
     }
