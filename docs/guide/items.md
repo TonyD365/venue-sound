@@ -70,6 +70,8 @@ How to read this page:
 
 ### Wireless Microphone
 
+<img src="../images/items/wireless_mic-icon.png" alt="Wireless Microphone icon" width="64"> <img src="../images/items/wireless_mic.jpg" alt="Wireless Microphone in the world" width="480">
+
 A handheld radio mic, like the one a singer or presenter carries. While you hold it, your voice
 goes to every Wireless Receiver on the same channel within 128 blocks.
 
@@ -94,6 +96,8 @@ B = Iron Bars, R = Redstone Dust, K = Black Concrete.
 cabled to the console.
 
 ### Headset Mic
+
+<img src="../images/items/headset_mic-icon.png" alt="Headset Mic icon" width="64"> <img src="../images/items/headset_mic.jpg" alt="Headset Mic in the world" width="480">
 
 A headset mic with a beltpack, as worn by a presenter or a dancing singer. Hands-free: it
 transmits while worn or carried anywhere in your inventory.
@@ -121,6 +125,8 @@ the worn one, then one in your inventory.
 
 ### Lavalier Mic
 
+<img src="../images/items/lavalier_mic-icon.png" alt="Lavalier Mic icon" width="64"> <img src="../images/items/lavalier_mic.jpg" alt="Lavalier Mic in the world" width="480">
+
 A small clip-on mic with a beltpack, as used in theatre and for speeches. Works like the
 [Headset Mic](#headset-mic), but is worn on the chest.
 
@@ -144,6 +150,8 @@ It transmits while worn or carried. No mute on a worn mic.
 **Hookups**: set it to a [Wireless Receiver](#wireless-receiver)'s channel.
 
 ### Wireless Receiver
+
+<img src="../images/items/receiver-icon.png" alt="Wireless Receiver icon" width="64"> <img src="../images/items/receiver.jpg" alt="Wireless Receiver in the world" width="480">
 
 The receiver for radio mics. It picks up every wireless, headset and lavalier mic on its channel
 within 128 blocks and sends the voice into a cable.
@@ -180,6 +188,8 @@ its own channel.
 
 ### Stand Microphone
 
+<img src="../images/items/stand_mic-icon.png" alt="Stand Microphone icon" width="64"> <img src="../images/items/stand_mic.jpg" alt="Stand Microphone in the world" width="480">
+
 A wired vocal mic on a floor stand. It picks up players talking within 3 blocks of it.
 
 **Recipe** (1 mic):
@@ -204,6 +214,8 @@ M = Wireless Microphone, I = Iron Ingot.
 
 ### Gooseneck Podium Mic
 
+<img src="../images/items/gooseneck_mic-icon.png" alt="Gooseneck Podium Mic icon" width="64"> <img src="../images/items/gooseneck_mic.jpg" alt="Gooseneck Podium Mic in the world" width="480">
+
 The thin mic on a lectern or a conference desk. It picks up players within 2 blocks. It is a condenser mic: turn on the console's **+48V** or it stays silent.
 
 **Recipe** (1 mic):
@@ -223,6 +235,8 @@ I = Iron Ingot, S = String.
 **Hookups**: [XLR Mic Cable](#xlr-mic-cable) to a console IN.
 
 ### Hanging Choir Mic
+
+<img src="../images/items/choir_mic-icon.png" alt="Hanging Choir Mic icon" width="64"> <img src="../images/items/choir_mic.jpg" alt="Hanging Choir Mic in the world" width="480">
 
 An overhead mic for a choir or a group on stage. It picks up players within 8 blocks. It is a condenser mic: turn on the console's **+48V** or it stays silent.
 
@@ -245,6 +259,8 @@ walk through it. No controls.
 ceiling, to a console IN.
 
 ### Media Deck
+
+<img src="../images/items/media_deck-icon.png" alt="Media Deck icon" width="64"> <img src="../images/items/media_deck.jpg" alt="Media Deck in the world" width="480">
 
 A playback deck for walk-in music and sound effects. It plays `.mp3` and `.wav` files from the
 `venuesound_media` folder (next to `mods/`; on a server, in the server folder).
@@ -283,6 +299,8 @@ I = Iron Ingot, R = Redstone Dust, J = Jukebox.
 
 ### Video Capture
 
+<img src="../images/items/video_capture-icon.png" alt="Video Capture icon" width="64"> <img src="../images/items/video_capture.jpg" alt="Video Capture in the world" width="480">
+
 Brings the sound of WATERFrAMES screens into the console. Screens inside its capture zone follow
 the console's faders and mutes and are loud near the speakers. (Their sound is played by each
 player's own computer, so it cannot come from the speakers' direction.)
@@ -311,6 +329,8 @@ I = Iron Ingot, G = Glowstone Dust, R = Redstone Dust, C = Redstone Comparator.
 ## Mixing
 
 ### Mixing Console VS-12
+
+<img src="../images/items/mixer-icon.png" alt="Mixing Console VS-12 icon" width="64"> <img src="../images/items/mixer.jpg" alt="Mixing Console VS-12 in the world" width="480">
 
 The front-of-house mixing desk: 8 mono strips and 2 stereo strips (ST1, strip 9/10, is the
 console's built-in USB player), plus a master section. Every control is on its top. See
@@ -368,6 +388,8 @@ floor wedges, or to an [In-Ear Monitor Transmitter](#in-ear-monitor-transmitter)
 
 ### Mixing Console VS-24
 
+<img src="../images/items/mixer24-icon.png" alt="Mixing Console VS-24 icon" width="64"> <img src="../images/items/mixer24.jpg" alt="Mixing Console VS-24 in the world" width="480">
+
 The larger desk: 16 mono strips and 4 stereo strips. Same controls as the
 [VS-12](#mixing-console-vs-12).
 
@@ -391,6 +413,8 @@ extends 5 blocks to your right and 2 away from you.
 ## Rack
 
 ### Power Amplifier
+
+<img src="../images/items/amplifier-icon.png" alt="Power Amplifier icon" width="64"> <img src="../images/items/amplifier.jpg" alt="Power Amplifier in the world" width="480">
 
 Drives the speakers. **IN A** feeds **OUT 1** and **OUT 2**; **IN B** feeds **OUT 3** and
 **OUT 4**, at the level set on the front. It is on when placed.
@@ -426,6 +450,8 @@ with [Speaker Cable](#speaker-cable). Each OUT takes one cable.
 
 ### Graphic Equalizer
 
+<img src="../images/items/graphic_eq-icon.png" alt="Graphic Equalizer icon" width="64"> <img src="../images/items/graphic_eq.jpg" alt="Graphic Equalizer in the world" width="480">
+
 A 7-band EQ to tune the whole system to the room. It sits in a cable run, usually between the
 console and the amplifier.
 
@@ -455,6 +481,8 @@ Both inputs go to all four outputs.
 **Hookups**: console MAIN L → IN A, then OUT 1 → amplifier IN A.
 
 ### Compressor and Limiter
+
+<img src="../images/items/compressor-icon.png" alt="Compressor and Limiter icon" width="64"> <img src="../images/items/compressor.jpg" alt="Compressor and Limiter in the world" width="480">
 
 Evens out loud and quiet passages and stops peaks. In-line, like the EQ.
 
@@ -487,6 +515,8 @@ Knobs: left half down, right half up, or wheel.
 
 ### Effects Processor
 
+<img src="../images/items/fx_processor-icon.png" alt="Effects Processor icon" width="64"> <img src="../images/items/fx_processor.jpg" alt="Effects Processor in the world" width="480">
+
 An echo unit for vocals and speech. In-line.
 
 **Recipe** (1 unit):
@@ -517,6 +547,8 @@ EFX send and echo.)
 
 ### Crossover and Speaker Processor
 
+<img src="../images/items/crossover-icon.png" alt="Crossover and Speaker Processor icon" width="64"> <img src="../images/items/crossover.jpg" alt="Crossover and Speaker Processor in the world" width="480">
+
 Splits the signal for subwoofers and top speakers. Use one crossover per feed.
 
 **Recipe** (1 unit):
@@ -546,6 +578,8 @@ crossover set to HIGH → amplifier → tops.
 
 ### Power Sequencer
 
+<img src="../images/items/power_sequencer-icon.png" alt="Power Sequencer icon" width="64"> <img src="../images/items/power_sequencer.jpg" alt="Power Sequencer in the world" width="480">
+
 Switches a whole system on and off in a safe order: on, speakers first and amplifiers last; off,
 amplifiers first. Steps are 4 ticks apart.
 
@@ -567,6 +601,8 @@ and speaker within 16 blocks off; otherwise it switches them all on. Processors 
 **Sockets**: none.
 
 ### Rack Cabinet
+
+<img src="../images/items/rack_cabinet-icon.png" alt="Rack Cabinet icon" width="64"> <img src="../images/items/rack_cabinet.jpg" alt="Rack Cabinet in the world" width="480">
 
 A rack to stand amplifiers and processors in. It looks the part and carries no signal.
 
@@ -591,6 +627,8 @@ placed. A speaker plays only what reaches its INPUT through cables.
 
 ### Line Array Module
 
+<img src="../images/items/speaker-icon.png" alt="Line Array Module icon" width="64"> <img src="../images/items/speaker.jpg" alt="Line Array Module in the world" width="480">
+
 A compact line array box for main PA or side fills.
 
 **Recipe** (1 module):
@@ -614,6 +652,8 @@ audience will be; the back panel then faces away from you.
 **Hookups**: amplifier OUT → INPUT with [Speaker Cable](#speaker-cable).
 
 ### Flown Line Array
+
+<img src="../images/items/flown_array-icon.png" alt="Flown Line Array icon" width="64"> <img src="../images/items/flown_array.jpg" alt="Flown Line Array in the world" width="480">
 
 A line array element hung above the stage.
 
@@ -640,6 +680,8 @@ C = Chain, P = any Planks, N = Note Block.
 
 ### Truss Hanging Point
 
+<img src="../images/items/truss_point-icon.png" alt="Truss Hanging Point icon" width="64"> <img src="../images/items/truss_point.jpg" alt="Truss Hanging Point in the world" width="480">
+
 A rigging point to hang flown speakers from. It looks the part and carries no signal.
 
 **Recipe** (1 point):
@@ -654,6 +696,8 @@ I = Iron Ingot, C = Chain.
 **Placing**: one block, at the top, with flown speakers below it. No controls or sockets.
 
 ### PA Speaker Cabinet
+
+<img src="../images/items/pa_speaker-icon.png" alt="PA Speaker Cabinet icon" width="64"> <img src="../images/items/pa_speaker.jpg" alt="PA Speaker Cabinet in the world" width="480">
 
 A full-range PA cabinet (woofers below, horn above), the usual main speaker for a small venue.
 
@@ -678,6 +722,8 @@ removes it.
 **Hookups**: amplifier OUT 1 → left cabinet, OUT 3 → right cabinet.
 
 ### Concert Speaker Stack
+
+<img src="../images/items/concert_speaker-icon.png" alt="Concert Speaker Stack icon" width="64"> <img src="../images/items/concert_speaker.jpg" alt="Concert Speaker Stack in the world" width="480">
 
 A large stadium stack: horn arrays on top, 15" mid-bass drivers in the middle, 18" subwoofers at
 the bottom.
@@ -706,6 +752,8 @@ stage.
 
 ### Floor Wedge Monitor
 
+<img src="../images/items/floor_wedge-icon.png" alt="Floor Wedge Monitor icon" width="64"> <img src="../images/items/floor_wedge.jpg" alt="Floor Wedge Monitor in the world" width="480">
+
 A low, angled speaker on the stage floor, pointing back at a performer so they hear themselves.
 
 **Recipe** (1 wedge):
@@ -730,6 +778,8 @@ while standing where the performer will stand.
 audience does not hear it.
 
 ### Subwoofer
+
+<img src="../images/items/subwoofer-icon.png" alt="Subwoofer icon" width="64"> <img src="../images/items/subwoofer.jpg" alt="Subwoofer in the world" width="480">
 
 A low-frequency cabinet that adds the low end, usually on the floor under or beside the main
 speakers.
@@ -756,6 +806,8 @@ P = any Planks, N = Note Block, R = Redstone Dust.
 
 ### In-Ear Monitor Transmitter
 
+<img src="../images/items/iem_transmitter-icon.png" alt="In-Ear Monitor Transmitter icon" width="64"> <img src="../images/items/iem_transmitter.jpg" alt="In-Ear Monitor Transmitter in the world" width="480">
+
 Sends a monitor mix by radio to performers' earpieces. Only players carrying an
 [In-Ear Monitor Earpiece](#in-ear-monitor-earpiece) set to the same channel hear it, within at
 least 128 blocks. Use one transmitter per mix: for example the singer's earpiece and transmitter
@@ -781,6 +833,8 @@ I = Iron Ingot, E = Ender Pearl, R = Redstone Dust, C = Redstone Comparator.
 **Hookups**: console AUX 1 or AUX 2 → INPUT (directly, or through an amplifier).
 
 ### In-Ear Monitor Earpiece
+
+<img src="../images/items/iem_earpiece-icon.png" alt="In-Ear Monitor Earpiece icon" width="64"> <img src="../images/items/iem_earpiece.jpg" alt="In-Ear Monitor Earpiece in the world" width="480">
 
 The performer's earpiece for the [In-Ear Monitor Transmitter](#in-ear-monitor-transmitter).
 
@@ -809,6 +863,8 @@ other through headsets, and the audience never hears it. It does not go through 
 
 ### Intercom Base Station
 
+<img src="../images/items/intercom_station-icon.png" alt="Intercom Base Station icon" width="64"> <img src="../images/items/intercom_station.jpg" alt="Intercom Base Station in the world" width="480">
+
 The heart of the intercom. Beltpacks only work within its coverage, and whatever is cabled into
 its program input (usually the console's MAIN or an AUX) is played to every beltpack nearby so
 the crew can follow the show.
@@ -834,6 +890,8 @@ I = Iron Ingot, N = Note Block, R = Redstone Dust, C = Redstone Comparator.
 **Hookups**: console AUX → PGM IN (optional). Without power the whole intercom is silent.
 
 ### Intercom Beltpack
+
+<img src="../images/items/intercom_beltpack-icon.png" alt="Intercom Beltpack icon" width="64"> <img src="../images/items/intercom_beltpack.jpg" alt="Intercom Beltpack in the world" width="480">
 
 A crew member's beltpack and headset. Keep it anywhere in your inventory.
 
@@ -886,6 +944,8 @@ refused: route it along clips.
 
 ### Audio Cable
 
+<img src="../images/items/audio_cable-icon.png" alt="Audio Cable icon" width="64"> <img src="../images/items/audio_cable.jpg" alt="Audio Cable in the world" width="480">
+
 A 6.35 mm TRS line cable: for TRS and combo sockets (media deck, AUX sends, DI box input, stereo console inputs).
 
 **Recipe** (1 cable):
@@ -901,6 +961,8 @@ S = String, R = Redstone Dust.
 64 blocks per run, drawn black.
 
 ### XLR Mic Cable
+
+<img src="../images/items/xlr_cable-icon.png" alt="XLR Mic Cable icon" width="64"> <img src="../images/items/xlr_cable.jpg" alt="XLR Mic Cable in the world" width="480">
 
 The standard mic cable. For mics, receivers, media decks and console outputs into processors
 and amplifiers. It cannot start at an amplifier's outputs: use speaker cable there.
@@ -919,6 +981,8 @@ W = Black Wool, R = Redstone Dust. (Any column works.)
 
 ### Speaker Cable
 
+<img src="../images/items/speaker_cable-icon.png" alt="Speaker Cable icon" width="64"> <img src="../images/items/speaker_cable.jpg" alt="Speaker Cable in the world" width="480">
+
 Heavy cable from an amplifier to a speaker. It only runs from an amplifier OUT to a speaker
 INPUT; [Wall Outlets](#wall-outlet) in between are allowed.
 
@@ -935,6 +999,8 @@ W = Black Wool, C = Redstone Comparator. (Any column works.)
 96 blocks per run, drawn orange.
 
 ### Multicore Snake
+
+<img src="../images/items/snake_cable-icon.png" alt="Multicore Snake icon" width="64"> <img src="../images/items/snake_cable.jpg" alt="Multicore Snake in the world" width="480">
 
 The thick multi-channel cable from the stage to the mixing position. It only runs from a stage
 box's **SNAKE** socket to a console input (or to a wall outlet on the way).
@@ -954,6 +1020,8 @@ on IN 1, CH 2 on IN 2 and so on (the USB strip is skipped).
 
 ### Cable Reel
 
+<img src="../images/items/cable_reel-icon.png" alt="Cable Reel icon" width="64"> <img src="../images/items/cable_reel.jpg" alt="Cable Reel in the world" width="480">
+
 A long XLR cable on a drum, for long runs across the venue: XLR and combo sockets.
 
 **Recipe** (1 reel):
@@ -969,6 +1037,8 @@ P = any Planks, W = Black Wool, C = Redstone Comparator.
 128 blocks per run, drawn yellow.
 
 ### Cable Clip
+
+<img src="../images/items/cable_clip-icon.png" alt="Cable Clip icon" width="64"> <img src="../images/items/cable_clip.jpg" alt="Cable Clip in the world" width="480">
 
 A small clip that fixes cables to a wall, floor or ceiling, so runs follow the building instead
 of hanging across the room.
@@ -990,6 +1060,8 @@ another, then right-click the IN socket. Each clip is a corner of the run; each 
 clips can be as long as the cable's run length.
 
 ### Wall Outlet
+
+<img src="../images/items/outlet-icon.png" alt="Wall Outlet icon" width="64"> <img src="../images/items/outlet.jpg" alt="Wall Outlet in the world" width="480">
 
 A passive patch point: a plate with four sockets, like the wall boxes that link a stage to a
 control room. Cables run into it and on to other outlets, a console, an amplifier or speakers.
@@ -1021,6 +1093,8 @@ S1 in the control room; that outlet's S2 → console IN. Speaker cable may pass 
 
 ### Stage Box 8 ch
 
+<img src="../images/items/stage_box-icon.png" alt="Stage Box 8 ch icon" width="64"> <img src="../images/items/stage_box.jpg" alt="Stage Box 8 ch in the world" width="480">
+
 A box on the stage that collects up to 8 mics and sends them to the console down one
 [Multicore Snake](#multicore-snake).
 
@@ -1048,6 +1122,8 @@ Multicore Snake. CH 1 reaches the input the snake is plugged into, CH 2 the next
 
 ### Stage Box 16 ch
 
+<img src="../images/items/stage_box_16-icon.png" alt="Stage Box 16 ch icon" width="64"> <img src="../images/items/stage_box_16.jpg" alt="Stage Box 16 ch in the world" width="480">
+
 The 16-channel stage box, for the [VS-24](#mixing-console-vs-24).
 
 **Recipe** (1 box):
@@ -1067,6 +1143,8 @@ W = Black Wool, I = Iron Ingot, C = Redstone Comparator.
 **Hookups**: mics → CH 1-16; SNAKE → VS-24 IN 1.
 
 ### DI Box
+
+<img src="../images/items/di_box-icon.png" alt="DI Box icon" width="64"> <img src="../images/items/di_box.jpg" alt="DI Box in the world" width="480">
 
 A direct box: takes a line-level source (a media deck, a keyboard) and feeds it to a mic input.
 It passes the signal on at its level setting.
@@ -1092,6 +1170,8 @@ I = Iron Ingot, R = Redstone Dust, C = Redstone Comparator.
 ## Tools
 
 ### Zone Selector
+
+<img src="../images/items/zone_selector-icon.png" alt="Zone Selector icon" width="64"> <img src="../images/items/zone_selector.jpg" alt="Zone Selector in the world" width="480">
 
 Marks the capture zone of a [Video Capture](#video-capture) device: the area whose WATERFrAMES
 screens play through the console.

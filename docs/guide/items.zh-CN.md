@@ -67,6 +67,8 @@ VenueSound 添加的每一个物品和方块：用途、合成配方、怎么摆
 
 ### 无线麦克风
 
+<img src="../images/items/wireless_mic-icon.png" alt="无线麦克风 icon" width="64"> <img src="../images/items/wireless_mic.jpg" alt="无线麦克风 in the world" width="480">
+
 手持无线麦，就是歌手或主持人拿在手里的那种。拿在手上时，你的声音会传到 128 格内所有同通道的
 无线接收器。
 
@@ -90,6 +92,8 @@ B = 铁栏杆，R = 红石粉，K = 黑色混凝土。
 **常见接法**：调到某台[无线接收器](#无线接收器)的通道，接收器再接到调音台。
 
 ### 头戴式话筒
+
+<img src="../images/items/headset_mic-icon.png" alt="头戴式话筒 icon" width="64"> <img src="../images/items/headset_mic.jpg" alt="头戴式话筒 in the world" width="480">
 
 带腰包的头戴麦，主持人或边跳边唱的歌手用。不用手拿：戴着或放在背包任意位置时都会发射。
 
@@ -115,6 +119,8 @@ S = 线，I = 铁锭，R = 红石粉，G = 荧石粉。
 
 ### 领夹话筒
 
+<img src="../images/items/lavalier_mic-icon.png" alt="领夹话筒 icon" width="64"> <img src="../images/items/lavalier_mic.jpg" alt="领夹话筒 in the world" width="480">
+
 带腰包的小型领夹麦，话剧和演讲常用。用法和[头戴式话筒](#头戴式话筒)一样，只是戴在胸前。
 
 **配方**（得 1 个）：
@@ -137,6 +143,8 @@ I = 铁锭，S = 线，R = 红石粉，G = 荧石粉。
 **常见接法**：调到某台[无线接收器](#无线接收器)的通道。
 
 ### 无线接收器
+
+<img src="../images/items/receiver-icon.png" alt="无线接收器 icon" width="64"> <img src="../images/items/receiver.jpg" alt="无线接收器 in the world" width="480">
 
 无线麦的接收机。它接收 128 格内同通道的所有无线麦、头戴麦和领夹麦，把声音送进线缆。
 
@@ -171,6 +179,8 @@ L = 避雷针，I = 铁锭，R = 红石粉。
 
 ### 立式有线麦克风
 
+<img src="../images/items/stand_mic-icon.png" alt="立式有线麦克风 icon" width="64"> <img src="../images/items/stand_mic.jpg" alt="立式有线麦克风 in the world" width="480">
+
 装在落地支架上的有线人声麦。拾取 3 格内说话的玩家。
 
 **配方**（得 1 个）：
@@ -195,6 +205,8 @@ M = 无线麦克风，I = 铁锭。
 
 ### 鹅颈会议话筒
 
+<img src="../images/items/gooseneck_mic-icon.png" alt="鹅颈会议话筒 icon" width="64"> <img src="../images/items/gooseneck_mic.jpg" alt="鹅颈会议话筒 in the world" width="480">
+
 讲台或会议桌上那种细长话筒。拾取 2 格内的玩家。它是电容话筒：要打开调音台的 **+48V** 幻象电源，否则没有声音。
 
 **配方**（得 1 个）：
@@ -215,6 +227,8 @@ I = 铁锭，S = 线。
 
 ### 吊挂合唱话筒
 
+<img src="../images/items/choir_mic-icon.png" alt="吊挂合唱话筒 icon" width="64"> <img src="../images/items/choir_mic.jpg" alt="吊挂合唱话筒 in the world" width="480">
+
 吊在合唱团或舞台上一组人上方的话筒。拾取 8 格内的玩家。它是电容话筒：要打开调音台的 **+48V** 幻象电源，否则没有声音。
 
 **配方**（得 1 个）：
@@ -234,6 +248,8 @@ C = 锁链，I = 铁锭，R = 红石粉。（放在任意一列都行。）
 **常见接法**：用 [XLR 话筒线](#xlr-话筒线)沿天花板上的[线卡](#线卡)接到调音台 IN。
 
 ### 媒体播放机
+
+<img src="../images/items/media_deck-icon.png" alt="媒体播放机 icon" width="64"> <img src="../images/items/media_deck.jpg" alt="媒体播放机 in the world" width="480">
 
 播放进场音乐和音效的播放机。播放 `venuesound_media` 文件夹里的 `.mp3` 和 `.wav` 文件（文件夹在
 `mods/` 旁边；服务器上在服务器文件夹里）。
@@ -272,6 +288,8 @@ I = 铁锭，R = 红石粉，J = 唱片机。
 
 ### 视频采集器
 
+<img src="../images/items/video_capture-icon.png" alt="视频采集器 icon" width="64"> <img src="../images/items/video_capture.jpg" alt="视频采集器 in the world" width="480">
+
 把 WATERFrAMES 屏幕的声音接进调音台。采集区里的屏幕音量跟着调音台的推子和静音走，离音箱近就大声。
 （屏幕的声音是在每个玩家自己的电脑上播放的，所以没法真的从音箱方向传来。）
 
@@ -298,6 +316,8 @@ I = 铁锭，G = 荧石粉，R = 红石粉，C = 红石比较器。
 ## 调音
 
 ### 调音台 VS-12
+
+<img src="../images/items/mixer-icon.png" alt="调音台 VS-12 icon" width="64"> <img src="../images/items/mixer.jpg" alt="调音台 VS-12 in the world" width="480">
 
 调音位的主调音台：8 个单声道通道、2 个立体声通道（第一个立体声通道 ST1，即 9/10 路，是内置的
 USB 播放器），加一个总控区。所有控件都在台面上。每个控件对声音的作用见[调音台](console.md)（英文）。
@@ -352,6 +372,8 @@ IN A / IN B（或先经过机架处理器）；AUX 1 / AUX 2 接带返听音箱�
 
 ### 调音台 VS-24
 
+<img src="../images/items/mixer24-icon.png" alt="调音台 VS-24 icon" width="64"> <img src="../images/items/mixer24.jpg" alt="调音台 VS-24 in the world" width="480">
+
 大一号的调音台：16 个单声道通道、4 个立体声通道。控件和 [VS-12](#调音台-vs-12) 一样。
 
 **配方**（无序合成，得 1 台）：2 台调音台（VS-12）。
@@ -373,6 +395,8 @@ IN A / IN B（或先经过机架处理器）；AUX 1 / AUX 2 接带返听音箱�
 ## 机架设备
 
 ### 功放机
+
+<img src="../images/items/amplifier-icon.png" alt="功放机 icon" width="64"> <img src="../images/items/amplifier.jpg" alt="功放机 in the world" width="480">
 
 推动音箱。**IN A** 送到 **OUT 1** 和 **OUT 2**，**IN B** 送到 **OUT 3** 和 **OUT 4**，音量按正面的
 电平旋钮放大。放下时就是开机状态。
@@ -408,6 +432,8 @@ OUT 3 → 右音箱。每个 OUT 只能接一根线。
 
 ### 图示均衡器
 
+<img src="../images/items/graphic_eq-icon.png" alt="图示均衡器 icon" width="64"> <img src="../images/items/graphic_eq.jpg" alt="图示均衡器 in the world" width="480">
+
 7 段均衡器，用来按场地调整整套系统的音色。串在线路中间，一般在调音台和功放之间。
 
 **配方**（得 1 台）：
@@ -436,6 +462,8 @@ I = 铁锭，G = 荧石粉，R = 红石粉，C = 红石比较器。
 **常见接法**：调音台 MAIN L → IN A，再从 OUT 1 → 功放 IN A。
 
 ### 压缩限幅器
+
+<img src="../images/items/compressor-icon.png" alt="压缩限幅器 icon" width="64"> <img src="../images/items/compressor.jpg" alt="压缩限幅器 in the world" width="480">
 
 把忽大忽小的声音拉平，并压住突然的峰值。和均衡器一样串在线路中。
 
@@ -468,6 +496,8 @@ I = 铁锭，R = 红石粉，C = 红石比较器。
 
 ### 效果器
 
+<img src="../images/items/fx_processor-icon.png" alt="效果器 icon" width="64"> <img src="../images/items/fx_processor.jpg" alt="效果器 in the world" width="480">
+
 给人声和讲话加回声的效果器。串在线路中。
 
 **配方**（得 1 台）：
@@ -496,6 +526,8 @@ I = 铁锭，E = 末影珍珠，R = 红石粉，C = 红石比较器。
 **常见接法**：串在调音台和功放之间。（调音台本身也有 EFX 发送和回声。）
 
 ### 分频器与音箱处理器
+
+<img src="../images/items/crossover-icon.png" alt="分频器与音箱处理器 icon" width="64"> <img src="../images/items/crossover.jpg" alt="分频器与音箱处理器 in the world" width="480">
 
 把信号分给超低音和全频音箱。每一路馈送用一台分频器。
 
@@ -526,6 +558,8 @@ HIGH 的分频器 → 功放 → 全频音箱。
 
 ### 电源时序器
 
+<img src="../images/items/power_sequencer-icon.png" alt="电源时序器 icon" width="64"> <img src="../images/items/power_sequencer.jpg" alt="电源时序器 in the world" width="480">
+
 按安全顺序开关整套系统：开机时先开音箱、最后开功放；关机时先关功放。每一步间隔 4 tick。
 
 **配方**（得 1 台）：
@@ -546,6 +580,8 @@ I = 铁锭，L = 拉杆，R = 红石粉，C = 红石比较器。
 **接口**：无。
 
 ### 机柜
+
+<img src="../images/items/rack_cabinet-icon.png" alt="机柜 icon" width="64"> <img src="../images/items/rack_cabinet.jpg" alt="机柜 in the world" width="480">
 
 用来放功放和处理器的机柜。只是外观，不传信号。
 
@@ -568,6 +604,8 @@ I = 铁锭。
 是开着的。音箱只播放通过线缆送到 INPUT 的声音。
 
 ### 线阵音箱模块
+
+<img src="../images/items/speaker-icon.png" alt="线阵音箱模块 icon" width="64"> <img src="../images/items/speaker.jpg" alt="线阵音箱模块 in the world" width="480">
 
 小型线阵音箱，用作主扩或侧补。
 
@@ -592,6 +630,8 @@ I = 铁锭，N = 音符盒，J = 唱片机。
 
 ### 吊挂线阵音箱
 
+<img src="../images/items/flown_array-icon.png" alt="吊挂线阵音箱 icon" width="64"> <img src="../images/items/flown_array.jpg" alt="吊挂线阵音箱 in the world" width="480">
+
 吊在舞台上方的线阵单元。
 
 **配方**（得 1 个）：
@@ -615,6 +655,8 @@ C = 锁链，P = 任意木板，N = 音符盒。
 
 ### 桁架吊点
 
+<img src="../images/items/truss_point-icon.png" alt="桁架吊点 icon" width="64"> <img src="../images/items/truss_point.jpg" alt="桁架吊点 in the world" width="480">
+
 挂吊挂音箱用的吊点。只是外观，不传信号。
 
 **配方**（得 1 个）：
@@ -629,6 +671,8 @@ I = 铁锭，C = 锁链。
 **摆放**：一格，放在高处，吊挂音箱放在它下面。没有控件和接口。
 
 ### 大型 PA 音箱
+
+<img src="../images/items/pa_speaker-icon.png" alt="大型 PA 音箱 icon" width="64"> <img src="../images/items/pa_speaker.jpg" alt="大型 PA 音箱 in the world" width="480">
 
 全频 PA 音箱（下面是低音单元，上面是号角），小场地常用的主音箱。
 
@@ -652,6 +696,8 @@ I = 铁锭，S = 线阵音箱模块，W = 黑色羊毛。
 **常见接法**：功放 OUT 1 → 左音箱，OUT 3 → 右音箱。
 
 ### 大型演唱会音箱
+
+<img src="../images/items/concert_speaker-icon.png" alt="大型演唱会音箱 icon" width="64"> <img src="../images/items/concert_speaker.jpg" alt="大型演唱会音箱 in the world" width="480">
 
 体育场级的大型音箱堆：顶部是号角阵列，中间是 15 寸中低音单元，底部是 18 寸超低音。
 
@@ -677,6 +723,8 @@ P = 大型 PA 音箱，A = 功放机。
 
 ### 地板返听音箱
 
+<img src="../images/items/floor_wedge-icon.png" alt="地板返听音箱 icon" width="64"> <img src="../images/items/floor_wedge.jpg" alt="地板返听音箱 in the world" width="480">
+
 放在舞台地板上的矮斜面音箱，朝向表演者，让他们听到自己的声音。
 
 **配方**（得 1 个）：
@@ -699,6 +747,8 @@ P = 任意木板，N = 音符盒，R = 红石粉。
 **常见接法**：调音台 AUX 1 → 功放 IN → 功放 OUT → INPUT。覆盖范围调低（16），观众就听不到。
 
 ### 超低音音箱
+
+<img src="../images/items/subwoofer-icon.png" alt="超低音音箱 icon" width="64"> <img src="../images/items/subwoofer.jpg" alt="超低音音箱 in the world" width="480">
 
 补充低频的音箱，一般放在主音箱下面或旁边的地上。
 
@@ -723,6 +773,8 @@ P = 任意木板，N = 音符盒，R = 红石粉。
 [分频器](#分频器与音箱处理器)。
 
 ### 入耳监听发射机
+
+<img src="../images/items/iem_transmitter-icon.png" alt="入耳监听发射机 icon" width="64"> <img src="../images/items/iem_transmitter.jpg" alt="入耳监听发射机 in the world" width="480">
 
 把返听混音通过无线发给表演者的耳机。只有带着**同频道**[入耳监听耳机](#入耳监听耳机)的玩家能听到，
 范围至少 128 格。每个混音用一台发射机：比如主唱的耳机和发射机都设频道 1，接 AUX 1；鼓手的设频道 2，
@@ -749,6 +801,8 @@ I = 铁锭，E = 末影珍珠，R = 红石粉，C = 红石比较器。
 
 ### 入耳监听耳机
 
+<img src="../images/items/iem_earpiece-icon.png" alt="入耳监听耳机 icon" width="64"> <img src="../images/items/iem_earpiece.jpg" alt="入耳监听耳机 in the world" width="480">
+
 表演者用的耳机，配合[入耳监听发射机](#入耳监听发射机)。
 
 **配方**（得 1 个）：
@@ -774,6 +828,8 @@ S = 线，I = 铁锭，G = 荧石粉。
 
 ### 内通主站
 
+<img src="../images/items/intercom_station-icon.png" alt="内通主站 icon" width="64"> <img src="../images/items/intercom_station.jpg" alt="内通主站 in the world" width="480">
+
 内通的核心。腰包只在主站的覆盖范围内工作。接进它节目输入（PGM IN）的声音（通常是调音台的 MAIN
 或某个 AUX）会播给附近所有腰包，让工作人员跟上演出。
 
@@ -798,6 +854,8 @@ I = 铁锭，N = 音符盒，R = 红石粉，C = 红石比较器。
 **常见接法**：调音台 AUX → PGM IN（可选）。主站不通电时整个内通都没声音。
 
 ### 内通腰包
+
+<img src="../images/items/intercom_beltpack-icon.png" alt="内通腰包 icon" width="64"> <img src="../images/items/intercom_beltpack.jpg" alt="内通腰包 in the world" width="480">
 
 工作人员的腰包和耳麦，放在背包任意位置即可。
 
@@ -847,6 +905,8 @@ S = 线，L = 皮革，I = 铁锭，R = 红石粉。
 
 ### 音频线
 
+<img src="../images/items/audio_cable-icon.png" alt="音频线 icon" width="64"> <img src="../images/items/audio_cable.jpg" alt="音频线 in the world" width="480">
+
 6.35 mm TRS 线路线：插 TRS 和两用插座（播放机、AUX 输出、DI 盒输入、调音台立体声输入）。
 
 **配方**（得 1 根）：
@@ -862,6 +922,8 @@ S = 线，R = 红石粉。
 每段 64 格，显示为黑色。
 
 ### XLR 话筒线
+
+<img src="../images/items/xlr_cable-icon.png" alt="XLR 话筒线 icon" width="64"> <img src="../images/items/xlr_cable.jpg" alt="XLR 话筒线 in the world" width="480">
 
 标准话筒线。用于话筒、接收器、媒体播放机，以及调音台输出到处理器和功放。不能从功放的输出接出，
 那里要用音箱线。
@@ -880,6 +942,8 @@ W = 黑色羊毛，R = 红石粉。（放在任意一列都行。）
 
 ### 音箱线
 
+<img src="../images/items/speaker_cable-icon.png" alt="音箱线 icon" width="64"> <img src="../images/items/speaker_cable.jpg" alt="音箱线 in the world" width="480">
+
 从功放到音箱的粗线。只能从功放 OUT 接到音箱 INPUT，中间可以经过[墙面接口](#墙面接口)。
 
 **配方**（得 1 根）：
@@ -895,6 +959,8 @@ W = 黑色羊毛，C = 红石比较器。（放在任意一列都行。）
 每段 96 格，显示为橙色。
 
 ### 多芯信号缆
+
+<img src="../images/items/snake_cable-icon.png" alt="多芯信号缆 icon" width="64"> <img src="../images/items/snake_cable.jpg" alt="多芯信号缆 in the world" width="480">
 
 从舞台到调音位的粗多芯缆。只能从舞台接口箱的 **SNAKE** 接口接到调音台输入（中途可以经过墙面接口）。
 
@@ -913,6 +979,8 @@ W = 黑色羊毛，R = 红石粉，C = 红石比较器。
 
 ### 线缆卷盘
 
+<img src="../images/items/cable_reel-icon.png" alt="线缆卷盘 icon" width="64"> <img src="../images/items/cable_reel.jpg" alt="线缆卷盘 in the world" width="480">
+
 绕在线盘上的长卡侬（XLR）线，用于跨场地长距离布线：插 XLR 和两用插座。
 
 **配方**（得 1 个）：
@@ -928,6 +996,8 @@ P = 任意木板，W = 黑色羊毛，C = 红石比较器。
 每段 128 格，显示为黄色。
 
 ### 线卡
+
+<img src="../images/items/cable_clip-icon.png" alt="线卡 icon" width="64"> <img src="../images/items/cable_clip.jpg" alt="线卡 in the world" width="480">
 
 把线固定在墙、地板或天花板上的小卡子，让线沿着建筑走，而不是横穿房间。
 
@@ -946,6 +1016,8 @@ N = 铁粒。
 之间的每一段最长可以到这种线材的每段长度。
 
 ### 墙面接口
+
+<img src="../images/items/outlet-icon.png" alt="墙面接口 icon" width="64"> <img src="../images/items/outlet.jpg" alt="墙面接口 in the world" width="480">
 
 无源跳线点：一块带四个接口的面板，就像连接舞台和控制室的墙面接线盒。线可以接进来，再接到其他墙面
 接口、调音台、功放或音箱。一个墙面接口也可以把一路信号分给好几根线。
@@ -975,6 +1047,8 @@ N = 铁粒，R = 红石粉。
 
 ### 舞台接口箱 8 路
 
+<img src="../images/items/stage_box-icon.png" alt="舞台接口箱 8 路 icon" width="64"> <img src="../images/items/stage_box.jpg" alt="舞台接口箱 8 路 in the world" width="480">
+
 放在舞台上的接口箱，收集最多 8 支话筒，用一根[多芯信号缆](#多芯信号缆)送到调音台。
 
 **配方**（得 1 个）：
@@ -1001,6 +1075,8 @@ CH 1 进多芯缆插入的那一路输入，CH 2 进下一路，依此类推。
 
 ### 舞台接口箱 16 路
 
+<img src="../images/items/stage_box_16-icon.png" alt="舞台接口箱 16 路 icon" width="64"> <img src="../images/items/stage_box_16.jpg" alt="舞台接口箱 16 路 in the world" width="480">
+
 16 路舞台接口箱，配合 [VS-24](#调音台-vs-24) 使用。
 
 **配方**（得 1 个）：
@@ -1020,6 +1096,8 @@ W = 黑色羊毛，I = 铁锭，C = 红石比较器。
 **常见接法**：话筒 → CH 1-16；SNAKE → VS-24 的 IN 1。
 
 ### DI 盒
+
+<img src="../images/items/di_box-icon.png" alt="DI 盒 icon" width="64"> <img src="../images/items/di_box.jpg" alt="DI 盒 in the world" width="480">
 
 直插盒：把线路电平的信号源（媒体播放机、键盘）送进话筒输入。它按电平设置把信号传下去。
 
@@ -1044,6 +1122,8 @@ I = 铁锭，R = 红石粉，C = 红石比较器。
 ## 工具
 
 ### 区域选择器
+
+<img src="../images/items/zone_selector-icon.png" alt="区域选择器 icon" width="64"> <img src="../images/items/zone_selector.jpg" alt="区域选择器 in the world" width="480">
 
 为[视频采集器](#视频采集器)划定采集区：区域里的 WATERFrAMES 屏幕会通过调音台播放。
 

@@ -59,6 +59,9 @@ NOTE = (
 )
 
 _LINK = re.compile(r"\]\((?!https?://|mailto:|#)([^)\s]+)\)")
+_IMG_SRC = re.compile(r'src="(?!https?://)([^"]+)"')
+_IMG_MD = re.compile(r"!\[([^\]]*)\]\((?!https?://)([^)\s]+)\)")
+RAW = "https://raw.githubusercontent.com/TonyD365/venue-sound/main"
 
 
 def wiki_link(target: str) -> str:
@@ -79,7 +82,20 @@ def wiki_link(target: str) -> str:
     return f"{REPO}/blob/main/{'/'.join(parts)}{suffix}"
 
 
+def raw_link(target: str) -> str:
+    """An image in the repository, as a direct link the wiki can show."""
+    parts: list[str] = []
+    for part in (Path("docs/guide") / target).as_posix().split("/"):
+        if part == "..":
+            parts.pop()
+        elif part not in ("", "."):
+            parts.append(part)
+    return f"{RAW}/{'/'.join(parts)}"
+
+
 def convert(text: str) -> str:
+    text = _IMG_MD.sub(lambda m: f"![{m.group(1)}]({raw_link(m.group(2))})", text)
+    text = _IMG_SRC.sub(lambda m: f'src="{raw_link(m.group(1))}"', text)
     return _LINK.sub(lambda m: f"]({wiki_link(m.group(1))})", text).rstrip("\n") + "\n" + NOTE
 
 
