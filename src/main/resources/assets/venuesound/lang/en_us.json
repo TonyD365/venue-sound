@@ -32,7 +32,7 @@
   "message.venuesound.cable_outputs_full": "No free output on this device.",
   "message.venuesound.cable_wrong_way": "Those can't be connected in that direction.",
   "message.venuesound.cable_already": "Already connected.",
-  "tooltip.venuesound.cable_help2": "Sneak + right-click a socket: unplug · 32 blocks per cable, use outlets to go further",
+  "tooltip.venuesound.cable_help2": "Sneak + right-click a socket: unplug · 64 blocks per run, use cable clips or outlets to go further",
   "screen.venuesound.src_rx": "RX %s",
   "screen.venuesound.src_mic": "MIC",
   "screen.venuesound.src_deck": "DECK",

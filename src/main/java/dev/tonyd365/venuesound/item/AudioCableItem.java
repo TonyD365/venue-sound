@@ -38,7 +38,7 @@ import java.util.List;
 public class AudioCableItem extends Item {
 
     /** Longest single cable run, in blocks. Use outlets to go further. */
-    public static final int MAX_LENGTH = 32;
+    public static final int MAX_LENGTH = 64;
 
     public AudioCableItem(Properties properties) {
         super(properties);

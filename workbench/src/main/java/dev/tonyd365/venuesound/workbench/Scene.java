@@ -21,7 +21,7 @@ public final class Scene {
     public static final int DEPTH = 20;
     public static final double WIRELESS_RANGE = 128.0;
     public static final double STAND_MIC_RANGE = 3.0;
-    public static final int MAX_CABLE = 32;
+    public static final int MAX_CABLE = 64;
     private static final int MAX_HOPS = 32;
 
     public final List<Device> devices = new CopyOnWriteArrayList<>();
