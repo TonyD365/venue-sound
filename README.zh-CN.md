@@ -42,6 +42,10 @@
 
 ## 设备一览
 
+<p align="center"><img src="docs/images/devices.png" alt="VenueSound 全部设备" width="100%"></p>
+
+每个设备的配方、接口和用法：[物品大全](docs/guide/items.zh-CN.md)（每个都配了图标和游戏内照片）。
+
 | 类别 | 设备 |
 |---|---|
 | **信号源** | 无线麦（16 个通道）、可以戴在身上的头戴麦和领夹麦、立式麦、鹅颈讲台麦、合唱吊麦、媒体播放机（mp3/wav）、WATERFrAMES 屏幕的视频采集区 |
