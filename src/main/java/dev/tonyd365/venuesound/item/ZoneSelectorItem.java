@@ -1,6 +1,8 @@
 package dev.tonyd365.venuesound.item;
 
 import dev.tonyd365.venuesound.block.VideoCaptureBlockEntity;
+import dev.tonyd365.venuesound.compat.Nbt;
+import dev.tonyd365.venuesound.compat.StackData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -28,8 +30,8 @@ public class ZoneSelectorItem extends Item {
 
     @Nullable
     public static BlockPos corner(ItemStack stack, String key) {
-        CompoundTag t = stack.getTag();
-        return t != null && t.contains(key) ? BlockPos.of(t.getLong(key)) : null;
+        CompoundTag t = StackData.read(stack);
+        return t.contains(key) ? BlockPos.of(Nbt.getLong(t, key)) : null;
     }
 
     @Override
@@ -51,15 +53,16 @@ public class ZoneSelectorItem extends Item {
             }
             return InteractionResult.SUCCESS;
         }
-        CompoundTag tag = stack.getOrCreateTag();
         if (a == null || b != null) {
-            tag.putLong("A", pos.asLong());
-            tag.remove("B");
+            StackData.edit(stack, tag -> {
+                tag.putLong("A", pos.asLong());
+                tag.remove("B");
+            });
             msg(player, "message.venuesound.zone_first");
         } else if (Math.abs(a.getX() - pos.getX()) >= MAX || Math.abs(a.getY() - pos.getY()) >= MAX || Math.abs(a.getZ() - pos.getZ()) >= MAX) {
             msg(player, "message.venuesound.zone_too_big");
         } else {
-            tag.putLong("B", pos.asLong());
+            StackData.edit(stack, tag -> tag.putLong("B", pos.asLong()));
             msg(player, "message.venuesound.zone_second");
         }
         return InteractionResult.SUCCESS;
@@ -68,8 +71,8 @@ public class ZoneSelectorItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown() && stack.hasTag()) {
-            stack.setTag(null);
+        if (player.isShiftKeyDown() && StackData.has(stack)) {
+            StackData.clear(stack);
             if (!level.isClientSide) {
                 msg(player, "message.venuesound.zone_cleared");
             }

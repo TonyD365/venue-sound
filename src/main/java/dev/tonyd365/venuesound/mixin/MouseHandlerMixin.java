@@ -2,7 +2,7 @@ package dev.tonyd365.venuesound.mixin;
 
 import dev.tonyd365.venuesound.block.ScrollControl;
 import dev.tonyd365.venuesound.net.ScrollPackets;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.tonyd365.venuesound.compat.ClientNet;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
@@ -34,7 +34,7 @@ public class MouseHandlerMixin {
         buf.writeDouble(hit.getLocation().y);
         buf.writeDouble(hit.getLocation().z);
         buf.writeByte(yOffset > 0 ? 1 : -1);
-        ClientPlayNetworking.send(ScrollPackets.SCROLL, buf);
+        ClientNet.send(ScrollPackets.SCROLL, buf);
         ci.cancel();
     }
 }

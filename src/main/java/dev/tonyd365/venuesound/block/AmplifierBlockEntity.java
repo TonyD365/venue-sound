@@ -5,6 +5,7 @@ import dev.tonyd365.venuesound.audio.DimPos;
 import dev.tonyd365.venuesound.audio.NodeKind;
 import dev.tonyd365.venuesound.audio.RouterState;
 import net.minecraft.core.BlockPos;
+import dev.tonyd365.venuesound.compat.Nbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -89,8 +90,8 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void write(CompoundTag tag) {
+        super.write(tag);
         tag.putBoolean("On", on);
         tag.putInt("Level", levelPercent);
         CompoundTag p = new CompoundTag();
@@ -99,14 +100,14 @@ public class AmplifierBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        on = !tag.contains("On") || tag.getBoolean("On");
-        levelPercent = tag.contains("Level") ? tag.getInt("Level") : 100;
+    protected void read(CompoundTag tag) {
+        super.read(tag);
+        on = !tag.contains("On") || Nbt.getBoolean(tag, "On");
+        levelPercent = tag.contains("Level") ? Nbt.getInt(tag, "Level") : 100;
         params.clear();
-        CompoundTag p = tag.getCompound("Params");
-        for (String k : p.getAllKeys()) {
-            params.put(k, p.getFloat(k));
+        CompoundTag p = Nbt.getCompound(tag, "Params");
+        for (String k : Nbt.keys(p)) {
+            params.put(k, Nbt.getFloat(p, k));
         }
     }
 }

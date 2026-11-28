@@ -71,6 +71,9 @@ public class PaSpeakerBlock extends DeviceBlock {
     }
 
     @Override
+    //? if >=1.20.2 {
+    /*public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    *///?} else
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if (!level.isClientSide && player.isCreative() && state.getValue(HALF) == DoubleBlockHalf.UPPER) {
             BlockPos below = pos.below();
@@ -78,6 +81,9 @@ public class PaSpeakerBlock extends DeviceBlock {
                 level.setBlock(below, Blocks.AIR.defaultBlockState(), 35);
             }
         }
+        //? if >=1.20.2 {
+        /*return super.playerWillDestroy(level, pos, state, player);
+        *///?} else
         super.playerWillDestroy(level, pos, state, player);
     }
 
@@ -88,12 +94,12 @@ public class PaSpeakerBlock extends DeviceBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.getItemInHand(hand).getItem() instanceof AudioCableItem) {
             return InteractionResult.PASS;
         }
         if (SpeakerBlock.useRearPanel(level, basePos(state, pos), state.getValue(FACING), player, hit)) {
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return dev.tonyd365.venuesound.compat.Use.sided(level);
         }
         return InteractionResult.PASS;
     }

@@ -1,5 +1,7 @@
 package dev.tonyd365.venuesound.item;
 
+import dev.tonyd365.venuesound.compat.Nbt;
+import dev.tonyd365.venuesound.compat.StackData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -18,7 +20,7 @@ import java.util.List;
  * its channel. Right-click: next channel (sneak: previous). Give each performer their own
  * channel and transmitter for their own monitor mix.
  */
-public class EarpieceItem extends Item {
+public class EarpieceItem extends dev.tonyd365.venuesound.compat.ModItem {
 
     public static final int CHANNELS = 16;
 
@@ -27,7 +29,7 @@ public class EarpieceItem extends Item {
     }
 
     public static int getChannel(ItemStack stack) {
-        int ch = stack.getTag() == null ? 1 : stack.getTag().getInt("Channel");
+        int ch = StackData.has(stack) ? Nbt.getInt(StackData.read(stack), "Channel") : 1;
         return ch < 1 || ch > CHANNELS ? 1 : ch;
     }
 
@@ -48,14 +50,14 @@ public class EarpieceItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
             int ch = Math.floorMod(getChannel(stack) - 1 + (player.isShiftKeyDown() ? -1 : 1), CHANNELS) + 1;
-            stack.getOrCreateTag().putInt("Channel", ch);
+            StackData.edit(stack, tag -> tag.putInt("Channel", ch));
             player.displayClientMessage(Component.translatable("message.venuesound.earpiece_channel", ch), true);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    protected void addTooltip(ItemStack stack, List<Component> tooltip) {
         tooltip.add(Component.translatable("tooltip.venuesound.channel", getChannel(stack)).withStyle(ChatFormatting.AQUA));
         tooltip.add(Component.translatable("tooltip.venuesound.earpiece_help").withStyle(ChatFormatting.GRAY));
     }

@@ -29,12 +29,12 @@ public class SpeakerBlock extends DeviceBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.getItemInHand(hand).getItem() instanceof AudioCableItem) {
             return InteractionResult.PASS;
         }
         if (useRearPanel(level, pos, state.getValue(FACING), player, hit)) {
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return dev.tonyd365.venuesound.compat.Use.sided(level);
         }
         // in-ear transmitter: the - / + buttons on the front change channel (the display steps up)
         if (hit.getDirection() == state.getValue(FACING) && level.getBlockEntity(pos) instanceof SpeakerBlockEntity sp
@@ -47,7 +47,7 @@ public class SpeakerBlock extends DeviceBlock {
                 level.playSound(null, pos, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 1.6F);
                 player.displayClientMessage(Component.translatable("message.venuesound.iem_channel", sp.getChannel()), true);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return dev.tonyd365.venuesound.compat.Use.sided(level);
         }
         return InteractionResult.PASS;
     }

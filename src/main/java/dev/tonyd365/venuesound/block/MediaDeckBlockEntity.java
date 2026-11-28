@@ -4,6 +4,7 @@ import dev.tonyd365.venuesound.Registration;
 import dev.tonyd365.venuesound.audio.MediaPlayback;
 import dev.tonyd365.venuesound.audio.NodeKind;
 import net.minecraft.core.BlockPos;
+import dev.tonyd365.venuesound.compat.Nbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -118,18 +119,18 @@ public class MediaDeckBlockEntity extends AudioNodeBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void write(CompoundTag tag) {
+        super.write(tag);
         tag.putString("Track", track);
         tag.putBoolean("Loop", loop);
         tag.putBoolean("Playing", playing);
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        track = tag.getString("Track");
-        loop = tag.getBoolean("Loop");
-        playing = tag.getBoolean("Playing");
+    protected void read(CompoundTag tag) {
+        super.read(tag);
+        track = Nbt.getString(tag, "Track");
+        loop = Nbt.getBoolean(tag, "Loop");
+        playing = Nbt.getBoolean(tag, "Playing");
     }
 }

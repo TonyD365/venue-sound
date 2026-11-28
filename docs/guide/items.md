@@ -927,7 +927,7 @@ plugs into a socket that takes its plug: see [connectors](cabling.md#connectors)
 
 | Action | Does |
 |---|---|
-| Sneak + right-click a socket | Unplugs the cable there |
+| Sneak + right-click a socket | Unplugs the cable there, from either end: its OUT or its IN socket. See [unplugging](cabling.md#unplugging) |
 | Sneak + right-click the air | Drops the end you are holding |
 
 A cable is not used up: one cable item makes as many runs as you like. The length limit is per

@@ -119,6 +119,9 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
     }
 
     private static void vertex(VertexConsumer vc, Matrix4f m, Vec3 p, int rgb) {
+        //? if >=1.21 {
+        /*vc.addVertex(m, (float) p.x, (float) p.y, (float) p.z).setColor((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, 255);
+        *///?} else
         vc.vertex(m, (float) p.x, (float) p.y, (float) p.z).color((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, 255).endVertex();
     }
 

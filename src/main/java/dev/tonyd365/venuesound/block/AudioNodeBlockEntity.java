@@ -7,8 +7,7 @@ import dev.tonyd365.venuesound.audio.SoundRouter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.Tag;
+import dev.tonyd365.venuesound.compat.Nbt;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -43,6 +42,21 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
     }
 
     public abstract NodeKind kind();
+
+    /** Everywhere: a device's panel spans several blocks and its cables reach far away. */
+    private static final net.minecraft.world.phys.AABB EVERYWHERE = new net.minecraft.world.phys.AABB(
+            Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
+            Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+
+    /**
+     * Render bounds for Forge and NeoForge (their block entity extension calls this; Fabric
+     * ignores it). Their culling only looks at the device's own block, so a console whose main
+     * block was off screen lost all its knobs and faders, and cables vanished with their device.
+     * Fabric is told the same through the renderers' shouldRenderOffScreen.
+     */
+    public net.minecraft.world.phys.AABB getRenderBoundingBox() {
+        return EVERYWHERE;
+    }
 
     /** Key for {@link PortLayout}: the block id without the namespace. */
     public abstract String deviceKey();
@@ -188,9 +202,8 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
 
     // ------------------------------------------------------------------ persistence / sync
 
-    @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    /** Writes this device's state; subclasses add theirs after calling super. */
+    protected void write(CompoundTag tag) {
         ListTag list = new ListTag();
         for (Link l : links) {
             CompoundTag c = new CompoundTag();
@@ -208,29 +221,58 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
         tag.put("Links", list);
     }
 
+    /** Reads what {@link #write} wrote; subclasses read theirs after calling super. */
+    protected void read(CompoundTag tag) {
+        links.clear();
+        for (CompoundTag c : Nbt.compounds(tag, "Links")) {
+            List<BlockPos> via = new ArrayList<>();
+            for (long v : Nbt.getLongArray(c, "Via")) {
+                via.add(BlockPos.of(v));
+            }
+            links.add(new Link(BlockPos.of(Nbt.getLong(c, "Pos")), Nbt.getInt(c, "From"), Nbt.getInt(c, "To"), List.copyOf(via),
+                    CableType.byId(Nbt.getString(c, "Cable"))));
+        }
+        // worlds from 0.2.0 stored plain positions
+        for (long pos : Nbt.longs(tag, "Outputs")) {
+            links.add(new Link(BlockPos.of(pos), 0, 0));
+        }
+    }
+
+    //? if >=1.21 {
+    /*@Override
+    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        write(tag);
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        read(tag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(net.minecraft.core.HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+    *///?} else {
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        write(tag);
+    }
+
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        links.clear();
-        for (Tag t : tag.getList("Links", Tag.TAG_COMPOUND)) {
-            CompoundTag c = (CompoundTag) t;
-            List<BlockPos> via = new ArrayList<>();
-            for (long v : c.getLongArray("Via")) {
-                via.add(BlockPos.of(v));
-            }
-            links.add(new Link(BlockPos.of(c.getLong("Pos")), c.getInt("From"), c.getInt("To"), List.copyOf(via),
-                    CableType.byId(c.getString("Cable"))));
-        }
-        // worlds from 0.2.0 stored plain positions
-        for (Tag t : tag.getList("Outputs", Tag.TAG_LONG)) {
-            links.add(new Link(BlockPos.of(((LongTag) t).getAsLong()), 0, 0));
-        }
+        read(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         return saveWithoutMetadata();
     }
+    //?}
 
     @Nullable
     @Override

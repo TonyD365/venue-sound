@@ -3,7 +3,7 @@ package dev.tonyd365.venuesound.net;
 import dev.tonyd365.venuesound.VenueSound;
 import dev.tonyd365.venuesound.block.MixerBlockEntity;
 import dev.tonyd365.venuesound.block.MixerLayout;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import dev.tonyd365.venuesound.compat.Net;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
@@ -23,7 +23,8 @@ public final class ParamPackets {
     }
 
     public static void registerServer() {
-        ServerPlayNetworking.registerGlobalReceiver(SET, (server, player, handler, buf, responseSender) -> {
+        Net.toServer(SET);
+        Net.receive(SET, (server, player, buf) -> {
             BlockPos pos = buf.readBlockPos();
             String param = buf.readUtf(64);
             float value = buf.readFloat();

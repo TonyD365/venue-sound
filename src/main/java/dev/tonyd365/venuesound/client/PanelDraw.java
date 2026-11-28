@@ -84,8 +84,13 @@ public final class PanelDraw {
 
     private void v(Matrix4f m, Matrix3f n, int light, int r, int g, int b, float nx, float ny, float nz,
                    float x, float y, float z, float u, float vv) {
+        //? if >=1.21 {
+        /*vc.addVertex(m, x, y, z).setColor(r, g, b, 255).setUv(u, vv).setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(light).setNormal(pose.last(), nx, ny, nz);
+        *///?} else {
         vc.vertex(m, x, y, z).color(r, g, b, 255).uv(u, vv).overlayCoords(OverlayTexture.NO_OVERLAY)
                 .uv2(light).normal(n, nx, ny, nz).endVertex();
+        //?}
     }
 
     /**

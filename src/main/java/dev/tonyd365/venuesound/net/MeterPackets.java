@@ -5,7 +5,7 @@ import dev.tonyd365.venuesound.audio.DimPos;
 import dev.tonyd365.venuesound.block.MixerLayout;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import dev.tonyd365.venuesound.compat.Net;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +46,7 @@ public final class MeterPackets {
     }
 
     public static void registerServer() {
+        Net.toClient(LEVELS);
         ServerTickEvents.END_SERVER_TICK.register(MeterPackets::tick);
     }
 
@@ -87,7 +88,7 @@ public final class MeterPackets {
                     // 0-255 is plenty for an LED meter
                     buf.writeByte((int) Math.min(255, Math.round(Math.min(1F, f) * 255F)));
                 }
-                ServerPlayNetworking.send(player, LEVELS, buf);
+                Net.send(player, LEVELS, buf);
             }
         }
     }

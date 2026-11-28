@@ -73,4 +73,13 @@ public class CableClipBlock extends DirectionalBlock {
         Direction f = state.getValue(FACING);
         return Vec3.atCenterOf(pos).subtract(f.getStepX() * 0.36, f.getStepY() * 0.36, f.getStepZ() * 0.36);
     }
+
+    //? if >=1.20.5 {
+    /*private final com.mojang.serialization.MapCodec<CableClipBlock> codec = com.mojang.serialization.MapCodec.unit(this);
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.DirectionalBlock> codec() {
+        return codec;
+    }
+    *///?}
 }
