@@ -52,6 +52,8 @@ public final class OscBridge {
     private static final ConcurrentLinkedQueue<Osc.Message> INBOX = new ConcurrentLinkedQueue<>();
     private static final Map<String, Float> SENT = new HashMap<>();
     private static volatile SocketAddress remote;
+    /** A new controller connected: send it every value, not only the changes. */
+    private static volatile boolean resendAll;
     private static DatagramSocket socket;
     private static int replyPort;
     private static int port = 9000;
@@ -113,7 +115,11 @@ public final class OscBridge {
             try {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
-                remote = replyPort > 0 ? new InetSocketAddress(packet.getAddress(), replyPort) : packet.getSocketAddress();
+                SocketAddress from = replyPort > 0 ? new InetSocketAddress(packet.getAddress(), replyPort) : packet.getSocketAddress();
+                if (!from.equals(remote)) {
+                    resendAll = true;
+                }
+                remote = from;
                 Osc.decode(packet.getData(), packet.getLength(), INBOX::add);
             } catch (IOException e) {
                 return;
@@ -214,12 +220,16 @@ public final class OscBridge {
             ClientNet.send(ParamPackets.SET, buf);
         }
         if (m != null && remote != null && tick % 4 == 0) {
-            feedback(m, table);
+            if (resendAll) {
+                resendAll = false;
+                SENT.clear();
+            }
+            feedback(m, table, pos);
         }
     }
 
     /** Sends the controls that changed since last time back to the controller. */
-    private static void feedback(MixerBlockEntity m, Map<String, Binding> table) {
+    private static void feedback(MixerBlockEntity m, Map<String, Binding> table, BlockPos pos) {
         List<byte[]> out = new ArrayList<>();
         for (Map.Entry<String, Binding> e : table.entrySet()) {
             Binding bind = e.getValue();
@@ -235,6 +245,15 @@ public final class OscBridge {
             Float last = SENT.put(e.getKey(), v);
             if (last == null || Math.abs(last - v) > 0.001F) {
                 out.add(Osc.encode(e.getKey(), v));
+            }
+        }
+        // the MAIN meters, for controllers that show them (0-1, about -42 to 0 dB on an LED scale)
+        for (int side = 0; side < 2; side++) {
+            String address = side == 0 ? "/venuesound/meter/l" : "/venuesound/meter/r";
+            float v = ConsoleMeters.main(pos, side);
+            Float last = SENT.put(address, v);
+            if (last == null || Math.abs(last - v) > 0.005F) {
+                out.add(Osc.encode(address, v));
             }
         }
         SocketAddress to = remote;

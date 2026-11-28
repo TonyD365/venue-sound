@@ -5,7 +5,29 @@ Like a real digital console, the VenueSound console can be run from outside the 
 app such as TouchOSC or Open Stage Control, or from any software that sends OSC, and the console
 in the game follows; changes made in the game are sent back, so the app's faders move too.
 
-## Setting up
+## iPad or any browser: VenueSound Remote
+
+No app on the iPad: **VenueSound Remote** (`venuesound-remote.jar`, on the releases page) is a
+small program you run on the computer next to the game. It serves a mixing surface page to any
+browser on your network and turns every move into OSC for the game, so the game itself is
+unchanged.
+
+1. Start the game with VenueSound, and run `java -jar venuesound-remote.jar` (or double-click it).
+   Its window shows an address such as `http://192.168.1.20:9001/?key=k7m2q9xd`.
+2. Open that address in Safari on the iPad (same Wi-Fi). Add it to the Home Screen for full screen.
+3. In the game, **right-click any control on the console** you want to run.
+4. Every strip has GAIN, HI/MID/LO, AUX 1/2, EFX, PAN, MUTE, PFL and its fader; the right side has
+   the EFX return and delay, AUX masters, MAIN L/R and the headphone level; the top bar has +48V
+   and the MAIN meters. Drag faders up and down and the small bars left and right; **double-tap**
+   to reset (faders to 0 dB). Changes made in the game show on the page.
+
+The `key` in the address is a new access code each time the program starts, so other people on
+the network can't take over the console. Options: `--port 9001`, `--bind 0.0.0.0` (or
+`127.0.0.1`), `--key CODE` (a fixed code), `--game 127.0.0.1:9000` (the game's OSC address).
+The computer may ask once whether Java may accept incoming connections: allow it on your
+private network.
+
+## Setting up OSC
 
 1. Start the game once. VenueSound listens for OSC on **UDP port 9000 on your own computer**
    (127.0.0.1). The settings are in `config/venuesound-osc.properties`:
