@@ -37,7 +37,7 @@ jobs:
       - name: Assemble the site
         run: |
           mkdir -p _site/images
-          cp site/* _site/
+          cp -R site/. _site/
           cp docs/images/*.png docs/images/*.jpg _site/images/
           cp src/main/resources/assets/venuesound/icon.png _site/images/icon.png
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
