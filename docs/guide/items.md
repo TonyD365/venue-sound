@@ -776,7 +776,7 @@ I = Iron Ingot, E = Ender Pearl, R = Redstone Dust, C = Redstone Comparator.
 |---|---|---|
 | INPUT | IN | Back panel |
 | Power switch, coverage knob | | Back panel |
-| Channel display | | Front: right-click for the next channel (1-16), sneak + right-click for the previous |
+| Channel display, − / + buttons | | Front: press − or + to change channel (1-16); clicking the display steps up |
 
 **Hookups**: console AUX 1 or AUX 2 → INPUT (directly, or through an amplifier).
 

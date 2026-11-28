@@ -143,6 +143,10 @@ public final class PortLayout {
         private static final SpeakerPanel WEDGE = new SpeakerPanel(2.5, 4.5, 5.0, 8.0, 11.5, 6.3, 1.5, 16.0, 14.4, 8.2);
         private static final SpeakerPanel IEM = new SpeakerPanel(2.5, 4.5, 1.6, 4.4, 11.5, 2.8, 1.3, 13.0, 14.0, 4.2);
 
+        /** In-ear transmitter front: channel display, then the - and + buttons (u ranges, height 1.2-3.6). */
+        public static final double IEM_DISPLAY_U0 = 2.4, IEM_DISPLAY_U1 = 8.6, IEM_FRONT_H0 = 1.2, IEM_FRONT_H1 = 3.6;
+        public static final double IEM_DOWN_U0 = 9.4, IEM_UP_U0 = 11.8, IEM_BUTTON_W = 1.9, IEM_FRONT_DEPTH = 3.0;
+
         public static SpeakerPanel of(String deviceKey) {
             return switch (deviceKey) {
                 case "floor_wedge" -> WEDGE;

@@ -25,7 +25,7 @@ In-ear monitors are heard only by the player carrying the earpiece, so each perf
 private mix.
 
 1. Place an **In-Ear Monitor Transmitter** and cable a console AUX into its **INPUT**. Turn it on.
-2. Click its front to choose a channel (1-16; it shows on the front display).
+2. Press **−** or **+** on its front to choose a channel (1-16; it shows on the display).
 3. Give the performer an **In-Ear Monitor Earpiece** set to the same channel (right-click the
    earpiece to change it). It works anywhere in the inventory.
 4. For a second performer with a different mix, use another transmitter on another channel, fed
