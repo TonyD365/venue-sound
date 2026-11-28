@@ -18,8 +18,12 @@ updates:
     cooldown:
       default-days: 7
     labels: [dependencies]
-    # Minecraft, Fabric and Simple Voice Chat versions are pinned to 1.20.1 on purpose.
+    # Minecraft, Fabric and Simple Voice Chat versions are pinned to 1.20.1 on purpose. Loom and
+    # Gradle move together (Gradle 9 needs a newer Loom), so both are updated by hand.
     ignore:
+      - dependency-name: "fabric-loom"
+      - dependency-name: "gradle-wrapper"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "com.mojang:minecraft"
       - dependency-name: "net.fabricmc.fabric-api:fabric-api"
       - dependency-name: "de.maxhenkel.voicechat:voicechat-api"
