@@ -17,6 +17,7 @@
   "tooltip.venuesound.muted": "已静音",
   "tooltip.venuesound.live": "开启",
   "tooltip.venuesound.mic_help": "拿在手上说话即可发射 · 右键：切换通道 · 潜行+右键：静音",
+  "tooltip.venuesound.bodypack_help": "右键：戴上（戴着就会发射） · 潜行+右键：切换到下一个通道 · 通道要和接收器一致",
   "tooltip.venuesound.cable_help": "先右键 OUT 插孔，再右键 IN 插孔",
   "screen.venuesound.mixer": "调音台",
   "screen.venuesound.speakers": "已连接音箱：%s",

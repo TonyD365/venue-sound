@@ -17,6 +17,7 @@
   "tooltip.venuesound.muted": "Muted",
   "tooltip.venuesound.live": "Live",
   "tooltip.venuesound.mic_help": "Hold to talk on this channel · Right-click: channel · Sneak+right-click: mute",
+  "tooltip.venuesound.bodypack_help": "Right-click: wear it (transmits while worn) · Sneak+right-click: next channel · Match the receiver's channel",
   "tooltip.venuesound.cable_help": "Right-click an OUT socket, then an IN socket",
   "screen.venuesound.mixer": "Mixing Console",
   "screen.venuesound.speakers": "Speakers patched: %s",
