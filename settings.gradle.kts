@@ -28,3 +28,4 @@ stonecutter {
 
 rootProject.name = "venue-sound"
 include("workbench")
+include("remote")

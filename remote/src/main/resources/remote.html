@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VenueSound">
+<title>VenueSound Remote</title>
+<style>
+  :root { --bg:#0f1012; --panel:#1a1c20; --strip:#202328; --line:#2c3036; --text:#e8e8ea; --dim:#8b9098;
+          --gold:#e8b84a; --red:#e2463a; --amber:#f0a020; --green:#3ddc84; --blue:#3d8bd9; }
+  * { box-sizing:border-box; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--text);
+               font:14px/1.2 -apple-system, "SF Pro Text", "Segoe UI", sans-serif; overflow:hidden; touch-action:none; }
+  header { display:flex; align-items:center; gap:14px; height:56px; padding:0 16px; padding-top:env(safe-area-inset-top);
+           background:#141518; border-bottom:1px solid var(--line); }
+  header .logo { font-weight:800; color:var(--gold); font-size:18px; letter-spacing:.3px; }
+  header .console { color:var(--dim); }
+  header .spacer { flex:1; }
+  .dot { width:10px; height:10px; border-radius:50%; background:#555; display:inline-block; margin-right:6px; }
+  .dot.ok { background:var(--green); } .dot.bad { background:var(--red); }
+  .status { color:var(--dim); font-size:13px; }
+  .btn { border:1px solid var(--line); background:#2a2d33; color:var(--text); border-radius:8px; padding:8px 12px;
+         font-weight:700; font-size:13px; min-width:58px; text-align:center; }
+  .btn.on.mute { background:var(--red); border-color:var(--red); color:#fff; }
+  .btn.on.pfl { background:var(--amber); border-color:var(--amber); color:#111; }
+  .btn.on.phantom { background:var(--red); border-color:var(--red); color:#fff; }
+  .meters { display:flex; gap:4px; align-items:center; }
+  .meter { width:120px; height:10px; background:#0a0b0c; border-radius:3px; overflow:hidden; border:1px solid var(--line); }
+  .meter div { height:100%; width:0; background:linear-gradient(90deg, var(--green) 0 70%, var(--amber) 70% 88%, var(--red) 88%); transition:width .08s linear; }
+  main { display:flex; height:calc(100% - 56px - env(safe-area-inset-top)); }
+  #strips { flex:1; display:flex; gap:6px; padding:10px; overflow-x:auto; overflow-y:hidden; touch-action:pan-x; }
+  #master { width:420px; display:flex; gap:6px; padding:10px; background:var(--panel); border-left:1px solid var(--line); }
+  .strip { flex:0 0 92px; display:flex; flex-direction:column; gap:6px; background:var(--strip); border-radius:10px; padding:8px 6px; border:1px solid var(--line); }
+  .strip.usb { background:#232229; }
+  .strip .name { text-align:center; font-weight:800; font-size:13px; color:var(--gold); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .mini { position:relative; height:26px; background:#121316; border-radius:6px; border:1px solid var(--line); overflow:hidden; touch-action:none; }
+  .mini .fill { position:absolute; top:0; bottom:0; left:0; background:#3a3f47; }
+  .mini.center .fill { background:#3a3f47; }
+  .mini .lbl { position:absolute; inset:0; display:flex; justify-content:space-between; align-items:center; padding:0 6px; font-size:11px; pointer-events:none; }
+  .mini .lbl b { color:var(--dim); font-weight:700; } .mini .lbl span { color:var(--text); }
+  .mini.gain .fill { background:#7a2a26; } .mini.hi .fill { background:#22507a; } .mini.mid .fill { background:#1f6b45; }
+  .mini.lo .fill { background:#1b3d5c; } .mini.aux1 .fill { background:#7a6720; } .mini.aux2 .fill { background:#7a4a1c; }
+  .mini.efx .fill { background:#55306e; } .mini.pan .fill { background:#4b4f57; }
+  .row { display:flex; gap:4px; } .row .btn { flex:1; padding:7px 0; min-width:0; }
+  .fader { position:relative; flex:1; min-height:160px; touch-action:none; }
+  .fader .track { position:absolute; left:50%; top:12px; bottom:12px; width:6px; margin-left:-3px; background:#08090a; border-radius:3px; }
+  .fader .zero { position:absolute; left:18%; right:18%; height:1px; background:var(--gold); opacity:.6; }
+  .fader .cap { position:absolute; left:8%; right:8%; height:40px; margin-top:-20px; border-radius:6px;
+                background:linear-gradient(#f4f4f4, #c9c9c9); border:1px solid #888; box-shadow:0 2px 6px #0008; }
+  .fader .cap::after { content:""; position:absolute; left:10%; right:10%; top:50%; height:2px; background:#333; }
+  .fader.main .cap { background:linear-gradient(#e95b50, #b8342b); border-color:#7d1f19; }
+  .fader.aux .cap { background:linear-gradient(#5b9be0, #2f6db4); border-color:#1d4a7d; }
+  .fader.efx .cap { background:linear-gradient(#f2cf62, #c99a22); border-color:#8a6a12; }
+  .db { text-align:center; font-size:12px; color:var(--dim); font-variant-numeric:tabular-nums; }
+  .mcol { flex:1; display:flex; flex-direction:column; gap:6px; background:var(--strip); border-radius:10px; padding:8px 6px; border:1px solid var(--line); }
+  .mcol .name { text-align:center; font-weight:800; font-size:13px; color:var(--gold); }
+  #empty { position:fixed; inset:56px 0 0 0; display:none; align-items:center; justify-content:center; text-align:center; color:var(--dim); font-size:17px; padding:40px; }
+  #empty b { color:var(--text); }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">VenueSound Remote</div>
+  <div class="console" id="console">—</div>
+  <div class="spacer"></div>
+  <div class="meters" title="MAIN L / R"><span class="status">L</span><div class="meter"><div id="ml"></div></div>
+    <span class="status">R</span><div class="meter"><div id="mr"></div></div></div>
+  <div class="btn phantom" id="phantom">+48V</div>
+  <div class="status"><span class="dot" id="dot"></span><span id="status">Connecting…</span></div>
+</header>
+<main>
+  <div id="strips"></div>
+  <div id="master"></div>
+</main>
+<div id="empty">No console selected yet.<br><br>Keep <b>VenueSound Remote</b> running on the computer, then in the game<br><b>right-click any control on a console</b>: this page then runs that console.</div>
+<script>
+"use strict";
+const params = new URLSearchParams(location.search);
+const KEY = params.get("key") || "";
+const DEMO = params.get("demo") === "1";
+const $ = id => document.getElementById(id);
+const busy = {};            // address -> time of the last local change (don't let polling fight a finger)
+const lastSent = {};
+let current = null, layoutKey = "";
+
+// ---------------------------------------------------------------- formatting
+const dbFader = v => { const g = v * 2; return g <= 0.001 ? "−∞ dB" : (20 * Math.log10(g)).toFixed(1) + " dB"; };
+const dbGain = v => dbFader(v);
+const dbEq = v => { const d = Math.round(-12 + 24 * v); return (d > 0 ? "+" : "") + d + " dB"; };
+const pct = v => Math.round(v * 100) + "%";
+const pan = v => { const p = Math.round((v - 0.5) * 200); return Math.abs(p) < 3 ? "C" : (p < 0 ? "L" + -p : "R" + p); };
+
+// ---------------------------------------------------------------- sending
+function send(address, value) {
+  busy[address] = Date.now();
+  if (current) setLocal(address, value);
+  const now = Date.now();
+  if (lastSent[address] && now - lastSent[address].t < 40) {
+    clearTimeout(lastSent[address].timer);
+    lastSent[address].timer = setTimeout(() => post(address, value), 45);
+    return;
+  }
+  lastSent[address] = { t: now };
+  post(address, value);
+}
+function post(address, value) {
+  if (DEMO) return;
+  fetch("/api/set?key=" + encodeURIComponent(KEY), { method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "address=" + encodeURIComponent(address) + "&value=" + value.toFixed(4) }).catch(() => {});
+}
+
+// ---------------------------------------------------------------- controls
+const controls = [];   // { address, el, kind, fmt, get }
+function mini(parent, cls, label, address, fmt, dflt) {
+  const el = document.createElement("div"); el.className = "mini " + cls;
+  el.innerHTML = '<div class="fill"></div><div class="lbl"><b>' + label + '</b><span></span></div>';
+  parent.appendChild(el);
+  const c = { address, el, kind: "mini", fmt, center: cls === "pan" || cls === "hi" || cls === "mid" || cls === "lo" };
+  controls.push(c);
+  let x0 = 0, v0 = 0, lastTap = 0;
+  el.addEventListener("pointerdown", e => {
+    el.setPointerCapture(e.pointerId); x0 = e.clientX; v0 = c.value ?? 0;
+    const t = Date.now(); if (t - lastTap < 300) { send(address, dflt); } lastTap = t;
+  });
+  el.addEventListener("pointermove", e => {
+    if (!el.hasPointerCapture(e.pointerId)) return;
+    const v = Math.max(0, Math.min(1, v0 + (e.clientX - x0) / (el.clientWidth * 1.6)));
+    send(address, v);
+  });
+  return c;
+}
+function fader(parent, cls, address) {
+  const el = document.createElement("div"); el.className = "fader " + cls;
+  el.innerHTML = '<div class="track"></div><div class="zero"></div><div class="cap"></div>';
+  parent.appendChild(el);
+  const db = document.createElement("div"); db.className = "db"; parent.appendChild(db);
+  const c = { address, el, db, kind: "fader" };
+  controls.push(c);
+  const pos = v => { const h = el.clientHeight - 24; return 12 + (1 - v) * h; };
+  c.place = v => { el.querySelector(".cap").style.top = pos(v) + "px"; el.querySelector(".zero").style.top = pos(0.5) + "px"; db.textContent = dbFader(v); };
+  let y0 = 0, v0 = 0, lastTap = 0;
+  el.addEventListener("pointerdown", e => {
+    el.setPointerCapture(e.pointerId); y0 = e.clientY; v0 = c.value ?? 0.5;
+    const t = Date.now(); if (t - lastTap < 300) { send(address, 0.5); } lastTap = t;   // double tap: 0 dB
+  });
+  el.addEventListener("pointermove", e => {
+    if (!el.hasPointerCapture(e.pointerId)) return;
+    const v = Math.max(0, Math.min(1, v0 - (e.clientY - y0) / (el.clientHeight - 24)));
+    send(address, v);
+  });
+  return c;
+}
+function toggle(parent, cls, label, address, invert) {
+  const el = document.createElement("div"); el.className = "btn " + cls; el.textContent = label;
+  parent.appendChild(el);
+  const c = { address, el, kind: "toggle" };
+  controls.push(c);
+  el.addEventListener("pointerdown", () => send(address, (c.value ?? 0) >= 0.5 ? 0 : 1));
+  return c;
+}
+
+function setLocal(address, v) {
+  for (const c of controls) if (c.address === address) show(c, v);
+}
+function show(c, v) {
+  c.value = v;
+  if (c.kind === "mini") {
+    const fill = c.el.querySelector(".fill");
+    if (c.center) { const a = Math.min(v, 0.5), b = Math.max(v, 0.5); fill.style.left = a * 100 + "%"; fill.style.width = (b - a) * 100 + "%"; }
+    else { fill.style.left = 0; fill.style.width = v * 100 + "%"; }
+    c.el.querySelector("span").textContent = c.fmt(v);
+  } else if (c.kind === "fader") c.place(v);
+  else c.el.classList.toggle("on", v >= 0.5);
+}
+
+// ---------------------------------------------------------------- building
+function build(state) {
+  controls.length = 0;
+  const strips = $("strips"), master = $("master");
+  strips.innerHTML = ""; master.innerHTML = "";
+  state.strips.forEach((s, i) => {
+    const n = i + 1, a = "/venuesound/ch/" + n + "/";
+    const el = document.createElement("div"); el.className = "strip" + (s.usb ? " usb" : "");
+    el.innerHTML = '<div class="name">' + (s.usb ? "USB " : "CH ") + s.name.replace(" USB", "") + "</div>";
+    strips.appendChild(el);
+    mini(el, "gain", "GAIN", a + "gain", dbGain, 0.5);
+    mini(el, "hi", "HI", a + "hi", dbEq, 0.5);
+    mini(el, "mid", "MID", a + "mid", dbEq, 0.5);
+    mini(el, "lo", "LO", a + "lo", dbEq, 0.5);
+    mini(el, "aux1", "AUX1", a + "aux1", pct, 0);
+    mini(el, "aux2", "AUX2", a + "aux2", pct, 0);
+    mini(el, "efx", "EFX", a + "efx", pct, 0);
+    mini(el, "pan", "PAN", a + "pan", pan, 0.5);
+    const row = document.createElement("div"); row.className = "row"; el.appendChild(row);
+    toggle(row, "mute", "MUTE", a + "mute");
+    toggle(row, "pfl", "PFL", a + "pfl");
+    fader(el, "", a + "fader");
+  });
+  const col = (title, cls, address, extra) => {
+    const el = document.createElement("div"); el.className = "mcol";
+    el.innerHTML = '<div class="name">' + title + "</div>";
+    master.appendChild(el);
+    if (extra) extra(el);
+    fader(el, cls, address);
+  };
+  col("EFX", "efx", "/venuesound/efx/return", el => mini(el, "efx", "TIME", "/venuesound/efx/time", pct, 0.4));
+  col("AUX 1", "aux", "/venuesound/aux/1/master");
+  col("AUX 2", "aux", "/venuesound/aux/2/master");
+  col("MAIN L", "main", "/venuesound/main/l", el => mini(el, "pan", "PHONES", "/venuesound/phones", pct, 0.5));
+  col("MAIN R", "main", "/venuesound/main/r");
+  const ph = { address: "/venuesound/phantom", el: $("phantom"), kind: "toggle" };
+  controls.push(ph);
+}
+$("phantom").addEventListener("pointerdown", () => {
+  const c = controls.find(c => c.address === "/venuesound/phantom");
+  if (c) send(c.address, (c.value ?? 0) >= 0.5 ? 0 : 1);
+});
+
+function apply(state) {
+  current = state;
+  $("empty").style.display = state.console ? "none" : "flex";
+  if (!state.console) { $("console").textContent = "—"; return; }
+  $("console").textContent = state.console + " · " + state.pos;
+  const key = state.console + state.strips.length;
+  if (key !== layoutKey) { layoutKey = key; build(state); }
+  const now = Date.now();
+  const values = {};
+  state.strips.forEach((s, i) => { for (const k in s.v) values["/venuesound/ch/" + (i + 1) + "/" + k] = s.v[k]; });
+  for (const k in state.master) values["/venuesound/" + k] = state.master[k];
+  for (const c of controls) {
+    if (busy[c.address] && now - busy[c.address] < 700) continue;
+    if (c.address in values) show(c, values[c.address]);
+  }
+  const m = v => Math.max(0, Math.min(100, (1 + Math.log10(Math.max(v, 1e-4)) / 2.1) * 100)) + "%";   // about -42 dB .. 0 dB
+  $("ml").style.width = m(state.meters[0]); $("mr").style.width = m(state.meters[1]);
+}
+
+// ---------------------------------------------------------------- polling
+async function poll() {
+  try {
+    const state = DEMO ? demo() : await (await fetch("/api/state?key=" + encodeURIComponent(KEY), { cache: "no-store" })).json();
+    $("dot").className = "dot ok"; $("status").textContent = "Connected";
+    apply(state);
+  } catch (e) {
+    $("dot").className = "dot bad"; $("status").textContent = "VenueSound Remote not reachable";
+  }
+  setTimeout(poll, 250);
+}
+let demoState = null;
+function demo() {
+  if (!demoState) {
+    const names = ["1","2","3","4","5","6","7","8","9/10 USB","11/12"];
+    demoState = { console: "VS-12", pos: "0 64 6", strips: names.map((n, i) => ({ name: n, usb: i === 8,
+      v: { fader: [0.62,0.5,0.45,0.5,0.3,0.5,0.55,0.4,0.5,0.35][i], gain: 0.5 + (i % 3) * 0.08, hi: 0.5 + (i % 2 ? 0.17 : 0), mid: 0.5, lo: 0.5 - (i % 4 ? 0 : 0.17),
+            aux1: i < 2 ? 0.6 : 0, aux2: i === 3 ? 0.5 : 0, efx: i === 0 ? 0.3 : 0, pan: [0.5,0.5,0.3,0.7,0.5,0.5,0.2,0.8,0.5,0.5][i], mute: i === 5 ? 1 : 0, pfl: 0 } })),
+      master: { "main/l": 0.55, "main/r": 0.55, "aux/1/master": 0.5, "aux/2/master": 0.45, "efx/return": 0.3, "efx/time": 0.4, phones: 0.5, phantom: 1 },
+      meters: [0.4, 0.37] };
+  }
+  const t = Date.now() / 1000;
+  demoState.meters = [0.25 + 0.2 * Math.abs(Math.sin(t * 2.1)), 0.24 + 0.2 * Math.abs(Math.sin(t * 1.9 + 1))];
+  return demoState;
+}
+window.addEventListener("resize", () => { layoutKey = ""; if (current) apply(current); });
+poll();
+</script>
+</body>
+</html>
