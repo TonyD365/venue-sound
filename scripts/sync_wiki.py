@@ -23,6 +23,8 @@ PAGES = {
     "getting-started.md": ("Getting-started", "Getting started"),
     "signal-chain.md": ("The-signal-chain", "The signal chain"),
     "devices.md": ("Devices", "Devices"),
+    "items.md": ("Items", "Every item and block"),
+    "items.zh-CN.md": ("Items-zh-CN", "物品大全"),
     "cabling.md": ("Cabling", "Cabling"),
     "console.md": ("The-mixing-console", "The mixing console"),
     "workbench.md": ("Workbench", "Workbench"),
