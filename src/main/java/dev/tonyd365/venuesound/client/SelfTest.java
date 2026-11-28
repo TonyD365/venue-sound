@@ -47,6 +47,8 @@ public final class SelfTest {
             new View(4.5, 6.0, 1.2, 180, 82, "selftest-console-close.png"),
             new View(4.5, 5.0, 3.0, 180, 18, "selftest-console-front.png"),
             new View(4.5, 5.6, -3.4, 0, 22, "selftest-console-rear.png"),
+            new View(4.23, 5.9, 0.62, 180, 89, "selftest-hud-fader.png"),
+            new View(4.23, 5.9, 0.11, 180, 89, "selftest-hud-knob.png"),
             new View(8.5, 5.2, 2.2, 180, 22, "selftest-amp-front.png"),
             new View(8.5, 5.2, -1.8, 0, 22, "selftest-amp-back.png"),
             new View(13.5, 5.0, 1.7, 180, 35, "selftest-receiver.png"),
@@ -92,7 +94,8 @@ public final class SelfTest {
                     sp.onUpdateAbilities();
                     sp.teleportTo(sp.serverLevel(), v.x(), v.y() - 4 + baseY - 1.62, v.z(), v.yaw(), v.pitch());
                 });
-                mc.options.hideGui = true;
+                // views named "...hud..." keep the interface, to show the control readout
+                mc.options.hideGui = !v.name().contains("hud");
             }
             if (tick == 60) {
                 Screenshot.grab(mc.gameDirectory, v.name(), mc.getMainRenderTarget(), msg -> VenueSound.LOGGER.info("selftest: {}", msg.getString()));

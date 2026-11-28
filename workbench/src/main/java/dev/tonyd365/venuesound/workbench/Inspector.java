@@ -302,11 +302,10 @@ public final class Inspector extends JPanel {
                     boolean on;
                     if (c.param().startsWith("peak.")) {
                         int st = Integer.parseInt(c.param().substring(5));
-                        on = device.get("gain." + st) * device.get("fader." + st) > 1.6F && device.get("mute." + st) < 0.5F;
+                        on = audio.peak(device, st);
                     } else {
                         int step = Integer.parseInt(c.param().substring(c.param().lastIndexOf('.') + 1));
-                        float lvl = c.param().startsWith("meter.l") ? device.get("main.l") : device.get("main.r");
-                        on = active && step < Math.round(audio.meter(device) * 8 + lvl);
+                        on = step < AudioEngine.leds(audio.mainLevel(device, c.param().startsWith("meter.l") ? 0 : 1));
                     }
                     g.setColor(on ? new Color(c.color()) : new Color(0x2A2C30));
                     g.fill(new Ellipse2D.Double(cx(u - 0.25), cy(dd + 0.25), 0.5 * ms(), 0.5 * ms()));

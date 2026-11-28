@@ -12,7 +12,8 @@ The first public version.
 - **Consoles**: VS-12 (8 mono + 2 stereo, 3×2 blocks) and VS-24 (16 mono + 4 stereo, 5×2 blocks)
   with gain, peak LED, 3-band EQ, AUX 1/2, effects send, pan, mute, PFL, faders, built-in USB
   player, effects unit and meters. Every control is used on the model, with right-click or the
-  mouse wheel. All sockets are on the rear side, facing the stage.
+  mouse wheel. All sockets are on the rear side, facing the stage. Point at a knob or fader to
+  read its value; the MAIN meters and PEAK LEDs follow the real signal.
 - **Rack**: power amplifier (stereo IN A/B), graphic EQ, compressor/limiter, effects processor,
   crossover, power sequencer, rack cabinet.
 - **Speakers**: line array module, flown line array with truss point, PA cabinet, 4×6 concert

@@ -25,6 +25,7 @@ public class VenueSound implements ModInitializer {
         Registration.register();
         DeckPackets.registerServer();
         dev.tonyd365.venuesound.net.ScrollPackets.registerServer();
+        dev.tonyd365.venuesound.net.MeterPackets.registerServer();
 
         ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
             if (blockEntity instanceof AudioNodeBlockEntity routed) {

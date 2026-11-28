@@ -35,8 +35,62 @@ public final class AudioEngine implements Runnable {
     private volatile TargetDataLine mic;
     private volatile String error = "";
 
+    /** Per console: [0] MAIN L, [1] MAIN R, [2 + strip] inputs; level 0-1 and when it was set. */
+    private final Map<Device, float[]> consoleLevels = new ConcurrentHashMap<>();
+    private final Map<Device, long[]> consoleTimes = new ConcurrentHashMap<>();
+
     public AudioEngine(Scene scene) {
         this.scene = scene;
+        scene.engine.setMeter((console, strip, input, l, r) -> {
+            float[] v = consoleLevels.computeIfAbsent(console, k -> new float[22]);
+            long[] t = consoleTimes.computeIfAbsent(console, k -> new long[22]);
+            long now = System.currentTimeMillis();
+            hold(v, t, 0, l, now);
+            hold(v, t, 1, r, now);
+            if (strip >= 0 && strip < 20) {
+                hold(v, t, 2 + strip, input, now);
+            }
+        });
+    }
+
+    private static void hold(float[] v, long[] t, int i, float level, long now) {
+        if (level >= fallen(v[i], t[i], now)) {
+            v[i] = level;
+            t[i] = now;
+        }
+    }
+
+    /** Meter ballistics: falls about 20 dB per second. */
+    private static float fallen(float level, long at, long now) {
+        return level <= 0 ? 0 : (float) (level * Math.pow(10, -(20.0 * (now - at) / 1000.0) / 20.0));
+    }
+
+    /** A console's MAIN L (side 0) or MAIN R (side 1) level now, 0-1. */
+    public float mainLevel(Device console, int side) {
+        float[] v = consoleLevels.get(console);
+        return v == null ? 0 : fallen(v[side], consoleTimes.get(console)[side], System.currentTimeMillis());
+    }
+
+    /** Whether a strip hit about -1 dBFS in the last half second. */
+    public boolean peak(Device console, int strip) {
+        float[] v = consoleLevels.get(console);
+        return v != null && 2 + strip < v.length && v[2 + strip] >= 0.89F
+                && System.currentTimeMillis() - consoleTimes.get(console)[2 + strip] < 500;
+    }
+
+    /** LEDs lit on an 8-LED meter: -42 dBFS for one, then 6 dB steps, -3 dBFS for all eight. */
+    public static int leds(float level) {
+        if (level <= 0) {
+            return 0;
+        }
+        double db = 20 * Math.log10(level);
+        int n = 0;
+        for (double s : new double[] {-42, -36, -30, -24, -18, -12, -6, -3}) {
+            if (db >= s) {
+                n++;
+            }
+        }
+        return n;
     }
 
     public void start() {
