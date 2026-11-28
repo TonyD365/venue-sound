@@ -32,7 +32,7 @@
   "message.venuesound.cable_outputs_full": "No free output on this device.",
   "message.venuesound.cable_wrong_way": "Those can't be connected in that direction.",
   "message.venuesound.cable_already": "Already connected.",
-  "tooltip.venuesound.cable_help2": "Sneak + right-click a socket: unplug · 64 blocks per run, use cable clips or outlets to go further",
+  "tooltip.venuesound.cable_help2": "Sneak + right-click a socket: unplug · %s blocks per run, use cable clips or outlets to go further",
   "screen.venuesound.src_rx": "RX %s",
   "screen.venuesound.src_mic": "MIC",
   "screen.venuesound.src_deck": "DECK",
@@ -93,5 +93,13 @@
   "message.venuesound.zone_set": "Capture zone stored",
   "message.venuesound.zone_none": "Select two corners first",
   "message.venuesound.zone_cleared": "Selection cleared",
-  "block.venuesound.mixer24": "Mixing Console VS-24 (5x2)"
+  "block.venuesound.mixer24": "Mixing Console VS-24 (5x2)",
+  "tooltip.venuesound.cable.audio_cable": "General audio cable: connects anything",
+  "tooltip.venuesound.cable.xlr_cable": "Mic and line signal: mics, receivers, players, processors, consoles, powered speakers. Not from an amplifier's outputs",
+  "tooltip.venuesound.cable.speaker_cable": "Amplifier OUT to speaker INPUT only (through wall outlets if needed)",
+  "tooltip.venuesound.cable.snake_cable": "Multicore: a stage box's SNAKE socket to the console, carrying every channel",
+  "tooltip.venuesound.cable.cable_reel": "Long general cable for runs across the venue: connects anything",
+  "message.venuesound.cable_xlr_amp": "An amplifier's outputs are speaker-level: use a speaker cable.",
+  "message.venuesound.cable_speaker_only": "A speaker cable only goes from an amplifier OUT to a speaker INPUT.",
+  "message.venuesound.cable_snake_only": "The multicore snake goes from a stage box's SNAKE socket to the console."
 }

@@ -20,4 +20,7 @@ The first public version.
 - **Cabling**: audio, XLR and speaker cables, multicore snake with 8/16-channel stage boxes, wall
   outlet, DI box, cable clips, cable reel. Cables are drawn in the world, rest on low obstacles and
   can't go through walls; a held cable runs to your hand.
+- **Cable types** each do one job and have their own colour and reach per run: audio cable
+  (anything, 64 blocks), XLR (mic and line signal, 96), speaker cable (amplifier to speakers, 96,
+  orange), multicore snake (stage box to console, 128, thick), cable reel (anything, 128, yellow).
 - **Workbench**: a desktop app with the same devices and signal engine, with sound.

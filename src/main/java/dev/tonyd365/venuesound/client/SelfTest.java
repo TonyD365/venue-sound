@@ -134,14 +134,14 @@ public final class SelfTest {
         }
         if (level.getBlockEntity(rx) instanceof AudioNodeBlockEntity r && level.getBlockEntity(console) instanceof MixerBlockEntity m) {
             if (m.assignInput(rx, 0)) {
-                r.addLink(console, 0, 0);
+                r.addLink(console, 0, 0, java.util.List.of(), dev.tonyd365.venuesound.block.CableType.XLR);
             }
         }
         if (level.getBlockEntity(console) instanceof AudioNodeBlockEntity c) {
             c.addLink(amp, 0, 0);
         }
         if (level.getBlockEntity(amp) instanceof AudioNodeBlockEntity a) {
-            a.addLink(spk, 0, 0);
+            a.addLink(spk, 0, 0, java.util.List.of(), dev.tonyd365.venuesound.block.CableType.SPEAKER);
         }
         place(level, Registration.MIXER24, new BlockPos(3, y, 10), Direction.SOUTH);
         // pro devices in a row behind the console

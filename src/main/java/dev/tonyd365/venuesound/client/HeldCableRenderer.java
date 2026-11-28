@@ -66,7 +66,7 @@ public final class HeldCableRenderer {
             MultiBufferSource buffers = ctx.consumers();
             if (buffers != null) {
                 VertexConsumer vc = buffers.getBuffer(RenderType.debugQuads());
-                CableRenderer.drawRun(level, vc, pose.last().pose(), points, Vec3.ZERO);
+                CableRenderer.drawRun(level, vc, pose.last().pose(), points, Vec3.ZERO, AudioCableItem.typeOf(stack));
             }
             pose.popPose();
         }
