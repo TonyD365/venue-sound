@@ -45,8 +45,8 @@ public final class ScrollControl {
             }
             return PanelLayout.Amp.onKnob(p.u(), p.height()) ? new Target(pos, "amp.level") : null;
         }
-        if (state.getBlock() instanceof SpeakerBlock && face == facing.getOpposite() && level.getBlockEntity(pos) instanceof SpeakerBlockEntity
-                && PortLayout.SpeakerPanel.onKnob(p.u(), p.height())) {
+        if (state.getBlock() instanceof SpeakerBlock && face == facing.getOpposite() && level.getBlockEntity(pos) instanceof SpeakerBlockEntity sp
+                && PortLayout.SpeakerPanel.of(sp.deviceKey()).onKnob(p.u(), p.height())) {
             return new Target(pos, "speaker.range");
         }
         return null;

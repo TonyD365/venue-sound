@@ -99,7 +99,8 @@ public final class PortLayout {
                     p.add(new Port("OUT " + (i + 1), Dir.OUT, Face.BACK, i, u, u + 1.9, 3.0, 6.0, 16.0));
                 }
             }
-            case "speaker", "floor_wedge", "subwoofer", "flown_array", "iem_transmitter" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 2.5, 5.5, 16.0));
+            case "speaker", "floor_wedge", "subwoofer", "flown_array" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 2.5, 5.5, 16.0));
+            case "iem_transmitter" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 1.0, 4.0, 13.0));
             case "pa_speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.0, 10.0, 2.0, 6.0, 15.0));
             case "concert_speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.0, 10.0, 2.0, 6.0, 32.0));
             default -> {
@@ -129,19 +130,33 @@ public final class PortLayout {
     }
 
     /** Speaker rear panel: power switch and coverage knob (panel units, back face). */
-    public static final class SpeakerPanel {
-        public static final double SWITCH_U0 = 2.5, SWITCH_U1 = 4.5, SWITCH_H0 = 9.0, SWITCH_H1 = 12.0;
-        public static final double KNOB_U = 11.0, KNOB_H = 10.5, KNOB_R = 1.8;
+    /**
+     * The speaker's rear panel (power switch and coverage knob), sized to each cabinet: a full-height
+     * speaker has it high up, the low floor wedge and the small in-ear transmitter lower down.
+     */
+    public record SpeakerPanel(double switchU0, double switchU1, double switchH0, double switchH1,
+                               double knobU, double knobH, double knobR, double depth, double ledU, double ledH) {
 
-        private SpeakerPanel() {
+        private static final SpeakerPanel TALL = new SpeakerPanel(2.5, 4.5, 9.0, 12.0, 11.0, 10.5, 1.8, 16.0, 13.8, 13.4);
+        private static final SpeakerPanel WEDGE = new SpeakerPanel(2.5, 4.5, 5.0, 8.0, 11.5, 6.3, 1.5, 16.0, 14.4, 8.2);
+        private static final SpeakerPanel IEM = new SpeakerPanel(2.5, 4.5, 1.6, 4.4, 11.5, 2.8, 1.3, 13.0, 14.0, 4.2);
+
+        public static SpeakerPanel of(String deviceKey) {
+            return switch (deviceKey) {
+                case "floor_wedge" -> WEDGE;
+                case "iem_transmitter" -> IEM;
+                case "pa_speaker" -> new SpeakerPanel(2.5, 4.5, 9.0, 12.0, 11.0, 10.5, 1.8, 15.0, 13.8, 13.4);
+                case "concert_speaker" -> new SpeakerPanel(2.5, 4.5, 9.0, 12.0, 11.0, 10.5, 1.8, 32.0, 13.8, 13.4);
+                default -> TALL;
+            };
         }
 
-        public static boolean onSwitch(double u, double h) {
-            return u >= SWITCH_U0 && u <= SWITCH_U1 && h >= SWITCH_H0 && h <= SWITCH_H1;
+        public boolean onSwitch(double u, double h) {
+            return u >= switchU0 && u <= switchU1 && h >= switchH0 && h <= switchH1;
         }
 
-        public static boolean onKnob(double u, double h) {
-            return Math.hypot(u - KNOB_U, h - KNOB_H) <= KNOB_R + 0.4;
+        public boolean onKnob(double u, double h) {
+            return Math.hypot(u - knobU, h - knobH) <= knobR + 0.4;
         }
     }
 }
