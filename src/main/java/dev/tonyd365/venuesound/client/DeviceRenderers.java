@@ -108,22 +108,19 @@ public final class DeviceRenderers {
     public static class Speaker extends CableRenderer<dev.tonyd365.venuesound.block.SpeakerBlockEntity> {
         @Override
         protected void renderPanel(dev.tonyd365.venuesound.block.SpeakerBlockEntity sp, PanelDraw d, MultiBufferSource buffers, int light) {
-            double depth = switch (sp.deviceKey()) {
-                case "pa_speaker" -> 15.0;
-                case "concert_speaker" -> 32.0;
-                default -> 16.0;
-            };
+            dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel panel = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.of(sp.deviceKey());
+            double depth = panel.depth();
             boolean on = sp.isOn();
-            double u0 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_U0, u1 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_U1;
-            double h0 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_H0, h1 = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.SWITCH_H1;
+            double u0 = panel.switchU0(), u1 = panel.switchU1();
+            double h0 = panel.switchH0(), h1 = panel.switchH1();
             double mid = (h0 + h1) / 2;
             d.box(u0, u1, depth, depth + 0.3, h0, h1, 0x15161A, light);
             d.box(u0 + 0.25, u1 - 0.25, depth, depth + 0.55, on ? mid : h0 + 0.25, on ? h1 - 0.25 : mid,
                     on ? 0xE74C3C : 0x3A3D42, on ? PanelDraw.FULL_BRIGHT : light);
             d.backText(buffers, on ? "ON" : "OFF", u1, h0 - 0.4, depth, 0.9, 0xFFC9CDD2);
-            double ku = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.KNOB_U;
-            double kh = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.KNOB_H;
-            double r = dev.tonyd365.venuesound.block.PortLayout.SpeakerPanel.KNOB_R;
+            double ku = panel.knobU();
+            double kh = panel.knobH();
+            double r = panel.knobR();
             d.box(ku - r, ku + r, depth, depth + 0.5, kh - r, kh + r, 0x1A1B1E, light);
             d.box(ku - r + 0.4, ku + r - 0.4, depth, depth + 0.7, kh - r + 0.4, kh + r - 0.4, 0x9AA0A6, light);
             int idx = 0;
@@ -138,7 +135,7 @@ public final class DeviceRenderers {
             double ph = kh + Math.cos(a) * (r - 0.6);
             d.box(pu - 0.22, pu + 0.22, depth, depth + 0.85, ph - 0.22, ph + 0.22, 0xFFFFFF, light);
             d.backText(buffers, sp.getRange() + "m", ku + 1.2, kh - r - 0.3, depth, 0.9, 0xFFE8B84A);
-            d.box(13.4, 14.2, depth, depth + 0.2, 13.0, 13.8, on ? 0x3DDC84 : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
+            d.box(panel.ledU() - 0.4, panel.ledU() + 0.4, depth, depth + 0.2, panel.ledH() - 0.4, panel.ledH() + 0.4, on ? 0x3DDC84 : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
         }
     }
 }

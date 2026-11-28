@@ -51,6 +51,7 @@ public final class SelfTest {
             new View(13.5, 5.0, 1.7, 180, 35, "selftest-receiver.png"),
             new View(8.0, 6.5, 11.0, 180, 20, "selftest-pro-left.png"),
             new View(22.0, 6.5, 11.0, 180, 20, "selftest-pro-right.png"),
+            new View(20.5, 5.4, 1.6, 0, 32, "selftest-pro-back.png"),
             new View(5.5, 9.5, 15.5, 180, 50, "selftest-vs24.png"));
 
     private SelfTest() {

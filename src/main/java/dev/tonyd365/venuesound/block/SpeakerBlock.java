@@ -45,7 +45,8 @@ public class SpeakerBlock extends DeviceBlock {
             return false;
         }
         PanelMath.Point p = PanelMath.local(device, facing, hit.getLocation());
-        if (PortLayout.SpeakerPanel.onSwitch(p.u(), p.height())) {
+        PortLayout.SpeakerPanel panel = PortLayout.SpeakerPanel.of(speaker.deviceKey());
+        if (panel.onSwitch(p.u(), p.height())) {
             if (!level.isClientSide && PanelInput.press(player, device, "power")) {
                 speaker.togglePower();
                 level.playSound(null, device, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.4F, speaker.isOn() ? 0.9F : 0.7F);
@@ -53,9 +54,9 @@ public class SpeakerBlock extends DeviceBlock {
             }
             return true;
         }
-        if (PortLayout.SpeakerPanel.onKnob(p.u(), p.height())) {
+        if (panel.onKnob(p.u(), p.height())) {
             if (!level.isClientSide) {
-                speaker.stepRange(p.u() < PortLayout.SpeakerPanel.KNOB_U);
+                speaker.stepRange(p.u() < panel.knobU());
                 player.displayClientMessage(Component.translatable("message.venuesound.speaker_range", speaker.getRange()), true);
             }
             return true;
