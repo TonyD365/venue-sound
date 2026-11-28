@@ -21,10 +21,19 @@ public class VenueSoundClient implements ClientModInitializer {
         BlockEntityRenderers.register(Registration.MEDIA_DECK_BE, ctx -> new DeviceRenderers.Deck());
         BlockEntityRenderers.register(Registration.VIDEO_CAPTURE_BE, ctx -> new CableRenderer<>());
         net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.AFTER_ENTITIES.register(ZoneOutlineRenderer::render);
+        net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback.EVENT.register(ControlHud::render);
         BlockEntityRenderers.register(Registration.MIXER_BE, ctx -> new MixerRenderer());
         BlockEntityRenderers.register(Registration.AMPLIFIER_BE, ctx -> new DeviceRenderers.Amplifier());
         BlockEntityRenderers.register(Registration.SPEAKER_BE, ctx -> new DeviceRenderers.Speaker());
 
+        ClientPlayNetworking.registerGlobalReceiver(dev.tonyd365.venuesound.net.MeterPackets.LEVELS, (client, handler, buf, responseSender) -> {
+            BlockPos console = buf.readBlockPos();
+            float[] levels = new float[Math.min(64, buf.readVarInt())];
+            for (int i = 0; i < levels.length; i++) {
+                levels[i] = buf.readUnsignedByte() / 255F;
+            }
+            ConsoleMeters.update(console, levels);
+        });
         ClientPlayNetworking.registerGlobalReceiver(DeckPackets.OPEN, (client, handler, buf, responseSender) -> {
             BlockPos pos = buf.readBlockPos();
             int count = buf.readVarInt();

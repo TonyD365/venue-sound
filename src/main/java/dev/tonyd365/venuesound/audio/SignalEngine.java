@@ -56,6 +56,33 @@ public final class SignalEngine<N> {
         void accept(N speaker, float[] frame);
     }
 
+    /** Receives a console's levels for every frame it mixes (for its meters and PEAK LEDs). */
+    public interface Meter<N> {
+        /**
+         * @param strip  the channel strip the frame came in on
+         * @param input  that strip's peak after gain and EQ, 0-1 (1 = full scale)
+         * @param mainL  the peak this frame adds to MAIN L, 0-1
+         * @param mainR  the peak this frame adds to MAIN R, 0-1
+         */
+        void console(N console, int strip, float input, float mainL, float mainR);
+    }
+
+    private volatile Meter<N> meter;
+
+    public void setMeter(Meter<N> meter) {
+        this.meter = meter;
+    }
+
+    private static float peak(float[] frame) {
+        float p = 0;
+        if (frame != null) {
+            for (float f : frame) {
+                p = Math.max(p, Math.abs(f));
+            }
+        }
+        return p / 32768F;
+    }
+
     private static final int MAX_HOPS = 32;
 
     private record EqKey(Object console, int slot, Object stream) {
@@ -143,6 +170,10 @@ public final class SignalEngine<N> {
                     .process(scale(strip, send * fader), g.param(c, "efx.time"));
             addInto(bus[MixerLayout.BUS_MAIN_L], wet, ret * g.param(c, "main.l"));
             addInto(bus[MixerLayout.BUS_MAIN_R], wet, ret * g.param(c, "main.r"));
+        }
+        Meter<N> m = meter;
+        if (m != null) {
+            m.console(c, s, peak(strip), peak(bus[MixerLayout.BUS_MAIN_L]), peak(bus[MixerLayout.BUS_MAIN_R]));
         }
         for (Edge<N> e : g.outputs(c)) {
             int b = e.fromPort();

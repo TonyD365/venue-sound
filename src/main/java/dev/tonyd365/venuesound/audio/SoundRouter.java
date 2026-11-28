@@ -41,6 +41,10 @@ public final class SoundRouter {
     private final Map<DimPos, SpeakerOutput> outputs = new ConcurrentHashMap<>();
     private final Map<UUID, OpusDecoder> decoders = new ConcurrentHashMap<>();
     private final SignalEngine<RouterState.Node> engine = new SignalEngine<>();
+    {
+        engine.setMeter((console, strip, input, l, r) ->
+                dev.tonyd365.venuesound.net.MeterPackets.report(console.pos(), strip, input, l, r));
+    }
 
     /** The engine's view of the snapshots. */
     private final SignalEngine.Graph<RouterState.Node> graph = new SignalEngine.Graph<>() {

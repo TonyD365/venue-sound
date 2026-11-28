@@ -64,13 +64,14 @@ public class MixerRenderer extends CableRenderer<MixerBlockEntity> {
                 }
                 case LED -> {
                     boolean on;
+                    // live levels from the server (see ConsoleMeters)
                     if (c.param().startsWith("peak.")) {
                         int s = Integer.parseInt(c.param().substring(5));
-                        on = m.get("gain." + s) * m.get("fader." + s) > 1.6F && !m.isMuted(s);
+                        on = ConsoleMeters.peak(m.getBlockPos(), s);
                     } else {
                         int step = Integer.parseInt(c.param().substring(c.param().lastIndexOf('.') + 1));
-                        float lvl = c.param().startsWith("meter.l") ? m.get("main.l") : m.get("main.r");
-                        on = active && step < Math.round(lvl / 2F * 8);
+                        float lvl = ConsoleMeters.main(m.getBlockPos(), c.param().startsWith("meter.l") ? 0 : 1);
+                        on = step < ConsoleMeters.leds(lvl);
                     }
                     d.box(u - 0.22, u + 0.22, dd - 0.22, dd + 0.22, top, top + 0.12, on ? c.color() : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
                 }

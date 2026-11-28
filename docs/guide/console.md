@@ -32,3 +32,18 @@ master section.
 - **Faders**: hold right-click on the cap and move the crosshair, or scroll.
 - **Knobs**: click the left half to turn down, right half to turn up, or scroll.
 - **Buttons**: right-click.
+- **Readout**: point the crosshair at any knob or fader to see its name and value below the
+  crosshair, for example `CH 6  FADER  +0.0 dB`, `CH 2  HI  +4 dB` or `CH 3  PAN  L 40`. It works on
+  the amplifier, the processors and the speakers' coverage knob too.
+
+## Meters and PEAK LEDs
+
+The two LED columns in the master section are the MAIN L and MAIN R output meters. They follow
+the sound actually leaving the console, live: the first green LED lights at -42 dBFS, each
+next one 6 dB higher, and the red top LED at -3 dBFS, close to clipping. They jump up at once and
+fall back at about 20 dB per second.
+
+Each strip's red **PEAK** LED lights for half a second when that channel's signal, after GAIN and
+EQ, gets within about 1 dB of full scale. If it keeps lighting, turn that channel's GAIN down.
+
+The meters are sent to players within 48 blocks of the console.
