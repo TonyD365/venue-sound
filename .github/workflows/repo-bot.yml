@@ -1,0 +1,71 @@
+# The Actions version of the repository bot: the same code as the Supabase version
+# (supabase/functions/repo-bot), started by GitHub Actions instead of a webhook.
+# Template: https://github.com/TonyD365/repo-bot-template (actions-bot).
+#
+# Safe on pull_request_target: it checks out the default branch only, never the pull
+# request's code, and runs nothing from it.
+name: Repo bot
+
+on:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] -- reviewed: never runs PR code
+    types: [opened, reopened, ready_for_review, synchronize, edited, closed]
+  pull_request_review:
+    types: [submitted, dismissed]
+  issue_comment: # zizmor: ignore[dangerous-triggers] -- reviewed: never runs PR code
+    types: [created, edited]
+  issues:
+    types: [opened, edited]
+  release:
+    types: [published]
+  push:
+    branches: [main]
+  workflow_run: # zizmor: ignore[dangerous-triggers] -- reviewed: never runs PR code
+    workflows: [CI, Security, zizmor]
+    types: [completed]
+  schedule:
+    - cron: "*/10 * * * *" # sweep: catches events that were missed
+    - cron: "41 * * * *" # and reminders
+    - cron: "23 8 * * *" # and stale pull requests
+  workflow_dispatch:
+    inputs:
+      task:
+        description: sweep, hourly or daily
+        default: sweep
+
+permissions: {}
+
+concurrency:
+  group: repo-bot-${{ github.event.pull_request.number || github.event.issue.number || github.event.workflow_run.head_sha || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  bot:
+    # A comment that does not start by mentioning the bot needs no run at all.
+    if: >-
+      github.event_name != 'issue_comment' ||
+      startsWith(github.event.comment.body, format('@{0}', vars.BOT_LOGIN || 'TonyD365-Agent'))
+    runs-on: ubuntu-slim
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        with:
+          deno-version: 2.9.8
+      - name: Run the bot for this event
+        working-directory: supabase/functions/repo-bot
+        env:
+          GITHUB_TOKEN: ${{ secrets.AGENT_TOKEN }}
+          REPO: ${{ github.repository }}
+          BOT_LOGIN: ${{ vars.BOT_LOGIN || 'TonyD365-Agent' }}
+          PROJECT_NAME: ${{ vars.PROJECT_NAME || 'VenueSound' }}
+          MAINTAINERS: ${{ vars.MAINTAINERS || 'TonyD365' }}
+          LIVE_PRS: ${{ vars.BOT_LIVE_PRS || '*' }}
+          BOTS_LIVE: ${{ vars.BOTS_LIVE || '1' }}
+        run: >-
+          deno run --frozen --allow-env
+          --allow-net=api.github.com,raw.githubusercontent.com
+          --allow-read="$GITHUB_EVENT_PATH" actions.ts
