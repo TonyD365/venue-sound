@@ -18,6 +18,6 @@ answer within a week. Please give a reasonable time to fix it before telling any
 ## Scope
 
 The latest release and the `main` branch: the mod (for example, a client able to change
-another player's devices or crash a server through a packet) and the bot in `supabase/functions/`:
-a way to make it write as the bot account, merge without approval, or accept a forged webhook
-is in scope.
+another player's devices or crash a server through a packet) and the repository bot
+(`supabase/functions/repo-bot`, run by `.github/workflows/repo-bot.yml`): a way to make it
+write as the bot account or merge without approval is in scope.
