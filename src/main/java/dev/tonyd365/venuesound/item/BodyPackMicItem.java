@@ -16,13 +16,25 @@ public class BodyPackMicItem extends WirelessMicItem implements net.minecraft.wo
         return slot;
     }
 
-    /** Right-click: wear it. Sneak + right-click: change channel; sneak + right-click while worn... see WirelessMicItem. */
+    /**
+     * Right-click: wear it (it transmits while worn or carried). Sneak + right-click: next channel.
+     * A worn mic has no mute: take it off, or switch it to a channel no receiver uses.
+     */
     @Override
     public net.minecraft.world.InteractionResultHolder<net.minecraft.world.item.ItemStack> use(net.minecraft.world.level.Level level,
             net.minecraft.world.entity.player.Player player, net.minecraft.world.InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
             return swapWithEquipmentSlot(this, level, player, hand);
         }
-        return super.use(level, player, hand);
+        net.minecraft.world.item.ItemStack stack = player.getItemInHand(hand);
+        if (!level.isClientSide) {
+            nextChannel(stack, player);
+        }
+        return net.minecraft.world.InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
+    @Override
+    protected String helpKey() {
+        return "tooltip.venuesound.bodypack_help";
     }
 }

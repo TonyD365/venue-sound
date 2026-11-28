@@ -67,12 +67,22 @@ public class WirelessMicItem extends Item {
                 tag.putBoolean("Muted", muted);
                 player.displayClientMessage(Component.translatable(muted ? "message.venuesound.mic_muted" : "message.venuesound.mic_live", getChannel(stack)), true);
             } else {
-                int channel = getChannel(stack) % ReceiverBlockEntity.CHANNELS + 1;
-                tag.putInt("Channel", channel);
-                player.displayClientMessage(Component.translatable("message.venuesound.mic_channel", channel), true);
+                nextChannel(stack, player);
             }
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
+    /** Moves the mic to the next channel (16 wraps to 1) and shows it above the hotbar. */
+    protected static void nextChannel(ItemStack stack, Player player) {
+        int channel = getChannel(stack) % ReceiverBlockEntity.CHANNELS + 1;
+        stack.getOrCreateTag().putInt("Channel", channel);
+        player.displayClientMessage(Component.translatable("message.venuesound.mic_channel", channel), true);
+    }
+
+    /** The last tooltip line: how to use this mic. */
+    protected String helpKey() {
+        return "tooltip.venuesound.mic_help";
     }
 
     @Override
@@ -81,6 +91,6 @@ public class WirelessMicItem extends Item {
         tooltip.add(isMuted(stack)
                 ? Component.translatable("tooltip.venuesound.muted").withStyle(ChatFormatting.RED)
                 : Component.translatable("tooltip.venuesound.live").withStyle(ChatFormatting.GREEN));
-        tooltip.add(Component.translatable("tooltip.venuesound.mic_help").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable(helpKey()).withStyle(ChatFormatting.GRAY));
     }
 }

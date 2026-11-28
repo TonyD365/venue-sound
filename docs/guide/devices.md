@@ -9,7 +9,7 @@ Sockets show blue (IN) or red (OUT) rings with labels.
 | Device | Use | Sockets |
 |---|---|---|
 | Wireless Microphone | Hold to talk on its channel (1–16). Right-click: channel; sneak + right-click: mute | — |
-| Headset Mic, Lavalier Mic | Wear on your head / keep in your inventory; talk hands-free on its channel | — |
+| Headset Mic, Lavalier Mic | Right-click to wear (head / chest); it transmits while worn or carried. Sneak + right-click: next channel (set it to the receiver's channel) | — |
 | Wireless Receiver | Picks up mics on its channel within 128 blocks. Click the display or -/+ | OUT (back) |
 | Stand / Gooseneck / Choir Mic | Pick up players near them (choir mic: a wider area) | OUT |
 | Media Deck | Prev / play / stop / next / loop on the front, display shows the track | OUT (back) |
