@@ -31,7 +31,7 @@
   "message.venuesound.cable_outputs_full": "这个设备没有空的输出口了。",
   "message.venuesound.cable_wrong_way": "这两个设备不能按这个方向连接。",
   "message.venuesound.cable_already": "已经连接过了。",
-  "tooltip.venuesound.cable_help2": "潜行 + 右键插孔：拔线 · 每段线最长 64 格，更远请用线卡或墙面接口中转",
+  "tooltip.venuesound.cable_help2": "潜行 + 右键插孔：拔线 · 每段最长 %s 格，更远请用线卡或墙面接口中转",
   "screen.venuesound.src_rx": "接收 %s",
   "screen.venuesound.src_mic": "立麦",
   "screen.venuesound.src_deck": "播放机",
@@ -92,5 +92,13 @@
   "message.venuesound.zone_set": "采集区域已保存",
   "message.venuesound.zone_none": "请先选择两个角",
   "message.venuesound.zone_cleared": "已清除选择",
-  "block.venuesound.mixer24": "调音台 VS-24（5×2）"
+  "block.venuesound.mixer24": "调音台 VS-24（5×2）",
+  "tooltip.venuesound.cable.audio_cable": "通用音频线：什么都能接",
+  "tooltip.venuesound.cable.xlr_cable": "话筒/线路信号：麦克风、接收器、播放机、处理器、调音台、有源音箱。不能接功放的输出",
+  "tooltip.venuesound.cable.speaker_cable": "只能从功放的 OUT 接到音箱的 INPUT（可经墙面接口中转）",
+  "tooltip.venuesound.cable.snake_cable": "多芯缆：从舞台接口箱的 SNAKE 插孔接到调音台，一根带全部通道",
+  "tooltip.venuesound.cable.cable_reel": "长距离通用线，跨场地布线用：什么都能接",
+  "message.venuesound.cable_xlr_amp": "功放的输出是音箱电平，请用音箱线。",
+  "message.venuesound.cable_speaker_only": "音箱线只能从功放的 OUT 接到音箱的 INPUT。",
+  "message.venuesound.cable_snake_only": "多芯缆要从舞台接口箱的 SNAKE 插孔接到调音台。"
 }

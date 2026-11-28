@@ -38,10 +38,19 @@ import java.util.List;
 public class AudioCableItem extends Item {
 
     /** Longest single cable run, in blocks. Use outlets to go further. */
-    public static final int MAX_LENGTH = 64;
+    public static final int MAX_LENGTH = dev.tonyd365.venuesound.block.CableType.AUDIO.maxLength;
 
     public AudioCableItem(Properties properties) {
         super(properties);
+    }
+
+    /** Which kind of cable this item is (audio, XLR, speaker, snake, reel). */
+    public dev.tonyd365.venuesound.block.CableType cableType() {
+        return dev.tonyd365.venuesound.block.CableType.byId(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this).getPath());
+    }
+
+    public static dev.tonyd365.venuesound.block.CableType typeOf(ItemStack stack) {
+        return stack.getItem() instanceof AudioCableItem c ? c.cableType() : dev.tonyd365.venuesound.block.CableType.AUDIO;
     }
 
     /** Resolves multi-block devices (PA cabinet top, console right half) to the block holding the device. */
@@ -116,8 +125,9 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_source_gone").withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        if (end.distanceTo(here) > MAX_LENGTH) {
-            say(player, Component.translatable("message.venuesound.cable_too_far", MAX_LENGTH).withStyle(ChatFormatting.RED));
+        int maxLength = typeOf(stack).maxLength;
+        if (end.distanceTo(here) > maxLength) {
+            say(player, Component.translatable("message.venuesound.cable_too_far", maxLength).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
         if (!CableRoute.clear(level, end, here)) {
@@ -184,6 +194,8 @@ public class AudioCableItem extends Item {
                 say(player, Component.translatable("message.venuesound.cable_start_out", port.label()).withStyle(ChatFormatting.YELLOW));
             } else if (target.portInUse(port.index())) {
                 say(player, Component.translatable("message.venuesound.cable_port_busy", port.label()).withStyle(ChatFormatting.YELLOW));
+            } else if (typeOf(stack).refuseStart(target.deviceKey(), target.kind(), port.label()) != null) {
+                say(player, Component.translatable(typeOf(stack).refuseStart(target.deviceKey(), target.kind(), port.label())).withStyle(ChatFormatting.RED));
             } else {
                 CompoundTag t = stack.getOrCreateTag();
                 t.putLong("From", clicked.asLong());
@@ -205,7 +217,8 @@ public class AudioCableItem extends Item {
         }
         net.minecraft.world.phys.Vec3 end = heldEnd(level, tag);
         net.minecraft.world.phys.Vec3 into = socketWorld(level, clicked, target.deviceKey(), PortLayout.Dir.IN, port.index());
-        if (end != null && end.distanceTo(into) <= MAX_LENGTH && !CableRoute.clear(level, end, into)) {
+        dev.tonyd365.venuesound.block.CableType type = typeOf(stack);
+        if (end != null && end.distanceTo(into) <= type.maxLength && !CableRoute.clear(level, end, into)) {
             say(player, Component.translatable("message.venuesound.cable_blocked").withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
@@ -222,12 +235,17 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_end_in", port.label()).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        if (end == null || end.distanceTo(into) > MAX_LENGTH) {
-            say(player, Component.translatable("message.venuesound.cable_too_far", MAX_LENGTH).withStyle(ChatFormatting.RED));
+        if (end == null || end.distanceTo(into) > type.maxLength) {
+            say(player, Component.translatable("message.venuesound.cable_too_far", type.maxLength).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
         if (!source.kind().canFeed(target.kind())) {
             say(player, Component.translatable("message.venuesound.cable_wrong_way").withStyle(ChatFormatting.RED));
+            return InteractionResult.SUCCESS;
+        }
+        String refused = type.refuse(source.deviceKey(), source.kind(), tag.getString("FromLabel"), target.deviceKey(), target.kind());
+        if (refused != null) {
+            say(player, Component.translatable(refused).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
         if (source.hasLink(clicked, port.index())) {
@@ -242,7 +260,7 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_port_busy", port.label()).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        source.addLink(clicked, fromPort, port.index(), via);
+        source.addLink(clicked, fromPort, port.index(), via, type);
         click(level, clicked);
         say(player, Component.translatable("message.venuesound.cable_connected_ports", tag.getString("FromLabel"), port.label()).withStyle(ChatFormatting.GREEN));
         return InteractionResult.SUCCESS;
@@ -287,7 +305,9 @@ public class AudioCableItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        dev.tonyd365.venuesound.block.CableType type = cableType();
+        tooltip.add(Component.translatable("tooltip.venuesound.cable." + type.id, type.maxLength).withStyle(ChatFormatting.AQUA));
         tooltip.add(Component.translatable("tooltip.venuesound.cable_help").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltip.venuesound.cable_help2").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("tooltip.venuesound.cable_help2", type.maxLength).withStyle(ChatFormatting.DARK_GRAY));
     }
 }

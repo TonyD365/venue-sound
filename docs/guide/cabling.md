@@ -8,7 +8,8 @@
 3. Right-click an **IN** socket (blue ring) to plug in the other end.
 
 Sneak + right-click a socket to unplug it. Sneak + right-click the air to drop the end you hold.
-Each run (socket to clip, clip to clip, clip to socket) reaches 64 blocks.
+Each run (socket to clip, clip to clip, clip to socket) reaches 64 to 128 blocks, depending on
+the cable (see below). Cables are not used up: one cable item makes any number of connections.
 
 ## Walls and obstacles
 
@@ -17,12 +18,18 @@ that would pass through a wall is refused: add a cable clip to route around it.
 
 ## Cable types
 
-| Cable | For |
-|---|---|
-| XLR mic cable | Mics, receivers, line signals into the console |
-| Speaker cable | Amplifier OUT to speakers |
-| Multicore snake | One run from a stage box to the console, carrying 8 or 16 channels |
-| Audio cable | General purpose |
+Each cable does one job, reaches its own distance per run and has its own colour in the world,
+so you can tell the lines apart.
+
+| Cable | Connects | Per run | Colour |
+|---|---|---|---|
+| Audio cable | Anything | 64 blocks | Black |
+| XLR mic cable | Mic and line signal: mics, receivers, players, processors, consoles, powered speakers. Not an amplifier's outputs | 96 blocks | Dark blue |
+| Speaker cable | Only an amplifier OUT to a speaker INPUT (through wall outlets if needed) | 96 blocks | Orange |
+| Multicore snake | Only a stage box's SNAKE socket to the console (or a wall outlet), carrying all 8 or 16 channels | 128 blocks | Thick black |
+| Cable reel | Anything, for long runs across the venue | 128 blocks | Yellow |
+
+A cable that doesn't fit the job is refused with a message saying which one to use.
 
 ## Patching tools
 

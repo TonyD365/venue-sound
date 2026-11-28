@@ -30,9 +30,9 @@ import java.util.List;
 public abstract class AudioNodeBlockEntity extends BlockEntity {
 
     /** A cable this device sends out: to which device, from which of our sockets, into which of theirs. */
-    public record Link(BlockPos target, int fromPort, int toPort, List<BlockPos> via) {
+    public record Link(BlockPos target, int fromPort, int toPort, List<BlockPos> via, CableType cable) {
         public Link(BlockPos target, int fromPort, int toPort) {
-            this(target, fromPort, toPort, List.of());
+            this(target, fromPort, toPort, List.of(), CableType.AUDIO);
         }
     }
 
@@ -98,8 +98,13 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
 
     /** Adds a cable that runs through the cable clips at {@code via} on its way. */
     public void addLink(BlockPos target, int fromPort, int toPort, List<BlockPos> via) {
+        addLink(target, fromPort, toPort, via, CableType.AUDIO);
+    }
+
+    /** Adds a cable of the given type. */
+    public void addLink(BlockPos target, int fromPort, int toPort, List<BlockPos> via, CableType cable) {
         if (!hasLink(target, toPort) && !portInUse(fromPort) && canAddOutput()) {
-            links.add(new Link(target.immutable(), fromPort, toPort, List.copyOf(via)));
+            links.add(new Link(target.immutable(), fromPort, toPort, List.copyOf(via), cable));
             changed();
         }
     }
@@ -195,6 +200,9 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
             if (!l.via().isEmpty()) {
                 c.putLongArray("Via", l.via().stream().mapToLong(BlockPos::asLong).toArray());
             }
+            if (l.cable() != CableType.AUDIO) {
+                c.putString("Cable", l.cable().id);
+            }
             list.add(c);
         }
         tag.put("Links", list);
@@ -210,7 +218,8 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
             for (long v : c.getLongArray("Via")) {
                 via.add(BlockPos.of(v));
             }
-            links.add(new Link(BlockPos.of(c.getLong("Pos")), c.getInt("From"), c.getInt("To"), List.copyOf(via)));
+            links.add(new Link(BlockPos.of(c.getLong("Pos")), c.getInt("From"), c.getInt("To"), List.copyOf(via),
+                    CableType.byId(c.getString("Cable"))));
         }
         // worlds from 0.2.0 stored plain positions
         for (Tag t : tag.getList("Outputs", Tag.TAG_LONG)) {

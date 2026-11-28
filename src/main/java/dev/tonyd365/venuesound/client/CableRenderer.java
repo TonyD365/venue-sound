@@ -18,7 +18,6 @@ import org.joml.Matrix4f;
 public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntityRenderer<T> {
 
     private static final int SEGMENTS = 20;
-    private static final float HALF_WIDTH = 0.035F;
 
     @Override
     public void render(T be, float partialTick, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
@@ -50,7 +49,7 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
             }
             String targetKey = level.getBlockEntity(link.target()) instanceof AudioNodeBlockEntity t ? t.deviceKey() : "";
             points.add(socket(level, link.target(), targetKey, PortLayout.Dir.IN, link.toPort()));
-            drawRun(level, vc, m, points, base);
+            drawRun(level, vc, m, points, base, link.cable());
         }
     }
 
@@ -70,6 +69,12 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
 
     /** Draws a cable through {@code points} (sockets and clips), hanging and draped over obstacles. */
     public static void drawRun(Level level, VertexConsumer vc, Matrix4f m, java.util.List<Vec3> points, Vec3 base) {
+        drawRun(level, vc, m, points, base, dev.tonyd365.venuesound.block.CableType.AUDIO);
+    }
+
+    /** Draws a cable of the given type: its colour and thickness. */
+    public static void drawRun(Level level, VertexConsumer vc, Matrix4f m, java.util.List<Vec3> points, Vec3 base,
+                               dev.tonyd365.venuesound.block.CableType type) {
         for (int i = 0; i + 1 < points.size(); i++) {
             Vec3 a = points.get(i), b = points.get(i + 1);
             double sag = Math.min(2.5D, 0.12D * a.distanceTo(b) + 0.15D);
@@ -77,25 +82,33 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
             if (path == null) {
                 path = java.util.List.of(a, b);
             }
-            drawPath(vc, m, path, base);
+            drawPath(vc, m, path, base, type);
         }
     }
 
-    private static void drawPath(VertexConsumer vc, Matrix4f m, java.util.List<Vec3> path, Vec3 base) {
+    private static void drawPath(VertexConsumer vc, Matrix4f m, java.util.List<Vec3> path, Vec3 base,
+                                 dev.tonyd365.venuesound.block.CableType type) {
+        float w = type.halfWidth;
         for (int i = 0; i + 1 < path.size(); i++) {
             Vec3 p0 = path.get(i).subtract(base), p1 = path.get(i + 1).subtract(base);
             Vec3 d = p1.subtract(p0);
             double horizontal = Math.sqrt(d.x * d.x + d.z * d.z);
             // two crossed ribbons so the cable looks round from every angle
             Vec3 side = horizontal < 1.0E-4 ? new Vec3(1, 0, 0) : new Vec3(-d.z / horizontal, 0, d.x / horizontal);
-            int shade = (i % 2 == 0) ? 22 : 30;
-            quad(vc, m, p0, p1, side.scale(HALF_WIDTH), shade);
-            quad(vc, m, p0, p1, new Vec3(0, HALF_WIDTH, 0), shade);
+            // alternate segments slightly lighter so the cable reads as a twisted, round cable
+            int rgb = (i % 2 == 0) ? type.rgb : lighter(type.rgb);
+            quad(vc, m, p0, p1, side.scale(w), rgb);
+            quad(vc, m, p0, p1, new Vec3(0, w, 0), rgb);
         }
     }
 
     private static Vec3 point(Vec3 a, Vec3 d, double sag, float t) {
         return new Vec3(a.x + d.x * t, a.y + d.y * t - sag * 4 * t * (1 - t), a.z + d.z * t);
+    }
+
+    private static int lighter(int rgb) {
+        int r = Math.min(255, ((rgb >> 16) & 0xFF) + 10), g = Math.min(255, ((rgb >> 8) & 0xFF) + 10), b = Math.min(255, (rgb & 0xFF) + 10);
+        return (r << 16) | (g << 8) | b;
     }
 
     private static void quad(VertexConsumer vc, Matrix4f m, Vec3 p0, Vec3 p1, Vec3 off, int shade) {
@@ -105,8 +118,8 @@ public class CableRenderer<T extends AudioNodeBlockEntity> implements BlockEntit
         vertex(vc, m, p1.subtract(off), shade);
     }
 
-    private static void vertex(VertexConsumer vc, Matrix4f m, Vec3 p, int shade) {
-        vc.vertex(m, (float) p.x, (float) p.y, (float) p.z).color(shade, shade, shade + 4, 255).endVertex();
+    private static void vertex(VertexConsumer vc, Matrix4f m, Vec3 p, int rgb) {
+        vc.vertex(m, (float) p.x, (float) p.y, (float) p.z).color((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, 255).endVertex();
     }
 
     @Override
