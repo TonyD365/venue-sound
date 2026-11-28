@@ -82,7 +82,10 @@ public final class Registration {
     public static final dev.tonyd365.venuesound.item.ZoneSelectorItem ZONE_SELECTOR = new dev.tonyd365.venuesound.item.ZoneSelectorItem(new Item.Properties().stacksTo(1));
     public static final dev.tonyd365.venuesound.block.VideoCaptureBlock VIDEO_CAPTURE = new dev.tonyd365.venuesound.block.VideoCaptureBlock(deviceProps());
     public static BlockEntityType<dev.tonyd365.venuesound.block.VideoCaptureBlockEntity> VIDEO_CAPTURE_BE;
-    public static final Item IEM_EARPIECE = new Item(new Item.Properties().stacksTo(1));
+    public static final Item IEM_EARPIECE = new dev.tonyd365.venuesound.item.EarpieceItem(new Item.Properties().stacksTo(1));
+    public static final Item INTERCOM_BELTPACK = new dev.tonyd365.venuesound.item.IntercomBeltpackItem(new Item.Properties().stacksTo(1));
+    public static final dev.tonyd365.venuesound.block.ProSpeakerBlock INTERCOM_STATION = new dev.tonyd365.venuesound.block.ProSpeakerBlock("intercom_station",
+            dev.tonyd365.venuesound.audio.SpeakerOutput.INTERCOM - 1, Block.box(0, 0, 0, 16, 8, 16), deviceProps());
     public static final AudioCableItem XLR_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
     public static final AudioCableItem SPEAKER_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
     public static final AudioCableItem SNAKE_CABLE = new AudioCableItem(new Item.Properties().stacksTo(1));
@@ -115,6 +118,8 @@ public final class Registration {
         block("crossover", CROSSOVER);
         block("flown_array", FLOWN_ARRAY);
         block("iem_transmitter", IEM_TRANSMITTER);
+        block("intercom_station", INTERCOM_STATION);
+        Registry.register(BuiltInRegistries.ITEM, VenueSound.id("intercom_beltpack"), INTERCOM_BELTPACK);
         block("stage_box", STAGE_BOX);
         block("stage_box_16", STAGE_BOX_16);
         block("video_capture", VIDEO_CAPTURE);
@@ -140,7 +145,7 @@ public final class Registration {
         MEDIA_DECK_BE = be("media_deck", FabricBlockEntityTypeBuilder.create(MediaDeckBlockEntity::new, MEDIA_DECK).build());
         MIXER_BE = be("mixer", FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER, MIXER24).build());
         AMPLIFIER_BE = be("amplifier", FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER, GRAPHIC_EQ, COMPRESSOR, DI_BOX, FX_PROCESSOR, CROSSOVER).build());
-        SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER, FLOWN_ARRAY, IEM_TRANSMITTER).build());
+        SPEAKER_BE = be("speaker", FabricBlockEntityTypeBuilder.create(SpeakerBlockEntity::new, SPEAKER, PA_SPEAKER, CONCERT_SPEAKER, FLOOR_WEDGE, SUBWOOFER, FLOWN_ARRAY, IEM_TRANSMITTER, INTERCOM_STATION).build());
 
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VenueSound.id("main"),
                 FabricItemGroup.builder()
@@ -170,6 +175,8 @@ public final class Registration {
                             output.accept(RACK_CABINET);
                             output.accept(IEM_TRANSMITTER);
                             output.accept(IEM_EARPIECE);
+                            output.accept(INTERCOM_STATION);
+                            output.accept(INTERCOM_BELTPACK);
                             output.accept(FLOWN_ARRAY);
                             output.accept(TRUSS_POINT);
                             output.accept(CABLE_CLIP);

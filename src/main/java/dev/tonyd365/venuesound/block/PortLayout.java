@@ -102,6 +102,7 @@ public final class PortLayout {
             }
             case "speaker", "floor_wedge", "subwoofer", "flown_array" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 2.5, 5.5, 16.0));
             case "iem_transmitter" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 1.0, 4.0, 13.0));
+            case "intercom_station" -> p.add(new Port("PGM IN", Dir.IN, Face.BACK, 0, 6.5, 9.5, 1.5, 4.5, 16.0));
             case "pa_speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.0, 10.0, 2.0, 6.0, 15.0));
             case "concert_speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.0, 10.0, 2.0, 6.0, 32.0));
             default -> {
@@ -146,6 +147,7 @@ public final class PortLayout {
             return switch (deviceKey) {
                 case "floor_wedge" -> WEDGE;
                 case "iem_transmitter" -> IEM;
+                case "intercom_station" -> new SpeakerPanel(2.5, 4.5, 3.6, 6.6, 12.0, 4.6, 1.4, 16.0, 14.6, 7.2);
                 case "pa_speaker" -> new SpeakerPanel(2.5, 4.5, 9.0, 12.0, 11.0, 10.5, 1.8, 15.0, 13.8, 13.4);
                 case "concert_speaker" -> new SpeakerPanel(2.5, 4.5, 9.0, 12.0, 11.0, 10.5, 1.8, 32.0, 13.8, 13.4);
                 default -> TALL;

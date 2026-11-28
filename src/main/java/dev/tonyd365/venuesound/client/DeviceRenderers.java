@@ -135,6 +135,11 @@ public final class DeviceRenderers {
             double ph = kh + Math.cos(a) * (r - 0.6);
             d.box(pu - 0.22, pu + 0.22, depth, depth + 0.85, ph - 0.22, ph + 0.22, 0xFFFFFF, light);
             d.backText(buffers, sp.getRange() + "m", ku + 1.2, kh - r - 0.3, depth, 0.9, 0xFFE8B84A);
+            if ("iem_transmitter".equals(sp.deviceKey())) {
+                // channel display on the front
+                d.box(4.0, 12.0, 2.9, 3.01, 1.2, 3.9, 0x0B2A12, PanelDraw.FULL_BRIGHT);
+                d.frontText(buffers, "CH " + sp.getChannel(), 4.6, 3.4, 2.88, 1.8, 0xFF3DDC84);
+            }
             d.box(panel.ledU() - 0.4, panel.ledU() + 0.4, depth, depth + 0.2, panel.ledH() - 0.4, panel.ledH() + 0.4, on ? 0x3DDC84 : 0x2A2C30, on ? PanelDraw.FULL_BRIGHT : light);
         }
     }

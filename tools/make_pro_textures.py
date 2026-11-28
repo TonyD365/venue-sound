@@ -28,7 +28,7 @@ def eq_marks(d, W, H):
 for k, col, extra in [("graphic_eq", (40, 120, 200), eq_marks), ("compressor", (200, 60, 50), None),
                       ("di_box", (60, 170, 90), None), ("fx_processor", (140, 70, 180), None),
                       ("crossover", (230, 140, 30), None), ("power_sequencer", (220, 200, 40), None),
-                      ("iem_transmitter", (30, 160, 200), None)]:
+                      ("iem_transmitter", (30, 160, 200), None), ("intercom_station", (240, 150, 40), None)]:
     tex(f"block/{k}_front", "block/amplifier_front", stripe(col, extra))
 
 tex("block/floor_wedge_front", "block/speaker_front", lambda d, W, H: None)
@@ -81,7 +81,7 @@ tex("block/truss", "block/stand_metal", truss)
 for k, base, col in [("headset_mic", "wireless_mic", (230, 200, 170)), ("lavalier_mic", "wireless_mic", (60, 60, 60)),
                      ("iem_earpiece", "wireless_mic", (30, 160, 200)), ("xlr_cable", "audio_cable", (40, 40, 40)),
                      ("speaker_cable", "audio_cable", (200, 60, 50)), ("snake_cable", "audio_cable", (30, 90, 200)),
-                     ("cable_reel", "audio_cable", (240, 180, 30))]:
+                     ("cable_reel", "audio_cable", (240, 180, 30)), ("intercom_beltpack", "wireless_mic", (240, 150, 40))]:
     tex(f"item/{k}", f"item/{base}", lambda d, W, H, c=col: d.rectangle([W * 10 // 16, 0, W - 1, H * 6 // 16], fill=c + (255,)))
 print("pro device textures written")
 

@@ -25,6 +25,8 @@ public final class SpeakerOutput implements Supplier<short[]> {
 
     /** Sound height at or below this marks an in-ear monitor transmitter. */
     public static final double IEM = -50D;
+    /** Sound height at or below this marks an intercom base station (its program feed). */
+    public static final double INTERCOM = -100D;
 
     /** Frames to buffer before playback starts, to absorb network jitter (20 ms each). */
     private static final int PREBUFFER = 3;
@@ -39,6 +41,8 @@ public final class SpeakerOutput implements Supplier<short[]> {
     private AudioPlayer player;
     private int range;
     private final double heightOff;
+    /** In-ear transmitter channel: only earpieces on this channel hear it. */
+    private volatile int channel = 1;
 
     public SpeakerOutput(ServerLevel level, DimPos pos, int range, double heightOff) {
         this.level = level;
@@ -46,6 +50,10 @@ public final class SpeakerOutput implements Supplier<short[]> {
         this.range = range;
         this.heightOff = heightOff;
         this.channelId = UUID.nameUUIDFromBytes(("venuesound:speaker:" + pos.dimension().location() + ":" + pos.pos().asLong()).getBytes());
+    }
+
+    public void setChannel(int channel) {
+        this.channel = channel;
     }
 
     public synchronized void setRange(int range) {
@@ -83,10 +91,15 @@ public final class SpeakerOutput implements Supplier<short[]> {
             return;
         }
         channel.setCategory(VenueSoundVoicechatPlugin.CATEGORY);
-        if (heightOff <= IEM) {
-            // in-ear monitor transmitter: only players wearing an earpiece hear it
+        if (heightOff <= INTERCOM) {
+            // intercom base station: its program input is heard by everyone carrying a beltpack
             channel.setFilter(p -> p.getPlayer() instanceof net.minecraft.world.entity.player.Player pl
-                    && pl.getInventory().contains(new net.minecraft.world.item.ItemStack(dev.tonyd365.venuesound.Registration.IEM_EARPIECE)));
+                    && dev.tonyd365.venuesound.item.IntercomBeltpackItem.carried(pl) != null);
+            channel.setDistance(range);
+        } else if (heightOff <= IEM) {
+            // in-ear monitor transmitter: only players carrying an earpiece on its channel hear it
+            channel.setFilter(p -> p.getPlayer() instanceof net.minecraft.world.entity.player.Player pl
+                    && dev.tonyd365.venuesound.item.EarpieceItem.carries(pl, this.channel));
             channel.setDistance(Math.max(range, 128));
         } else {
             channel.setDistance(range);

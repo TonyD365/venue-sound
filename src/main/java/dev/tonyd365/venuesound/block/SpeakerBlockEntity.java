@@ -19,6 +19,8 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
 
     private int range = 64;
     private boolean on = true;
+    /** In-ear transmitter: which earpieces hear it (1-16). */
+    private int channel = 1;
 
     public SpeakerBlockEntity(BlockPos pos, BlockState state) {
         super(Registration.SPEAKER_BE, pos, state);
@@ -42,6 +44,16 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
 
     public boolean isOn() {
         return on;
+    }
+
+    public int getChannel() {
+        return channel;
+    }
+
+    /** Next (or previous) channel, 1-16, wrapping round. */
+    public void cycleChannel(boolean backwards) {
+        channel = Math.floorMod(channel - 1 + (backwards ? -1 : 1), 16) + 1;
+        changed();
     }
 
     public void togglePower() {
@@ -84,7 +96,7 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
         double height = getBlockState().getBlock() instanceof ProSpeakerBlock p ? p.soundHeight
                 : getBlockState().getBlock() instanceof ConcertSpeakerBlock ? 3.0D
                 : getBlockState().getBlock() instanceof PaSpeakerBlock ? 1.0D : 0.5D;
-        return new RouterState.Node(dimPos(), kind(), outs, 0, null, 0F, on ? range : 0, height);
+        return new RouterState.Node(dimPos(), kind(), outs, channel, null, 0F, on ? range : 0, height);
     }
 
     @Override
@@ -92,6 +104,7 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
         super.saveAdditional(tag);
         tag.putInt("Range", range);
         tag.putBoolean("On", on);
+        tag.putInt("Channel", channel);
     }
 
     @Override
@@ -99,5 +112,6 @@ public class SpeakerBlockEntity extends AudioNodeBlockEntity {
         super.load(tag);
         range = tag.contains("Range") ? tag.getInt("Range") : 64;
         on = !tag.contains("On") || tag.getBoolean("On");
+        channel = tag.contains("Channel") ? Math.max(1, Math.min(16, tag.getInt("Channel"))) : 1;
     }
 }

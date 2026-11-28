@@ -106,6 +106,7 @@ public final class SoundRouter {
             } else if (previous != null && previous.range() != node.range()) {
                 output.setRange(node.range());
             }
+            outputs.get(node.pos()).setChannel(node.channel());
         }
     }
 
@@ -151,6 +152,7 @@ public final class SoundRouter {
             return;
         }
         UUID talker = player.getUUID();
+        routeIntercom(api, player, event.getPacket());
         byte[] opus = event.getPacket().getOpusEncodedData();
         OpusDecoder decoder = decoders.computeIfAbsent(talker, k -> api.createDecoder());
         if (opus == null || opus.length == 0) {
@@ -181,6 +183,54 @@ public final class SoundRouter {
             engine.route(graph, source, talker, pcm, collect(perSpeaker));
         }
         deliver(talker, perSpeaker);
+    }
+
+    // ------------------------------------------------------------------ intercom (voice thread)
+
+    /**
+     * A crew member with TALK on: their voice goes straight to everyone else carrying a beltpack on
+     * the same channel (A or B), as long as both are within the coverage of a powered intercom base
+     * station in the same dimension. It never reaches the console or the speakers.
+     */
+    private void routeIntercom(VoicechatServerApi api, ServerPlayer player, de.maxhenkel.voicechat.api.packets.MicrophonePacket packet) {
+        net.minecraft.world.item.ItemStack pack = dev.tonyd365.venuesound.item.IntercomBeltpackItem.carried(player);
+        if (pack == null || !dev.tonyd365.venuesound.item.IntercomBeltpackItem.isTalking(pack)) {
+            return;
+        }
+        int channel = dev.tonyd365.venuesound.item.IntercomBeltpackItem.getChannel(pack);
+        List<RouterState.Node> stations = new ArrayList<>();
+        for (RouterState.Node node : nodes.values()) {
+            if (node.kind() == NodeKind.SPEAKER && node.heightOff() <= SpeakerOutput.INTERCOM && node.range() > 0
+                    && node.pos().dimension().equals(player.level().dimension())) {
+                stations.add(node);
+            }
+        }
+        if (stations.isEmpty() || !covered(stations, player)) {
+            return;
+        }
+        de.maxhenkel.voicechat.api.packets.StaticSoundPacket out = packet.toStaticSoundPacket();
+        for (ServerPlayer listener : player.server.getPlayerList().getPlayers()) {
+            if (listener == player || listener.level() != player.level() || !covered(stations, listener)) {
+                continue;
+            }
+            net.minecraft.world.item.ItemStack theirs = dev.tonyd365.venuesound.item.IntercomBeltpackItem.carried(listener);
+            if (theirs == null || dev.tonyd365.venuesound.item.IntercomBeltpackItem.getChannel(theirs) != channel) {
+                continue;
+            }
+            VoicechatConnection to = api.getConnectionOf(listener.getUUID());
+            if (to != null) {
+                api.sendStaticSoundPacketTo(to, out);
+            }
+        }
+    }
+
+    private static boolean covered(List<RouterState.Node> stations, ServerPlayer p) {
+        for (RouterState.Node s : stations) {
+            if (s.pos().distanceSqrTo(p.getX(), p.getY(), p.getZ()) <= (double) s.range() * s.range()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ------------------------------------------------------------------ media (media thread)
