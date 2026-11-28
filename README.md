@@ -142,7 +142,7 @@ you within the speakers' coverage. More: [troubleshooting](docs/guide/troublesho
 
 ## Building
 
-Java 17 and 21 (Gradle downloads them if missing). Details: [building](docs/guide/building.md).
+Run Gradle on Java 25+; it compiles with Java 17 and 21 (and downloads them if missing). Details: [building](docs/guide/building.md).
 
 ```bash
 ./gradlew build            # the mod for every Minecraft version: versions/<version>/build/libs/

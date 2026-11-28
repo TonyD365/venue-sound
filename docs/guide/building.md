@@ -1,8 +1,8 @@
 # Building from source
 
 One source tree builds the mod for every supported Minecraft version (1.20.1 and 1.21.1), with
-[Stonecutter](https://stonecutter.kikugie.dev/). Gradle downloads the JDK each version needs
-(17 for 1.20.1, 21 for 1.21.1) if it isn't installed.
+[Stonecutter](https://stonecutter.kikugie.dev/). Gradle itself needs Java 25 or newer to run (Stonecutter requires it);
+it downloads the JDK each version compiles with (17 for 1.20.1, 21 for 1.21.1) if it isn't installed.
 
 ```bash
 ./gradlew build                        # every version: versions/<version>/build/libs/, and the Workbench
