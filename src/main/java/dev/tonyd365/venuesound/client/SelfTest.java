@@ -46,6 +46,7 @@ public final class SelfTest {
             new View(4.5, 7.0, 3.8, 180, 55, "selftest-console.png"),
             new View(4.5, 6.0, 1.2, 180, 82, "selftest-console-close.png"),
             new View(4.5, 5.0, 3.0, 180, 18, "selftest-console-front.png"),
+            new View(4.5, 5.6, -3.4, 0, 22, "selftest-console-rear.png"),
             new View(8.5, 5.2, 2.2, 180, 22, "selftest-amp-front.png"),
             new View(8.5, 5.2, -1.8, 0, 22, "selftest-amp-back.png"),
             new View(13.5, 5.0, 1.7, 180, 35, "selftest-receiver.png"),
