@@ -145,6 +145,8 @@ public final class MixerLayout {
         button("usb.play", ">", m + 41.2, 23.8, 0x2ECC71, false);
         button("usb.stop", "[]", m + 43.8, 23.8, 0x3A3D42, false);
         button("usb.next", ">|", m + 46.4, 23.8, 0x3A3D42, false);
+        // +48V phantom power for every input (condenser mics need it)
+        button("phantom", "+48V", m + 39.0, 21.2, 0xD0312B, true);
         for (int s = 0; s < 8; s++) {
             CONTROLS.add(new Control("meter.l." + s, Kind.LED, "", m + 42.75, 11.0 + s * 1.1, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));
             CONTROLS.add(new Control("meter.r." + s, Kind.LED, "", m + 43.45, 11.0 + s * 1.1, 0.5, 0.5, 0, 1, 0, s < 5 ? 0x3DDC84 : s < 7 ? 0xF1C40F : 0xE74C3C));

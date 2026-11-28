@@ -44,6 +44,11 @@ public final class SignalEngine<N> {
             return false;
         }
 
+        /** A condenser microphone: silent unless the console input it reaches has +48V on. */
+        default boolean condenser(N node) {
+            return false;
+        }
+
         /** Identity used to keep EQ and effects memory per console. */
         Object id(N node);
     }
@@ -106,7 +111,7 @@ public final class SignalEngine<N> {
     public void route(Graph<N> g, N source, Object stream, short[] pcm, Sink<N> sink) {
         Set<Object> visited = new HashSet<>();
         visited.add(g.id(source));
-        beforeConsole(g, source, stream, pcm, sink, visited, 0, 0);
+        beforeConsole(g, source, stream, pcm, sink, visited, 0, 0, g.condenser(source));
     }
 
     /** Routes a frame straight into a console strip (the console's own USB player). */
@@ -116,7 +121,8 @@ public final class SignalEngine<N> {
         console(g, console, slot, stream, pcm, sink, visited);
     }
 
-    private void beforeConsole(Graph<N> g, N from, Object stream, short[] pcm, Sink<N> sink, Set<Object> visited, int depth, int chan) {
+    private void beforeConsole(Graph<N> g, N from, Object stream, short[] pcm, Sink<N> sink, Set<Object> visited, int depth, int chan,
+                               boolean needsPhantom) {
         if (depth > MAX_HOPS) {
             return;
         }
@@ -124,7 +130,7 @@ public final class SignalEngine<N> {
             N next = e.target();
             NodeKind kind = g.kind(next);
             if (kind == NodeKind.OUTLET && visited.add(g.id(next))) {
-                beforeConsole(g, next, stream, pcm, sink, visited, depth + 1, g.multichannel(next) ? e.toPort() : chan);
+                beforeConsole(g, next, stream, pcm, sink, visited, depth + 1, g.multichannel(next) ? e.toPort() : chan, needsPhantom);
             } else if (kind == NodeKind.PROCESSOR && visited.add(g.id(next))) {
                 float[] f = new float[pcm.length];
                 for (int i = 0; i < pcm.length; i++) {
@@ -132,8 +138,14 @@ public final class SignalEngine<N> {
                 }
                 f = processor(g, next, stream, f);
                 if (f != null) {
-                    beforeConsole(g, next, stream, ConsoleDsp.toPcm(f), sink, visited, depth + 1, chan);
+                    // an active processor in between doesn't pass phantom power, so a condenser stays silent
+                    if (!needsPhantom) {
+                        beforeConsole(g, next, stream, ConsoleDsp.toPcm(f), sink, visited, depth + 1, chan, false);
+                    }
                 }
+            } else if (kind == NodeKind.MIXER && needsPhantom && g.param(next, "phantom") < 0.5F) {
+                // condenser mic without +48V: no sound
+                continue;
             } else if (kind == NodeKind.MIXER && visited.add(g.id(next))) {
                 int slot = g.inputSlot(next, from);
                 if (slot >= 0 && chan > 0) {

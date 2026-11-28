@@ -194,8 +194,8 @@ public class AudioCableItem extends Item {
                 say(player, Component.translatable("message.venuesound.cable_start_out", port.label()).withStyle(ChatFormatting.YELLOW));
             } else if (target.portInUse(port.index())) {
                 say(player, Component.translatable("message.venuesound.cable_port_busy", port.label()).withStyle(ChatFormatting.YELLOW));
-            } else if (typeOf(stack).refuseStart(target.deviceKey(), target.kind(), port.label()) != null) {
-                say(player, Component.translatable(typeOf(stack).refuseStart(target.deviceKey(), target.kind(), port.label())).withStyle(ChatFormatting.RED));
+            } else if (!typeOf(stack).fits(PortLayout.connector(target.deviceKey(), port))) {
+                say(player, wrongPlug(port, PortLayout.connector(target.deviceKey(), port), typeOf(stack)));
             } else {
                 CompoundTag t = stack.getOrCreateTag();
                 t.putLong("From", clicked.asLong());
@@ -243,7 +243,12 @@ public class AudioCableItem extends Item {
             say(player, Component.translatable("message.venuesound.cable_wrong_way").withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
         }
-        String refused = type.refuse(source.deviceKey(), source.kind(), tag.getString("FromLabel"), target.deviceKey(), target.kind());
+        PortLayout.Connector socket = PortLayout.connector(target.deviceKey(), port);
+        if (!type.fits(socket)) {
+            say(player, wrongPlug(port, socket, type));
+            return InteractionResult.SUCCESS;
+        }
+        String refused = type.refuseTarget(target.kind());
         if (refused != null) {
             say(player, Component.translatable(refused).withStyle(ChatFormatting.RED));
             return InteractionResult.SUCCESS;
@@ -264,6 +269,20 @@ public class AudioCableItem extends Item {
         click(level, clicked);
         say(player, Component.translatable("message.venuesound.cable_connected_ports", tag.getString("FromLabel"), port.label()).withStyle(ChatFormatting.GREEN));
         return InteractionResult.SUCCESS;
+    }
+
+    /** "IN 3 is an XLR/TRS socket: this cable has TRS plugs." plus which cable would fit. */
+    private static Component wrongPlug(PortLayout.Port port, PortLayout.Connector socket, dev.tonyd365.venuesound.block.CableType cable) {
+        String fits = switch (socket) {
+            case XLR -> "item.venuesound.xlr_cable";
+            case TRS -> "item.venuesound.audio_cable";
+            case COMBO -> "item.venuesound.xlr_cable";
+            case SPEAKON -> "item.venuesound.speaker_cable";
+            case MULTIPIN -> "item.venuesound.snake_cable";
+            case ANY -> "item.venuesound.audio_cable";
+        };
+        return Component.translatable("message.venuesound.cable_wrong_plug", port.label(), socket.label, cable.plug.label,
+                Component.translatable(fits)).withStyle(ChatFormatting.RED);
     }
 
     private static void click(Level level, BlockPos pos) {

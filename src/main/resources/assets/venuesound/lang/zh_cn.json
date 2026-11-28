@@ -94,14 +94,14 @@
   "message.venuesound.zone_none": "请先选择两个角",
   "message.venuesound.zone_cleared": "已清除选择",
   "block.venuesound.mixer24": "调音台 VS-24（5×2）",
-  "tooltip.venuesound.cable.audio_cable": "通用音频线：什么都能接",
-  "tooltip.venuesound.cable.xlr_cable": "话筒/线路信号：麦克风、接收器、播放机、处理器、调音台、有源音箱。不能接功放的输出",
-  "tooltip.venuesound.cable.speaker_cable": "只能从功放的 OUT 接到音箱的 INPUT（可经墙面接口中转）",
-  "tooltip.venuesound.cable.snake_cable": "多芯缆：从舞台接口箱的 SNAKE 插孔接到调音台，一根带全部通道",
-  "tooltip.venuesound.cable.cable_reel": "长距离通用线，跨场地布线用：什么都能接",
+  "tooltip.venuesound.cable.audio_cable": "6.35 mm TRS 线路线：插 TRS 和卡侬/TRS 两用插座（播放机、AUX 输出、DI 输入）",
+  "tooltip.venuesound.cable.xlr_cable": "卡侬（XLR）线：话筒和线路信号；插 XLR 和两用插座",
+  "tooltip.venuesound.cable.speaker_cable": "Speakon 音箱线：只能从功放输出接到无源音箱",
+  "tooltip.venuesound.cable.snake_cable": "多芯插头：从舞台接口箱的 SNAKE 接到调音台输入，一根带全部通道",
+  "tooltip.venuesound.cable.cable_reel": "绕在卷盘上的长卡侬线：插 XLR 和两用插座",
   "message.venuesound.cable_xlr_amp": "功放的输出是音箱电平，请用音箱线。",
   "message.venuesound.cable_speaker_only": "音箱线只能从功放的 OUT 接到音箱的 INPUT。",
-  "message.venuesound.cable_snake_only": "多芯缆要从舞台接口箱的 SNAKE 插孔接到调音台。",
+  "message.venuesound.cable_snake_only": "多芯缆的分线只能插进调音台输入（或墙面接口）。",
   "block.venuesound.intercom_station": "内通主站",
   "item.venuesound.intercom_beltpack": "内通腰包",
   "message.venuesound.iem_channel": "入耳发射机频道：%s",
@@ -113,5 +113,6 @@
   "tooltip.venuesound.intercom_channel": "内通通道 %s",
   "tooltip.venuesound.intercom_talk_on": "TALK 打开：同通道的工作人员能听到你",
   "tooltip.venuesound.intercom_talk_off": "TALK 关闭：只听不说",
-  "tooltip.venuesound.intercom_help": "带在身上、在通电的主站范围内使用 · 右键：切换 A / B · 潜行+右键：TALK 开 / 关"
+  "tooltip.venuesound.intercom_help": "带在身上、在通电的主站范围内使用 · 右键：切换 A / B · 潜行+右键：TALK 开 / 关",
+  "message.venuesound.cable_wrong_plug": "%s 是 %s 插座，这根线是 %s 插头。请用%s。"
 }
