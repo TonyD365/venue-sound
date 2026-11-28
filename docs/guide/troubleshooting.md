@@ -15,7 +15,7 @@ Check the chain in order:
 
 - "would go through a wall": route it along cable clips.
 - "already has a cable": that socket is in use; unplug it with sneak + right-click.
-- "too far": 32 blocks per run; add clips, outlets or a stage box.
+- "too far": 64 blocks per run; add clips, outlets or a stage box.
 
 ## WATERFrAMES screens
 

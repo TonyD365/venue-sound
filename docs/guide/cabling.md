@@ -8,7 +8,7 @@
 3. Right-click an **IN** socket (blue ring) to plug in the other end.
 
 Sneak + right-click a socket to unplug it. Sneak + right-click the air to drop the end you hold.
-Each run (socket to clip, clip to clip, clip to socket) reaches 32 blocks.
+Each run (socket to clip, clip to clip, clip to socket) reaches 64 blocks.
 
 ## Walls and obstacles
 
