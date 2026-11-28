@@ -38,6 +38,10 @@ master section.
   crosshair, for example `CH 6  FADER  +0.0 dB`, `CH 2  HI  +4 dB` or `CH 3  PAN  L 40`. It works on
   the amplifier, the processors and the speakers' coverage knob too.
 
+## Remote control
+
+The console can be run from a tablet app or any OSC software: see [OSC remote control](osc.md).
+
 ## Meters and PEAK LEDs
 
 The two LED columns in the master section are the MAIN L and MAIN R output meters. They follow

@@ -29,6 +29,8 @@ PAGES = {
     "monitoring.zh-CN.md": ("Monitoring-zh-CN", "监听与内通"),
     "cabling.md": ("Cabling", "Cabling"),
     "console.md": ("The-mixing-console", "The mixing console"),
+    "osc.md": ("OSC-remote-control", "OSC remote control"),
+    "osc.zh-CN.md": ("OSC-zh-CN", "OSC 遥控"),
     "workbench.md": ("Workbench", "Workbench"),
     "troubleshooting.md": ("Troubleshooting", "Troubleshooting and FAQ"),
     "building.md": ("Building", "Building from source"),

@@ -114,5 +114,7 @@
   "tooltip.venuesound.intercom_talk_on": "TALK 打开：同通道的工作人员能听到你",
   "tooltip.venuesound.intercom_talk_off": "TALK 关闭：只听不说",
   "tooltip.venuesound.intercom_help": "带在身上、在通电的主站范围内使用 · 右键：切换 A / B · 潜行+右键：TALK 开 / 关",
-  "message.venuesound.cable_wrong_plug": "%s 是 %s 插座，这根线是 %s 插头。请用%s。"
+  "message.venuesound.cable_wrong_plug": "%s 是 %s 插座，这根线是 %s 插头。请用%s。",
+  "message.venuesound.osc_target": "OSC 遥控现在控制这台调音台（UDP 端口 %s）",
+  "message.venuesound.osc_no_console": "VenueSound OSC：先右键用一下某台调音台，遥控器就会控制那一台。"
 }

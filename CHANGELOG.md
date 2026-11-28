@@ -32,4 +32,6 @@ The first public version.
   multipin) and each cable its plug; a cable only goes into a socket that takes it. Condenser
   mics (gooseneck, choir) need the console's **+48V** phantom power. Point at a socket to read
   its connector.
+- **OSC remote control**: run the console from TouchOSC, Open Stage Control or any OSC software
+  (UDP 9000 on your own computer, X32-style addresses too), with feedback to the app.
 - **Workbench**: a desktop app with the same devices and signal engine, with sound.
