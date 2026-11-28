@@ -181,6 +181,10 @@ public class AudioCableItem extends dev.tonyd365.venuesound.compat.ModItem {
                     }
                 }
                 mixer.releaseInputSlot(port.index());
+            } else if (port.acceptsIn()) {
+                // an input on any other device: find the cable's other end (the device sending into
+                // this socket) among the loaded devices within cable reach, and unplug it there
+                unplugInto(level, clicked, port.index());
             }
             clearHeld(stack);
             say(player, Component.translatable("message.venuesound.cable_unplugged_port", port.label()));
@@ -272,6 +276,32 @@ public class AudioCableItem extends dev.tonyd365.venuesound.compat.ModItem {
         click(level, clicked);
         say(player, Component.translatable("message.venuesound.cable_connected_ports", Nbt.getString(tag, "FromLabel"), port.label()).withStyle(ChatFormatting.GREEN));
         return InteractionResult.SUCCESS;
+    }
+
+    /** Unplugs every cable that ends in input socket {@code toPort} of the device at {@code target}. */
+    private static void unplugInto(Level level, BlockPos target, int toPort) {
+        int reach = (dev.tonyd365.venuesound.block.CableType.SNAKE.maxLength >> 4) + 1;
+        int cx = target.getX() >> 4, cz = target.getZ() >> 4;
+        java.util.List<AudioNodeBlockEntity> sources = new java.util.ArrayList<>();
+        for (int x = cx - reach; x <= cx + reach; x++) {
+            for (int z = cz - reach; z <= cz + reach; z++) {
+                net.minecraft.world.level.chunk.LevelChunk chunk = level.getChunkSource().getChunkNow(x, z);
+                if (chunk != null) {
+                    for (var be : chunk.getBlockEntities().values()) {
+                        if (be instanceof AudioNodeBlockEntity src) {
+                            sources.add(src);
+                        }
+                    }
+                }
+            }
+        }
+        for (AudioNodeBlockEntity src : sources) {
+            for (AudioNodeBlockEntity.Link l : java.util.List.copyOf(src.getLinks())) {
+                if (l.target().equals(target) && l.toPort() == toPort) {
+                    src.unplugPort(l.fromPort());
+                }
+            }
+        }
     }
 
     /** "IN 3 is an XLR/TRS socket: this cable has TRS plugs." plus which cable would fit. */
