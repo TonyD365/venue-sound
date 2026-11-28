@@ -1,6 +1,6 @@
 """Turn the photo shoot's screenshots into the guide's item images.
 
-    ./gradlew runClient -Pphotos=true      # writes run/screenshots/photo-*.png and icon-*.png
+    ./gradlew :1.20.1:runClient -Pphotos=true      # writes run/1.20.1/screenshots/photo-*.png and icon-*.png
     python3 tools/make_item_images.py      # writes docs/images/items/<id>.jpg and <id>-icon.png
 
 World photos are cropped round the item (tighter for small ones) and saved as 800x450 JPEGs.
@@ -12,7 +12,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
-SHOTS = ROOT / "run" / "screenshots"
+SHOTS = ROOT / "run" / "1.20.1" / "screenshots"
 OUT = ROOT / "docs" / "images" / "items"
 
 # small items: crop closer round the middle of the picture

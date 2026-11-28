@@ -1,6 +1,6 @@
 """Cuts the demo video from the film mode's frames.
 
-    ./gradlew runClient -Pfilm=true          # writes run/screenshots/film/f00000.png...
+    ./gradlew :1.20.1:runClient -Pfilm=true          # writes run/1.20.1/screenshots/film/f00000.png...
     python3 tools/make_video.py              # writes site/media/venuesound-demo.mp4, docs/images/demo.gif
 
 Adds the title, English and Chinese subtitles (they follow the shots in client/FilmMode) and the
@@ -17,7 +17,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
-FRAMES = ROOT / "run" / "screenshots" / "film"
+FRAMES = ROOT / "run" / "1.20.1" / "screenshots" / "film"
 FPS = 20
 W, H = 1280, 720
 GOLD = (232, 184, 74)
@@ -90,7 +90,7 @@ def overlay(im: Image.Image, t: float, total: float) -> Image.Image:
 def main() -> None:
     frames = sorted(FRAMES.glob("f*.png"))
     if not frames:
-        sys.exit("no frames: run ./gradlew runClient -Pfilm=true first")
+        sys.exit("no frames: run ./gradlew :1.20.1:runClient -Pfilm=true first")
     total = len(frames) / FPS
     out_dir = ROOT / "site" / "media"
     out_dir.mkdir(parents=True, exist_ok=True)
