@@ -43,6 +43,21 @@ public abstract class AudioNodeBlockEntity extends BlockEntity {
 
     public abstract NodeKind kind();
 
+    /** Everywhere: a device's panel spans several blocks and its cables reach far away. */
+    private static final net.minecraft.world.phys.AABB EVERYWHERE = new net.minecraft.world.phys.AABB(
+            Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
+            Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+
+    /**
+     * Render bounds for Forge and NeoForge (their block entity extension calls this; Fabric
+     * ignores it). Their culling only looks at the device's own block, so a console whose main
+     * block was off screen lost all its knobs and faders, and cables vanished with their device.
+     * Fabric is told the same through the renderers' shouldRenderOffScreen.
+     */
+    public net.minecraft.world.phys.AABB getRenderBoundingBox() {
+        return EVERYWHERE;
+    }
+
     /** Key for {@link PortLayout}: the block id without the namespace. */
     public abstract String deviceKey();
 
