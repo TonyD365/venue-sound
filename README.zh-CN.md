@@ -26,8 +26,8 @@
 基于 [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat)。
 
 <p align="center">
-  <img src="docs/images/console.jpg" alt="游戏里的 VS-12 调音台" width="860">
-  <br><sub>游戏里的 VS-12 调音台：每个控件都能用。按住右键拖推子，或者对着它滚滚轮。</sub>
+  <a href="https://tonyd365.github.io/venue-sound/#video"><img src="docs/images/demo.gif" alt="游戏里的调音台：推子在动、EQ 旋钮在转、电平表跟着声音跳" width="720"></a>
+  <br><sub>每个推子、旋钮、按钮都能用，电平表实时跳动。<a href="https://tonyd365.github.io/venue-sound/#video"><b>▶ 观看 50 秒演示视频</b></a>（配乐、中英字幕）</sub>
 </p>
 
 ## 信号怎么走
