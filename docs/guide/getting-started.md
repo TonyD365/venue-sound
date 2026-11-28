@@ -2,7 +2,8 @@
 
 ## Install
 
-1. Install **Fabric Loader** for Minecraft **1.20.1**.
+1. Install **Fabric Loader** for Minecraft **1.20.1** or **1.21.1**, and use the VenueSound jar for
+   that version (`venuesound-<version>+mc1.20.1.jar` or `+mc1.21.1.jar`).
 2. Put these in your `mods/` folder (on a server: on the server and every client):
    - [Fabric API](https://modrinth.com/mod/fabric-api)
    - [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat)

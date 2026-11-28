@@ -34,4 +34,5 @@ The first public version.
   its connector.
 - **OSC remote control**: run the console from TouchOSC, Open Stage Control or any OSC software
   (UDP 9000 on your own computer, X32-style addresses too), with feedback to the app.
+- **Minecraft 1.20.1 and 1.21.1**: one jar for each, built from the same source (Stonecutter).
 - **Workbench**: a desktop app with the same devices and signal engine, with sound.

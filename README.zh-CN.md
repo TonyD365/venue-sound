@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/TonyD365/venue-sound/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/TonyD365/venue-sound?color=e8b84a&include_prereleases"></a>
   <a href="https://github.com/TonyD365/venue-sound/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/TonyD365/venue-sound/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Minecraft 1.20.1" src="https://img.shields.io/badge/Minecraft-1.20.1-62B47A">
+  <img alt="Minecraft 1.20.1 and 1.21.1" src="https://img.shields.io/badge/Minecraft-1.20.1%20%7C%201.21.1-62B47A">
   <img alt="Fabric" src="https://img.shields.io/badge/loader-Fabric-DBD0B4">
   <img alt="需要 Simple Voice Chat" src="https://img.shields.io/badge/需要-Simple%20Voice%20Chat-4C8BF5">
 </p>
@@ -56,7 +56,7 @@
 
 ## 快速上手
 
-1. 安装 Minecraft 1.20.1 的 **Fabric**，以及 **Fabric API**、**Simple Voice Chat**，再把
+1. 安装 Minecraft 1.20.1 或 1.21.1 的 **Fabric**，以及 **Fabric API**、**Simple Voice Chat**，再把
    [VenueSound](https://github.com/TonyD365/venue-sound/releases/latest) 放进 `mods/`。
 2. 放一台**调音台**、一台**功放**、两台 **PA 音箱**。
 3. 拿**音频线**：右键调音台的 **MAIN L**，再右键功放背面的 **IN A**；**MAIN R** → **IN B**；

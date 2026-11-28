@@ -1,6 +1,6 @@
 # VenueSound user guide
 
-A real venue sound system for Minecraft 1.20.1 (Fabric), built on Simple Voice Chat.
+A real venue sound system for Minecraft 1.20.1 and 1.21.1 (Fabric), built on Simple Voice Chat.
 
 | Page | What it covers |
 |---|---|
