@@ -19,10 +19,13 @@
 USB player (display, prev / play / stop / next) feeding ST1 · effects return and delay time ·
 phones · level meters · AUX 1/2 masters (blue) · MAIN L/R (red).
 
-## Sockets (front side)
+## Sockets (rear side)
 
-IN 1–8 (VS-24: 1–16) and the stereo inputs under each strip; MAIN L, MAIN R, AUX 1, AUX 2 under
-the master section.
+All sockets are on the rear side, facing the stage, so cables don't hang in front of you: IN 1–8
+(VS-24: 1–16) and the stereo inputs behind each strip; MAIN L, MAIN R, AUX 1, AUX 2 behind the
+master section.
+
+![The console's rear sockets](../images/console-rear.jpg)
 
 ## Using the controls
 

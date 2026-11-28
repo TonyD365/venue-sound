@@ -24,7 +24,7 @@ Everything is in the **VenueSound** creative tab, and every device has a craftin
    - console **MAIN R** → amplifier **IN B**
    - amplifier **OUT 1** → left speaker **INPUT** (on its back)
    - amplifier **OUT 3** → right speaker **INPUT**
-4. Place a **Wireless Receiver**; cable its **OUT** (back) to console **IN 1** (front side).
+4. Place a **Wireless Receiver**; cable its **OUT** (back) to console **IN 1** (on the console's rear side, facing the stage).
 5. Take a **Wireless Microphone**. Its channel must match the receiver's (right-click the mic to
    change it, click the receiver's display or -/+ buttons to change the receiver).
 6. Talk. On the console, push fader **1** and the red **L/R** master faders up.

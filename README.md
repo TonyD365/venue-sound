@@ -85,11 +85,11 @@ Every device: [device guide](docs/guide/devices.md).
   </tr>
   <tr>
     <td><img src="docs/images/pro-gear-1.jpg" alt="Rack processors and microphones"></td>
-    <td><img src="docs/images/console-front.jpg" alt="The console's input sockets on its front side"></td>
+    <td><img src="docs/images/console-rear.jpg" alt="The console's input and output sockets on its rear side"></td>
   </tr>
   <tr>
     <td align="center"><sub>Rack gear and microphones</sub></td>
-    <td align="center"><sub>Input (blue) and output (red) sockets on the console's front</sub></td>
+    <td align="center"><sub>Input (blue) and output (red) sockets on the console's rear, facing the stage</sub></td>
   </tr>
 </table>
 
