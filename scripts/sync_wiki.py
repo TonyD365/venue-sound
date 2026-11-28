@@ -25,6 +25,8 @@ PAGES = {
     "devices.md": ("Devices", "Devices"),
     "items.md": ("Items", "Every item and block"),
     "items.zh-CN.md": ("Items-zh-CN", "物品大全"),
+    "monitoring.md": ("Monitoring-and-intercom", "Monitoring and intercom"),
+    "monitoring.zh-CN.md": ("Monitoring-zh-CN", "监听与内通"),
     "cabling.md": ("Cabling", "Cabling"),
     "console.md": ("The-mixing-console", "The mixing console"),
     "workbench.md": ("Workbench", "Workbench"),

@@ -48,6 +48,9 @@ How to read this page:
   [Subwoofer](#subwoofer) ·
   [In-Ear Monitor Transmitter](#in-ear-monitor-transmitter) ·
   [In-Ear Monitor Earpiece](#in-ear-monitor-earpiece)
+- [Intercom](#intercom):
+  [Intercom Base Station](#intercom-base-station) ·
+  [Intercom Beltpack](#intercom-beltpack)
 - [Cabling and patching](#cabling-and-patching):
   [How every cable works](#how-every-cable-works) ·
   [Audio Cable](#audio-cable) ·
@@ -754,7 +757,9 @@ P = any Planks, N = Note Block, R = Redstone Dust.
 ### In-Ear Monitor Transmitter
 
 Sends a monitor mix by radio to performers' earpieces. Only players carrying an
-[In-Ear Monitor Earpiece](#in-ear-monitor-earpiece) hear it, within at least 128 blocks.
+[In-Ear Monitor Earpiece](#in-ear-monitor-earpiece) set to the same channel hear it, within at
+least 128 blocks. Use one transmitter per mix: for example the singer's earpiece and transmitter
+on channel 1 fed from AUX 1, the drummer's on channel 2 fed from AUX 2.
 
 **Recipe** (1 transmitter):
 
@@ -771,8 +776,9 @@ I = Iron Ingot, E = Ender Pearl, R = Redstone Dust, C = Redstone Comparator.
 |---|---|---|
 | INPUT | IN | Back panel |
 | Power switch, coverage knob | | Back panel |
+| Channel display, − / + buttons | | Front: press − or + to change channel (1-16); clicking the display steps up |
 
-**Hookups**: console AUX 2 → INPUT (directly, or through an amplifier).
+**Hookups**: console AUX 1 or AUX 2 → INPUT (directly, or through an amplifier).
 
 ### In-Ear Monitor Earpiece
 
@@ -788,8 +794,66 @@ G . G
 
 S = String, I = Iron Ingot, G = Glowstone Dust.
 
-**Use**: keep it anywhere in your inventory to hear in-ear transmitters. It has no controls and
+**Use**: keep it anywhere in your inventory to hear the in-ear transmitter on its channel. It has
 no placed form.
+
+| Action | Does |
+|---|---|
+| Right-click | Next channel (1-16). The tooltip shows the channel |
+| Sneak + right-click | Previous channel |
+
+## Intercom
+
+The crew's private talk system: the director, stage manager, lighting and sound talk to each
+other through headsets, and the audience never hears it. It does not go through the console.
+
+### Intercom Base Station
+
+The heart of the intercom. Beltpacks only work within its coverage, and whatever is cabled into
+its program input (usually the console's MAIN or an AUX) is played to every beltpack nearby so
+the crew can follow the show.
+
+**Recipe** (1 station):
+
+```
+I N I
+R C R
+I I I
+```
+
+I = Iron Ingot, N = Note Block, R = Redstone Dust, C = Redstone Comparator.
+
+**Placing**: a half-height box on a desk or in a rack. The front faces you.
+
+| Socket / control | Direction | Face |
+|---|---|---|
+| PGM IN | IN | Back panel |
+| Power switch | | Back panel: click to turn on or off |
+| Coverage knob | | Back panel: 16-128 blocks (click halves or scroll). Beltpacks must be inside it |
+
+**Hookups**: console AUX → PGM IN (optional). Without power the whole intercom is silent.
+
+### Intercom Beltpack
+
+A crew member's beltpack and headset. Keep it anywhere in your inventory.
+
+**Recipe** (1 beltpack):
+
+```
+S L S
+I R I
+```
+
+S = String, L = Leather, I = Iron Ingot, R = Redstone Dust.
+
+| Action | Does |
+|---|---|
+| Right-click | Switch channel A / B |
+| Sneak + right-click | TALK on / off. With TALK on, everyone carrying a beltpack on your channel hears you |
+
+You always hear the people talking on your channel and the station's program feed. Both you and
+the listener must be within a powered base station's coverage, in the same dimension. Two
+channels let two teams work at once, for example A for stage management and B for lighting.
 
 ## Cabling and patching
 

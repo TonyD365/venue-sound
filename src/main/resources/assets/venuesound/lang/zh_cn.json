@@ -101,5 +101,17 @@
   "tooltip.venuesound.cable.cable_reel": "长距离通用线，跨场地布线用：什么都能接",
   "message.venuesound.cable_xlr_amp": "功放的输出是音箱电平，请用音箱线。",
   "message.venuesound.cable_speaker_only": "音箱线只能从功放的 OUT 接到音箱的 INPUT。",
-  "message.venuesound.cable_snake_only": "多芯缆要从舞台接口箱的 SNAKE 插孔接到调音台。"
+  "message.venuesound.cable_snake_only": "多芯缆要从舞台接口箱的 SNAKE 插孔接到调音台。",
+  "block.venuesound.intercom_station": "内通主站",
+  "item.venuesound.intercom_beltpack": "内通腰包",
+  "message.venuesound.iem_channel": "入耳发射机频道：%s",
+  "message.venuesound.earpiece_channel": "入耳耳机频道：%s",
+  "tooltip.venuesound.earpiece_help": "带在身上就能听到同频道的入耳发射机 · 右键：下一个频道 · 潜行+右键：上一个频道",
+  "message.venuesound.intercom_channel": "内通通道 %s",
+  "message.venuesound.intercom_talk_on": "内通 TALK 已打开（通道 %s）",
+  "message.venuesound.intercom_talk_off": "内通 TALK 已关闭（通道 %s）",
+  "tooltip.venuesound.intercom_channel": "内通通道 %s",
+  "tooltip.venuesound.intercom_talk_on": "TALK 打开：同通道的工作人员能听到你",
+  "tooltip.venuesound.intercom_talk_off": "TALK 关闭：只听不说",
+  "tooltip.venuesound.intercom_help": "带在身上、在通电的主站范围内使用 · 右键：切换 A / B · 潜行+右键：TALK 开 / 关"
 }

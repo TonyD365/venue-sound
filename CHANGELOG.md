@@ -17,7 +17,11 @@ The first public version.
 - **Rack**: power amplifier (stereo IN A/B), graphic EQ, compressor/limiter, effects processor,
   crossover, power sequencer, rack cabinet.
 - **Speakers**: line array module, flown line array with truss point, PA cabinet, 4×6 concert
-  stack, floor wedge, subwoofer, in-ear monitor transmitter and earpiece.
+  stack, floor wedge, subwoofer, in-ear monitor transmitter and earpiece (16 channels: each
+  earpiece hears only the transmitter on its channel, for one monitor mix per performer).
+- **Intercom**: base station and crew beltpacks on channel A or B. With TALK on, your voice goes
+  straight to the crew on your channel near a powered station; the audience never hears it. The
+  station's program input lets the crew follow the show.
 - **Cabling**: audio, XLR and speaker cables, multicore snake with 8/16-channel stage boxes, wall
   outlet, DI box, cable clips, cable reel. Cables are drawn in the world, rest on low obstacles and
   can't go through walls; a held cable runs to your hand.

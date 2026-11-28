@@ -102,6 +102,7 @@ public final class PortLayout {
             }
             case "speaker", "floor_wedge", "subwoofer", "flown_array" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 2.5, 5.5, 16.0));
             case "iem_transmitter" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.5, 9.5, 1.0, 4.0, 13.0));
+            case "intercom_station" -> p.add(new Port("PGM IN", Dir.IN, Face.BACK, 0, 6.5, 9.5, 1.5, 4.5, 16.0));
             case "pa_speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.0, 10.0, 2.0, 6.0, 15.0));
             case "concert_speaker" -> p.add(new Port("INPUT", Dir.IN, Face.BACK, 0, 6.0, 10.0, 2.0, 6.0, 32.0));
             default -> {
@@ -142,10 +143,15 @@ public final class PortLayout {
         private static final SpeakerPanel WEDGE = new SpeakerPanel(2.5, 4.5, 5.0, 8.0, 11.5, 6.3, 1.5, 16.0, 14.4, 8.2);
         private static final SpeakerPanel IEM = new SpeakerPanel(2.5, 4.5, 1.6, 4.4, 11.5, 2.8, 1.3, 13.0, 14.0, 4.2);
 
+        /** In-ear transmitter front: channel display, then the - and + buttons (u ranges, height 1.2-3.6). */
+        public static final double IEM_DISPLAY_U0 = 2.4, IEM_DISPLAY_U1 = 8.6, IEM_FRONT_H0 = 1.2, IEM_FRONT_H1 = 3.6;
+        public static final double IEM_DOWN_U0 = 9.4, IEM_UP_U0 = 11.8, IEM_BUTTON_W = 1.9, IEM_FRONT_DEPTH = 3.0;
+
         public static SpeakerPanel of(String deviceKey) {
             return switch (deviceKey) {
                 case "floor_wedge" -> WEDGE;
                 case "iem_transmitter" -> IEM;
+                case "intercom_station" -> new SpeakerPanel(2.5, 4.5, 3.6, 6.6, 12.0, 4.6, 1.4, 16.0, 14.6, 7.2);
                 case "pa_speaker" -> new SpeakerPanel(2.5, 4.5, 9.0, 12.0, 11.0, 10.5, 1.8, 15.0, 13.8, 13.4);
                 case "concert_speaker" -> new SpeakerPanel(2.5, 4.5, 9.0, 12.0, 11.0, 10.5, 1.8, 32.0, 13.8, 13.4);
                 default -> TALL;

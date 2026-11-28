@@ -54,7 +54,8 @@ public final class SelfTest {
             new View(13.5, 5.0, 1.7, 180, 35, "selftest-receiver.png"),
             new View(8.0, 6.5, 11.0, 180, 20, "selftest-pro-left.png"),
             new View(22.0, 6.5, 11.0, 180, 20, "selftest-pro-right.png"),
-            new View(20.5, 5.4, 1.6, 0, 32, "selftest-pro-back.png"),
+            new View(21.5, 5.4, 1.6, 0, 32, "selftest-pro-back.png"),
+            new View(21.5, 5.2, 6.6, 180, 28, "selftest-pro-front.png"),
             new View(5.5, 9.5, 15.5, 180, 50, "selftest-vs24.png"));
 
     private SelfTest() {
@@ -151,7 +152,7 @@ public final class SelfTest {
         // pro devices in a row behind the console
         net.minecraft.world.level.block.Block[] pro = {Registration.GRAPHIC_EQ, Registration.COMPRESSOR, Registration.FX_PROCESSOR,
                 Registration.CROSSOVER, Registration.DI_BOX, Registration.POWER_SEQUENCER, Registration.STAGE_BOX, Registration.STAGE_BOX_16,
-                Registration.VIDEO_CAPTURE, Registration.IEM_TRANSMITTER, Registration.FLOOR_WEDGE, Registration.SUBWOOFER,
+                Registration.VIDEO_CAPTURE, Registration.IEM_TRANSMITTER, Registration.INTERCOM_STATION, Registration.FLOOR_WEDGE, Registration.SUBWOOFER,
                 Registration.GOOSENECK_MIC, Registration.RACK_CABINET, Registration.TRUSS_POINT};
         for (int i = 0; i < pro.length; i++) {
             place(level, pro[i], new BlockPos(1 + i * 2, y, 4), Direction.SOUTH);

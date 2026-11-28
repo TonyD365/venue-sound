@@ -9,6 +9,8 @@ A real venue sound system for Minecraft 1.20.1 (Fabric), built on Simple Voice C
 | [Devices](devices.md) | Every device, its controls and its sockets |
 | [Every item and block](items.md) | Each item and block: recipe, placing, controls, sockets, hookups |
 | [物品大全](items.zh-CN.md) | 每个物品和方块：配方、摆放、控件、接口、常见接法（中文） |
+| [Monitoring and intercom](monitoring.md) | Floor wedges, in-ear monitors with channels, the crew intercom |
+| [监听与内通](monitoring.zh-CN.md) | 返听音箱、分频道的入耳监听、工作人员内通（中文） |
 | [Cabling](cabling.md) | Cables, sockets, clips, snakes, outlets, walls |
 | [The mixing console](console.md) | Every knob, button and fader on the VS-12 and VS-24 |
 | [Workbench](workbench.md) | The desktop app: build and hear a system without Minecraft |

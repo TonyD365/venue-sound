@@ -36,6 +36,19 @@ public class SpeakerBlock extends DeviceBlock {
         if (useRearPanel(level, pos, state.getValue(FACING), player, hit)) {
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
+        // in-ear transmitter: the - / + buttons on the front change channel (the display steps up)
+        if (hit.getDirection() == state.getValue(FACING) && level.getBlockEntity(pos) instanceof SpeakerBlockEntity sp
+                && "iem_transmitter".equals(sp.deviceKey())) {
+            PanelMath.Point p = PanelMath.local(pos, state.getValue(FACING), hit.getLocation());
+            boolean down = p.u() >= PortLayout.SpeakerPanel.IEM_DOWN_U0 - 0.2
+                    && p.u() <= PortLayout.SpeakerPanel.IEM_DOWN_U0 + PortLayout.SpeakerPanel.IEM_BUTTON_W + 0.2;
+            if (!level.isClientSide) {
+                sp.cycleChannel(down || player.isShiftKeyDown());
+                level.playSound(null, pos, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 1.6F);
+                player.displayClientMessage(Component.translatable("message.venuesound.iem_channel", sp.getChannel()), true);
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
         return InteractionResult.PASS;
     }
 

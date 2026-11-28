@@ -101,5 +101,17 @@
   "tooltip.venuesound.cable.cable_reel": "Long general cable for runs across the venue: connects anything",
   "message.venuesound.cable_xlr_amp": "An amplifier's outputs are speaker-level: use a speaker cable.",
   "message.venuesound.cable_speaker_only": "A speaker cable only goes from an amplifier OUT to a speaker INPUT.",
-  "message.venuesound.cable_snake_only": "The multicore snake goes from a stage box's SNAKE socket to the console."
+  "message.venuesound.cable_snake_only": "The multicore snake goes from a stage box's SNAKE socket to the console.",
+  "block.venuesound.intercom_station": "Intercom Base Station",
+  "item.venuesound.intercom_beltpack": "Intercom Beltpack",
+  "message.venuesound.iem_channel": "In-ear transmitter channel: %s",
+  "message.venuesound.earpiece_channel": "Earpiece channel: %s",
+  "tooltip.venuesound.earpiece_help": "Carry it to hear the in-ear transmitter on its channel · Right-click: next channel · Sneak+right-click: previous",
+  "message.venuesound.intercom_channel": "Intercom channel %s",
+  "message.venuesound.intercom_talk_on": "Intercom TALK on (channel %s)",
+  "message.venuesound.intercom_talk_off": "Intercom TALK off (channel %s)",
+  "tooltip.venuesound.intercom_channel": "Intercom channel %s",
+  "tooltip.venuesound.intercom_talk_on": "TALK on: the crew on your channel hears you",
+  "tooltip.venuesound.intercom_talk_off": "TALK off: listening only",
+  "tooltip.venuesound.intercom_help": "Carry it near a powered base station · Right-click: A / B · Sneak+right-click: TALK on / off"
 }
