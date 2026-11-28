@@ -63,7 +63,8 @@ export const KEEP_BRANCH = "Keep-Branch"; // not in COLOURS: the status sync mus
 export function latestChecks(all: Check[], doneSuite = 0, doneConclusion = ""): Check[] {
   const latest = new Map<string, Check>();
   for (const raw of all) {
-    if (raw.name === "comment") continue;
+    // The bot's own job (Actions version: job "bot") is still running while it reports.
+    if (raw.name === "comment" || raw.name === "bot") continue;
     const c = raw.check_suite?.id === doneSuite
       ? { ...raw, status: "completed", conclusion: raw.conclusion ?? doneConclusion }
       : raw;
