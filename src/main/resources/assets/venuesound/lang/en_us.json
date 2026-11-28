@@ -114,5 +114,7 @@
   "tooltip.venuesound.intercom_talk_on": "TALK on: the crew on your channel hears you",
   "tooltip.venuesound.intercom_talk_off": "TALK off: listening only",
   "tooltip.venuesound.intercom_help": "Carry it near a powered base station · Right-click: A / B · Sneak+right-click: TALK on / off",
-  "message.venuesound.cable_wrong_plug": "%s is a %s socket and this cable has %s plugs. Use the %s."
+  "message.venuesound.cable_wrong_plug": "%s is a %s socket and this cable has %s plugs. Use the %s.",
+  "message.venuesound.osc_target": "OSC remote now controls this console (UDP port %s)",
+  "message.venuesound.osc_no_console": "VenueSound OSC: use a console once (right-click it) to choose which one your controller works."
 }

@@ -124,6 +124,8 @@ public final class SelfTest {
         // console 3x2 facing south (operator stands south of it, at +z)
         BlockPos console = new BlockPos(3, y, 0);
         place(level, Registration.MIXER, console, Direction.SOUTH);
+        // OSC remote control works on this console (tools/osc_selftest.py drives it)
+        dev.tonyd365.venuesound.block.OscTarget.touched(console);
         BlockPos amp = new BlockPos(8, y, 0);
         place(level, Registration.AMPLIFIER, amp, Direction.SOUTH);
         BlockPos rx = new BlockPos(13, y, 0);

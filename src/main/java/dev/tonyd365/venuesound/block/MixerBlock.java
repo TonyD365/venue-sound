@@ -143,6 +143,9 @@ public class MixerBlock extends DeviceBlock {
         if (!(level.getBlockEntity(main) instanceof MixerBlockEntity mixer)) {
             return InteractionResult.PASS;
         }
+        if (level.isClientSide) {
+            OscTarget.touched(main); // an OSC remote follows the console you last used
+        }
         PanelMath.Point p = PanelMath.local(main, state.getValue(FACING), hit.getLocation());
         MixerLayout.Control c = layout().at(p.u(), p.depth());
         if (c == null) {
