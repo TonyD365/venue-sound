@@ -1,5 +1,7 @@
 # Devices
 
+Recipes, placing and every socket of each item: [every item and block](items.md).
+
 Controls are used on the model: right-click buttons and switches, hold right-click on a fader
 and move the crosshair (or scroll), click the left/right half of a knob (or scroll) to turn it.
 Sockets show blue (IN) or red (OUT) rings with labels.

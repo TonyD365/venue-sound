@@ -106,6 +106,8 @@ Every device: [device guide](docs/guide/devices.md).
 
 Step by step with pictures: [getting started](docs/guide/getting-started.md).
 
+Every item: [item guide](docs/guide/items.md).
+
 ## The Workbench
 
 Not in Minecraft right now? **VenueSound Workbench** is a small desktop app with the same
