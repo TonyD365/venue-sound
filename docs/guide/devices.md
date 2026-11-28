@@ -43,7 +43,8 @@ See [the mixing console](console.md).
 | PA Speaker Cabinet | Two blocks tall |
 | Concert Speaker Stack | 4×6×2 blocks; horns, 15\" drivers, 18\" subwoofers |
 | Floor Wedge Monitor, Subwoofer | Stage monitor; low end |
-| In-Ear Monitor Transmitter + Earpiece | Only the player wearing the earpiece hears it |
+| In-Ear Monitor Transmitter + Earpiece | Only players carrying an earpiece on the transmitter's channel (1-16) hear it |
+| Intercom Base Station + Beltpack | Crew talk on channel A or B, never heard by the audience; see [monitoring and intercom](monitoring.md) |
 
 Every speaker has INPUT, a power switch and a coverage knob (16–128 blocks) on its back.
 
