@@ -15,6 +15,8 @@ Check the chain in order:
 
 - "would go through a wall": route it along cable clips.
 - "already has a cable": that socket is in use; unplug it with sneak + right-click.
+- A cable won't come out: hold a cable item (any type), sneak, and right-click a socket at either
+  end of it (its OUT or its IN). Clicking the cable itself or the device body does nothing.
 - "too far": each cable has its own reach per run (64–128 blocks, see [cabling](cabling.md#cable-types)); add clips, outlets or a stage box.
 
 ## WATERFrAMES screens

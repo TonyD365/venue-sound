@@ -32,7 +32,7 @@
   "message.venuesound.cable_outputs_full": "这个设备没有空的输出口了。",
   "message.venuesound.cable_wrong_way": "这两个设备不能按这个方向连接。",
   "message.venuesound.cable_already": "已经连接过了。",
-  "tooltip.venuesound.cable_help2": "潜行 + 右键插孔：拔线 · 每段最长 %s 格，更远请用线卡或墙面接口中转",
+  "tooltip.venuesound.cable_help2": "潜行 + 右键线任意一头的插孔：拔线 · 每段最长 %s 格，更远请用线卡或墙面接口中转",
   "screen.venuesound.src_rx": "接收 %s",
   "screen.venuesound.src_mic": "立麦",
   "screen.venuesound.src_deck": "播放机",

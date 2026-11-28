@@ -133,6 +133,9 @@ video capture zone and their sound follows the console's faders and mutes and is
 speakers. Their audio is played by each player's own computer outside Minecraft's sound engine,
 so it can't come from the speakers' direction.
 
+**How do I remove a cable?** Hold any cable, sneak and right-click the socket at either end of
+it. Cables aren't used up, so there's nothing to get back.
+
 **A cable is refused with "would go through a wall".** Cables rest on low obstacles but can't
 pass through walls. Run the cable along **cable clips** around the wall.
 

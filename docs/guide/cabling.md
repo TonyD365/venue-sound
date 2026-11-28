@@ -8,7 +8,19 @@
    sticks to any side of any block (walls, glass, fences, trusses, slabs, devices), not to air.
 3. Right-click an **IN** socket (blue ring) to plug in the other end.
 
-Sneak + right-click a socket to unplug it. Sneak + right-click the air to drop the end you hold.
+Sneak + right-click the air to drop the end you hold (before you plug it in).
+
+## Unplugging
+
+Hold any cable (audio, XLR, speaker cable, snake or reel), **sneak and right-click either end**
+of the cable you want to remove:
+
+- at its **OUT** socket (where the signal leaves, e.g. a console's MAIN L), or
+- at its **IN** socket (where it arrives, e.g. an amplifier's IN A or a speaker's INPUT).
+
+The whole cable disappears, clips and all, and a message above the hotbar says which socket was
+unplugged. The cable clips stay on the wall for the next run. Cables are never used up, so
+nothing is dropped. Point the crosshair at a socket first to check its name.
 Each run (socket to clip, clip to clip, clip to socket) reaches 64 to 128 blocks, depending on
 the cable (see below). Cables are not used up: one cable item makes any number of connections.
 
