@@ -35,11 +35,12 @@ public class CableClipBlock extends DirectionalBlock {
         return defaultBlockState().setValue(FACING, context.getClickedFace());
     }
 
+    /** A clip holds on to any block: walls, glass, fences, trusses, slabs, other devices. Not air or liquid. */
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         Direction facing = state.getValue(FACING);
-        BlockPos support = pos.relative(facing.getOpposite());
-        return level.getBlockState(support).isFaceSturdy(level, support, facing);
+        BlockState support = level.getBlockState(pos.relative(facing.getOpposite()));
+        return !support.isAir() && !support.liquid();
     }
 
     @Override

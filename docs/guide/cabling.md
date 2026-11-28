@@ -4,7 +4,8 @@
 
 1. Right-click an **OUT** socket (red ring) with a cable: one end is plugged in, and the cable
    runs to your hand.
-2. Optionally right-click **cable clips** to run it along walls, floors or ceilings.
+2. Optionally right-click **cable clips** to run it along walls, floors or ceilings. A clip
+   sticks to any side of any block (walls, glass, fences, trusses, slabs, devices), not to air.
 3. Right-click an **IN** socket (blue ring) to plug in the other end.
 
 Sneak + right-click a socket to unplug it. Sneak + right-click the air to drop the end you hold.
