@@ -18,6 +18,59 @@ public final class PortLayout {
     public enum Dir { IN, OUT, BOTH }
 
     /**
+     * The physical connector of a socket, as on real equipment. A cable only plugs into a socket
+     * that takes its plug.
+     */
+    public enum Connector {
+        /** 3-pin XLR: microphones and balanced line signal. */
+        XLR("XLR"),
+        /** 6.35 mm (1/4") TRS jack: line and instrument signal. */
+        TRS("TRS"),
+        /** Combo jack: takes an XLR or a TRS plug (console and amplifier inputs). */
+        COMBO("XLR/TRS"),
+        /** Speakon NL4: speaker level, amplifier outputs and passive speakers only. */
+        SPEAKON("Speakon"),
+        /** Multipin snake connector on a stage box; its fan-out goes into console inputs. */
+        MULTIPIN("Multipin"),
+        /** Patch plate that takes anything (wall outlet). */
+        ANY("any");
+
+        public final String label;
+
+        Connector(String label) {
+            this.label = label;
+        }
+
+        /** Whether a plug of type {@code plug} goes into this socket. */
+        public boolean takes(Connector plug) {
+            return switch (this) {
+                case ANY -> true;
+                case COMBO -> plug == XLR || plug == TRS || plug == MULTIPIN;
+                default -> this == plug;
+            };
+        }
+    }
+
+    /** The connector of a socket on a device. */
+    public static Connector connector(String device, Port port) {
+        return switch (device) {
+            case "receiver", "stand_mic", "gooseneck_mic", "choir_mic" -> Connector.XLR;
+            case "stage_box", "stage_box_16" -> "SNAKE".equals(port.label()) ? Connector.MULTIPIN : Connector.XLR;
+            case "media_deck", "video_capture" -> Connector.TRS;
+            case "outlet" -> Connector.ANY;
+            case "mixer", "mixer24" -> port.dir() == Dir.OUT
+                    ? (port.label().startsWith("MAIN") ? Connector.XLR : Connector.TRS)
+                    : (port.label().contains("/") ? Connector.TRS : Connector.COMBO);
+            case "amplifier" -> port.dir() == Dir.OUT ? Connector.SPEAKON : Connector.COMBO;
+            case "di_box" -> port.dir() == Dir.OUT ? Connector.XLR : Connector.TRS;
+            case "graphic_eq", "compressor", "fx_processor", "crossover" -> port.dir() == Dir.OUT ? Connector.XLR : Connector.COMBO;
+            case "speaker", "floor_wedge", "subwoofer", "flown_array", "pa_speaker", "concert_speaker" -> Connector.SPEAKON;
+            case "iem_transmitter", "intercom_station" -> Connector.COMBO;
+            default -> Connector.ANY;
+        };
+    }
+
+    /**
      * @param index  for mixer inputs, the input number (0-7); otherwise the socket's own number
      * @param depth  depth of the face the socket sits on (0 = front edge, 16 = back edge)
      */

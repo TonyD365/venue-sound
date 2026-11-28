@@ -28,4 +28,8 @@ The first public version.
 - **Cable types** each do one job and have their own colour and reach per run: audio cable
   (anything, 64 blocks), XLR (mic and line signal, 96), speaker cable (amplifier to speakers, 96,
   orange), multicore snake (stage box to console, 128, thick), cable reel (anything, 128, yellow).
+- **Real connectors**: every socket has its real connector (XLR, TRS, XLR/TRS combo, Speakon,
+  multipin) and each cable its plug; a cable only goes into a socket that takes it. Condenser
+  mics (gooseneck, choir) need the console's **+48V** phantom power. Point at a socket to read
+  its connector.
 - **Workbench**: a desktop app with the same devices and signal engine, with sound.

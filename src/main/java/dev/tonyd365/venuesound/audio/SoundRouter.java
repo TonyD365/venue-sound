@@ -76,6 +76,11 @@ public final class SoundRouter {
         }
 
         @Override
+        public boolean condenser(RouterState.Node node) {
+            return node.kind() == NodeKind.STAND_MIC && node.channel() == 1;
+        }
+
+        @Override
         public int inputSlot(RouterState.Node console, RouterState.Node upstream) {
             return console.mixer() == null ? -1 : console.mixer().slotOf(upstream.pos());
         }

@@ -149,7 +149,34 @@ public final class PanelDraw {
             double di0 = front ? p.depth() - 0.45 : p.depth() + 0.25;
             double di1 = front ? p.depth() - 0.25 : p.depth() + 0.45;
             box(cu - r, cu + r, d0, d1, ch - r, ch + r, ring, light);
-            box(cu - r * 0.55, cu + r * 0.55, di0, di1, ch - r * 0.55, ch + r * 0.55, 0x0A0A0B, light);
+            // the face of the connector, so XLR, TRS, Speakon and multipin look different
+            switch (dev.tonyd365.venuesound.block.PortLayout.connector(deviceKey, p)) {
+                case TRS -> {
+                    box(cu - r * 0.55, cu + r * 0.55, di0, di1, ch - r * 0.55, ch + r * 0.55, 0x2A2C30, light);
+                    box(cu - r * 0.22, cu + r * 0.22, di0 - 0.05, di1, ch - r * 0.22, ch + r * 0.22, 0x050506, light);
+                }
+                case XLR, COMBO -> {
+                    box(cu - r * 0.62, cu + r * 0.62, di0, di1, ch - r * 0.62, ch + r * 0.62, 0x0A0A0B, light);
+                    // three pins of an XLR (a combo jack also has the TRS hole in the middle)
+                    double pr = Math.max(0.08, r * 0.1);
+                    for (double[] pin : new double[][] {{-0.3, 0.22}, {0.3, 0.22}, {0, -0.3}}) {
+                        double pu = cu + pin[0] * r, ph = ch + pin[1] * r;
+                        box(pu - pr, pu + pr, di0 - 0.05, di1, ph - pr, ph + pr, 0xB8BCC2, light);
+                    }
+                }
+                case SPEAKON -> {
+                    box(cu - r * 0.7, cu + r * 0.7, di0, di1, ch - r * 0.7, ch + r * 0.7, 0x1F3550, light);
+                    box(cu - r * 0.32, cu + r * 0.32, di0 - 0.05, di1, ch - r * 0.32, ch + r * 0.32, 0x050506, light);
+                }
+                case MULTIPIN -> {
+                    box(cu - r * 0.8, cu + r * 0.8, di0, di1, ch - r * 0.45, ch + r * 0.45, 0x0A0A0B, light);
+                    for (int k = -3; k <= 3; k++) {
+                        double pu = cu + k * r * 0.2;
+                        box(pu - 0.06, pu + 0.06, di0 - 0.05, di1, ch - 0.06, ch + 0.06, 0xB8BCC2, light);
+                    }
+                }
+                default -> box(cu - r * 0.55, cu + r * 0.55, di0, di1, ch - r * 0.55, ch + r * 0.55, 0x0A0A0B, light);
+            }
             double size = Math.max(0.6, Math.min(1.0, r * 0.7));
             if (front) {
                 frontText(buffers, p.label(), p.u0() - 0.1, p.h1() + size + 0.2, p.depth(), size, 0xFFDDDDDD);

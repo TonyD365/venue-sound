@@ -204,7 +204,7 @@ M = Wireless Microphone, I = Iron Ingot.
 
 ### Gooseneck Podium Mic
 
-The thin mic on a lectern or a conference desk. It picks up players within 2 blocks.
+The thin mic on a lectern or a conference desk. It picks up players within 2 blocks. It is a condenser mic: turn on the console's **+48V** or it stays silent.
 
 **Recipe** (1 mic):
 
@@ -224,7 +224,7 @@ I = Iron Ingot, S = String.
 
 ### Hanging Choir Mic
 
-An overhead mic for a choir or a group on stage. It picks up players within 8 blocks.
+An overhead mic for a choir or a group on stage. It picks up players within 8 blocks. It is a condenser mic: turn on the console's **+48V** or it stays silent.
 
 **Recipe** (1 mic):
 
@@ -857,6 +857,9 @@ channels let two teams work at once, for example A for stage management and B fo
 
 ## Cabling and patching
 
+Every socket has a real connector (XLR, TRS, XLR/TRS combo, Speakon, multipin), and a cable only
+plugs into a socket that takes its plug: see [connectors](cabling.md#connectors).
+
 ### How every cable works
 
 1. Right-click an **OUT** socket with the cable. One end plugs in and the cable runs to your hand.
@@ -875,15 +878,15 @@ refused: route it along clips.
 
 | Cable | Carries | Per run | Colour |
 |---|---|---|---|
-| [Audio Cable](#audio-cable) | Anything | 64 blocks | Black |
-| [XLR Mic Cable](#xlr-mic-cable) | Mic and line signal; not from an amplifier's outputs | 96 blocks | Dark blue |
-| [Speaker Cable](#speaker-cable) | Only amplifier OUT to speaker INPUT (wall outlets allowed in between) | 96 blocks | Orange |
-| [Multicore Snake](#multicore-snake) | Only a stage box's SNAKE socket to the console (or a wall outlet) | 128 blocks | Thick black |
-| [Cable Reel](#cable-reel) | Anything | 128 blocks | Yellow |
+| [Audio Cable](#audio-cable) | TRS plug: TRS and combo sockets | 64 blocks | Black |
+| [XLR Mic Cable](#xlr-mic-cable) | XLR plug: XLR and combo sockets | 96 blocks | Dark blue |
+| [Speaker Cable](#speaker-cable) | Speakon plug: amplifier OUT to speaker INPUT (wall outlets allowed in between) | 96 blocks | Orange |
+| [Multicore Snake](#multicore-snake) | Multipin: a stage box's SNAKE socket to console inputs (or a wall outlet) | 128 blocks | Thick black |
+| [Cable Reel](#cable-reel) | XLR plug: XLR and combo sockets | 128 blocks | Yellow |
 
 ### Audio Cable
 
-The general-purpose cable. It connects anything to anything.
+A 6.35 mm TRS line cable: for TRS and combo sockets (media deck, AUX sends, DI box input, stereo console inputs).
 
 **Recipe** (1 cable):
 
@@ -951,7 +954,7 @@ on IN 1, CH 2 on IN 2 and so on (the USB strip is skipped).
 
 ### Cable Reel
 
-A long general-purpose cable on a drum, for long runs. It connects anything.
+A long XLR cable on a drum, for long runs across the venue: XLR and combo sockets.
 
 **Recipe** (1 reel):
 

@@ -32,6 +32,8 @@ master section.
 - **Faders**: hold right-click on the cap and move the crosshair, or scroll.
 - **Knobs**: click the left half to turn down, right half to turn up, or scroll.
 - **Buttons**: right-click.
+- **+48V**: phantom power for condenser mics (gooseneck, choir), in the master section beside the
+  USB player buttons. See [phantom power](cabling.md#phantom-power-48v).
 - **Readout**: point the crosshair at any knob or fader to see its name and value below the
   crosshair, for example `CH 6  FADER  +0.0 dB`, `CH 2  HI  +4 dB` or `CH 3  PAN  L 40`. It works on
   the amplifier, the processors and the speakers' coverage knob too.

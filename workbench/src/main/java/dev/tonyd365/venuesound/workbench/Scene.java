@@ -180,6 +180,11 @@ public final class Scene {
         }
 
         @Override
+        public boolean condenser(Device d) {
+            return d.type == Device.Type.GOOSENECK_MIC || d.type == Device.Type.CHOIR_MIC;
+        }
+
+        @Override
         public int inputSlot(Device console, Device upstream) {
             for (int i = 0; i < Device.INPUTS; i++) {
                 if (console.inputs[i] == upstream) {

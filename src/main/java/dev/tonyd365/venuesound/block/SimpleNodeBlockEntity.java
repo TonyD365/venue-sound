@@ -23,7 +23,9 @@ public class SimpleNodeBlockEntity extends AudioNodeBlockEntity {
     @Override
     protected dev.tonyd365.venuesound.audio.RouterState.Node snapshot(net.minecraft.server.level.ServerLevel level, java.util.List<dev.tonyd365.venuesound.audio.RouterState.Out> outs) {
         int range = getBlockState().getBlock() instanceof StandMicBlock m ? m.range : 0;
-        int channel = getBlockState().getBlock() instanceof StageBoxBlock ? 1 : 0;
+        // channel flags: a stage box is multichannel; a condenser mic (gooseneck, choir) needs +48V
+        int channel = getBlockState().getBlock() instanceof StageBoxBlock ? 1
+                : getBlockState().getBlock() instanceof StandMicBlock && !"stand_mic".equals(deviceKey()) ? 1 : 0;
         return new dev.tonyd365.venuesound.audio.RouterState.Node(dimPos(), kind(), outs, channel, null, 0F, range, 0.5D);
     }
 

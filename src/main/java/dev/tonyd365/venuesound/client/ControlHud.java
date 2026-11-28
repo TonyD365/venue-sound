@@ -30,7 +30,7 @@ public final class ControlHud {
             return;
         }
         ScrollControl.Target t = ScrollControl.find(mc.level, hit.getBlockPos(), hit.getDirection(), hit.getLocation());
-        String text = t == null ? null : describe(mc, t);
+        String text = t == null ? socket(mc, hit) : describe(mc, t);
         if (text == null) {
             return;
         }
@@ -38,6 +38,31 @@ public final class ControlHud {
         int x = g.guiWidth() / 2 - w / 2, y = g.guiHeight() / 2 + 12;
         g.fill(x - 4, y - 3, x + w + 4, y + 11, 0xA0000000);
         g.drawString(mc.font, text, x, y, 0xFFE8B84A, false);
+    }
+
+    /** "IN 3   XLR/TRS combo   in" for the socket under the crosshair. */
+    @Nullable
+    private static String socket(Minecraft mc, BlockHitResult hit) {
+        var pos = dev.tonyd365.venuesound.item.AudioCableItem.devicePos(mc.level, hit.getBlockPos());
+        if (!(mc.level.getBlockEntity(pos) instanceof dev.tonyd365.venuesound.block.AudioNodeBlockEntity node)) {
+            return null;
+        }
+        var port = dev.tonyd365.venuesound.item.AudioCableItem.portAt(mc.level, pos, node.deviceKey(), hit.getDirection(), hit.getLocation());
+        if (port == null || port.face() == dev.tonyd365.venuesound.block.PortLayout.Face.ANY) {
+            return null;
+        }
+        var c = dev.tonyd365.venuesound.block.PortLayout.connector(node.deviceKey(), port);
+        String kind = switch (c) {
+            case COMBO -> "XLR/TRS combo";
+            case ANY -> "any plug";
+            default -> c.label;
+        };
+        String dir = switch (port.dir()) {
+            case IN -> "in";
+            case OUT -> "out";
+            case BOTH -> "in / out";
+        };
+        return port.label() + "   " + kind + "   " + dir;
     }
 
     @Nullable

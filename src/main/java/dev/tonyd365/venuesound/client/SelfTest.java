@@ -143,7 +143,7 @@ public final class SelfTest {
             }
         }
         if (level.getBlockEntity(console) instanceof AudioNodeBlockEntity c) {
-            c.addLink(amp, 0, 0);
+            c.addLink(amp, 0, 0, java.util.List.of(), dev.tonyd365.venuesound.block.CableType.XLR);
         }
         if (level.getBlockEntity(amp) instanceof AudioNodeBlockEntity a) {
             a.addLink(spk, 0, 0, java.util.List.of(), dev.tonyd365.venuesound.block.CableType.SPEAKER);

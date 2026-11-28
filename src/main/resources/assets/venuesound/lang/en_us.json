@@ -94,14 +94,14 @@
   "message.venuesound.zone_none": "Select two corners first",
   "message.venuesound.zone_cleared": "Selection cleared",
   "block.venuesound.mixer24": "Mixing Console VS-24 (5x2)",
-  "tooltip.venuesound.cable.audio_cable": "General audio cable: connects anything",
-  "tooltip.venuesound.cable.xlr_cable": "Mic and line signal: mics, receivers, players, processors, consoles, powered speakers. Not from an amplifier's outputs",
-  "tooltip.venuesound.cable.speaker_cable": "Amplifier OUT to speaker INPUT only (through wall outlets if needed)",
-  "tooltip.venuesound.cable.snake_cable": "Multicore: a stage box's SNAKE socket to the console, carrying every channel",
-  "tooltip.venuesound.cable.cable_reel": "Long general cable for runs across the venue: connects anything",
+  "tooltip.venuesound.cable.audio_cable": "6.35 mm TRS line cable: TRS and combo sockets (players, AUX sends, DI inputs)",
+  "tooltip.venuesound.cable.xlr_cable": "XLR: microphones and line signal; XLR and combo sockets",
+  "tooltip.venuesound.cable.speaker_cable": "Speakon: amplifier outputs to passive speakers only",
+  "tooltip.venuesound.cable.snake_cable": "Multipin: a stage box's SNAKE socket to console inputs, carrying every channel",
+  "tooltip.venuesound.cable.cable_reel": "A long XLR cable on a drum: XLR and combo sockets",
   "message.venuesound.cable_xlr_amp": "An amplifier's outputs are speaker-level: use a speaker cable.",
   "message.venuesound.cable_speaker_only": "A speaker cable only goes from an amplifier OUT to a speaker INPUT.",
-  "message.venuesound.cable_snake_only": "The multicore snake goes from a stage box's SNAKE socket to the console.",
+  "message.venuesound.cable_snake_only": "The multicore snake fans out into console inputs (or a wall outlet).",
   "block.venuesound.intercom_station": "Intercom Base Station",
   "item.venuesound.intercom_beltpack": "Intercom Beltpack",
   "message.venuesound.iem_channel": "In-ear transmitter channel: %s",
@@ -113,5 +113,6 @@
   "tooltip.venuesound.intercom_channel": "Intercom channel %s",
   "tooltip.venuesound.intercom_talk_on": "TALK on: the crew on your channel hears you",
   "tooltip.venuesound.intercom_talk_off": "TALK off: listening only",
-  "tooltip.venuesound.intercom_help": "Carry it near a powered base station · Right-click: A / B · Sneak+right-click: TALK on / off"
+  "tooltip.venuesound.intercom_help": "Carry it near a powered base station · Right-click: A / B · Sneak+right-click: TALK on / off",
+  "message.venuesound.cable_wrong_plug": "%s is a %s socket and this cable has %s plugs. Use the %s."
 }
