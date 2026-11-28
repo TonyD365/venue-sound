@@ -66,6 +66,10 @@ Deno.test("the finished suite counts as completed", () => {
   const c = { ...pass, status: "in_progress", conclusion: null, check_suite: { id: 5 } };
   eq(latestChecks([c], 5, "success")[0].status, "completed");
 });
+Deno.test("the bot's own running job is not a check", () => {
+  const self = { ...pass, name: "bot", status: "in_progress", conclusion: null };
+  eq(latestChecks([pass, self]).map((c) => c.name), [pass.name]);
+});
 Deno.test("terms replies are exact", () => {
   eq(termsReply(" @example-bot I agree to the project contribution terms. "), "agreed");
   eq(termsReply("@EXAMPLE-BOT, I agree to the project contribution terms"), "agreed");
