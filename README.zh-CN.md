@@ -59,12 +59,17 @@
 1. 安装 Minecraft 1.20.1 或 1.21.1 的 **Fabric**，以及 **Fabric API**、**Simple Voice Chat**，再把
    [VenueSound](https://github.com/TonyD365/venue-sound/releases/latest) 放进 `mods/`。
 2. 放一台**调音台**、一台**功放**、两台 **PA 音箱**。
-3. 拿**音频线**：右键调音台的 **MAIN L**，再右键功放背面的 **IN A**；**MAIN R** → **IN B**；
-   功放 **OUT 1** → 左音箱背面的 **INPUT**，**OUT 3** → 右音箱 **INPUT**。
-4. 放一台**无线接收器**，把它背面的 **OUT** 接到调音台背面（朝舞台那一面）的 **IN 1**。
+3. 拿 **XLR 话筒线**：右键调音台的 **MAIN L**，再右键功放背面的 **IN A**；**MAIN R** → **IN B**。
+   再拿**音箱线**：功放 **OUT 1** → 左音箱背面的 **INPUT**，**OUT 3** → 右音箱 **INPUT**。
+4. 放一台**无线接收器**，用 XLR 线把它背面的 **OUT** 接到调音台背面（朝舞台那一面）的 **IN 1**。
 5. 手持**无线麦**（通道和接收器一致）说话，把第 1 路推子和红色主推子推上去。
 
 每个物品的配方、摆放和接口：[物品大全](docs/guide/items.zh-CN.md)。
+
+**用 Forge 1.20.1？** 在正式的 Forge/NeoForge 版推出之前，VenueSound 可以通过
+[Sinytra Connector](https://modrinth.com/mod/connector)（测试版）运行：装 Connector、
+[Forgified Fabric API](https://modrinth.com/mod/forgified-fabric-api)（代替 Fabric API）和 Forge 版的
+Simple Voice Chat，再放入 1.20.1 的 VenueSound jar。
 
 ## 工作台（不进游戏也能测）
 

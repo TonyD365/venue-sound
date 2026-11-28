@@ -98,13 +98,18 @@ Every device: [device guide](docs/guide/devices.md).
 1. Install **Fabric Loader** for Minecraft 1.20.1 or 1.21.1, **Fabric API** and **Simple Voice Chat**, then
    put the [VenueSound jar](https://github.com/TonyD365/venue-sound/releases/latest) for your Minecraft version in `mods/`.
 2. Place a **mixing console**, a **power amplifier** and two **PA speakers**.
-3. With an **audio cable**: right-click the console's **MAIN L** socket, then the amplifier's
-   **IN A**; **MAIN R** → **IN B**; amplifier **OUT 1** → left speaker's **INPUT**, **OUT 3** →
-   right speaker's **INPUT**.
-4. Place a **wireless receiver** and cable its **OUT** to the console's **IN 1**.
+3. With an **XLR mic cable**: right-click the console's **MAIN L** socket, then the amplifier's
+   **IN A**; **MAIN R** → **IN B**. With a **speaker cable**: amplifier **OUT 1** → left speaker's
+   **INPUT**, **OUT 3** → right speaker's **INPUT**.
+4. Place a **wireless receiver** and cable its **OUT** to the console's **IN 1** with an XLR cable.
 5. Hold a **wireless microphone** on the receiver's channel and talk. Push fader 1 up.
 
 Step by step with pictures: [getting started](docs/guide/getting-started.md).
+
+**Playing on Forge 1.20.1?** Until the native Forge/NeoForge version is out, VenueSound runs
+through [Sinytra Connector](https://modrinth.com/mod/connector) (beta): install Connector,
+[Forgified Fabric API](https://modrinth.com/mod/forgified-fabric-api) (instead of Fabric API) and
+the Forge build of Simple Voice Chat, then the 1.20.1 VenueSound jar.
 
 Every item: [item guide](docs/guide/items.md).
 

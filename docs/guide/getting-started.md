@@ -12,6 +12,11 @@
 
 Everything is in the **VenueSound** creative tab, and every device has a crafting recipe.
 
+**Forge 1.20.1:** until the native Forge/NeoForge version is out, VenueSound runs through
+[Sinytra Connector](https://modrinth.com/mod/connector) (beta). Put Connector,
+[Forgified Fabric API](https://modrinth.com/mod/forgified-fabric-api) (instead of Fabric API), the
+Forge build of Simple Voice Chat and the 1.20.1 VenueSound jar in `mods/`.
+
 ## Your first system
 
 ![The console in game](../images/console.jpg)
@@ -19,13 +24,14 @@ Everything is in the **VenueSound** creative tab, and every device has a craftin
 1. Place a **Mixing Console VS-12** (it needs 3×2 free blocks in front of and to the right of you).
 2. Place a **Power Amplifier** and two **PA Speaker Cabinets** (one each side of the stage),
    speakers facing the audience.
-3. Take an **audio cable**. Right-click a socket to plug in one end, then a socket on another
-   device to plug in the other end:
-   - console **MAIN L** → amplifier **IN A** (amplifier sockets are on its back)
-   - console **MAIN R** → amplifier **IN B**
-   - amplifier **OUT 1** → left speaker **INPUT** (on its back)
-   - amplifier **OUT 3** → right speaker **INPUT**
-4. Place a **Wireless Receiver**; cable its **OUT** (back) to console **IN 1** (on the console's rear side, facing the stage).
+3. Right-click a socket to plug in one end of a cable, then a socket on another device to plug in
+   the other end. Each cable has its real plug (see [connectors](cabling.md#connectors)):
+   - **XLR mic cable**: console **MAIN L** → amplifier **IN A** (amplifier sockets are on its back)
+   - **XLR mic cable**: console **MAIN R** → amplifier **IN B**
+   - **Speaker cable**: amplifier **OUT 1** → left speaker **INPUT** (on its back)
+   - **Speaker cable**: amplifier **OUT 3** → right speaker **INPUT**
+4. Place a **Wireless Receiver**; with an XLR cable, connect its **OUT** (back) to console **IN 1**
+   (on the console's rear side, facing the stage).
 5. Take a **Wireless Microphone**. Its channel must match the receiver's (right-click the mic to
    change it, click the receiver's display or -/+ buttons to change the receiver).
 6. Talk. On the console, push fader **1** and the red **L/R** master faders up.
